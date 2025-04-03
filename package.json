@@ -1,0 +1,16 @@
+{
+    "dependencies": {
+        "@playwright/test": "^1.51.1",
+        "playwright": "^1.51.1"
+    },
+    "name": "workability_tests",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "test": "playwright test"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": ""
+}
