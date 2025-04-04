@@ -20,8 +20,8 @@ jobs:
             - name: Run Playwright tests
               run: |
                   npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
-                  rm -rf $GITHUB_WORKSPACE/playwright-report  # Удаляем старый отчёт, если он есть
-                  mv playwright-report $GITHUB_WORKSPACE/  # Перемещаем отчёт в workspace
+                  mkdir -p $GITHUB_WORKSPACE/playwright-report  # Создаём папку, если её нет
+                  cp -r playwright-report/* $GITHUB_WORKSPACE/playwright-report/  # Копируем отчёт в workspace
 
     upload_report:
         needs: sites_workability_cheking_tests
