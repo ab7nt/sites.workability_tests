@@ -7,7 +7,7 @@ jobs:
     run_test:
         runs-on: ubuntu-latest
         container:
-            image: mcr.microsoft.com/playwright:v1.49.1
+            image: mcr.microsoft.com/playwright:v1.51.1
             env:
                 HP_LOGIN: ${{ secrets.HP_LOGIN }}
                 HP_PASSWORD: ${{ secrets.HP_PASSWORD }}
