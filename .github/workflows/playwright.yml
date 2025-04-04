@@ -1,0 +1,36 @@
+name: Playwright tests
+
+on:
+    workflow_dispatch:
+
+jobs:
+    run_test:
+        runs-on: ubuntu-latest
+        container:
+            image: mcr.microsoft.com/playwright:v1.49.1
+            env:
+                HP_LOGIN: ${{ secrets.HP_LOGIN }}
+                HP_PASSWORD: ${{ secrets.HP_PASSWORD }}
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Cache Node.js modules
+              uses: actions/cache@v3
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Log Node.js and npm versions
+              run: |
+                  node --version
+                  npm --version
+
+            - name: Run tests
+              run: npx playwright test --grep 'Проверка рабоспособности сайтов'
