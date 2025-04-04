@@ -29,11 +29,16 @@ jobs:
                   npm --version
 
             - name: Run tests
-              run: npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
+              run: |
+                  npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
+                  mkdir -p /tmp/playwright-report
+                  cp -r playwright-report/* /tmp/playwright-report/
 
-            - name: Сохранение HTML-отчёта как артефакт
+            # Загружаем отчет после выхода из контейнера
+            - name: Upload Playwright Report
+              if: always()
               uses: actions/upload-artifact@v3
               with:
                   name: playwright-html-report
-                  path: playwright-report/
-                  retention-days: 7 # Отчёт будет доступен 7 дней
+                  path: /tmp/playwright-report/
+                  retention-days: 7
