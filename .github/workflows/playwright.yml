@@ -20,12 +20,12 @@ jobs:
             - name: Run Playwright tests
               run: |
                   npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
-                  mkdir -p $GITHUB_WORKSPACE/playwright-report
-                  cp -r playwright-report/* $GITHUB_WORKSPACE/playwright-report/
+                  rm -rf $GITHUB_WORKSPACE/playwright-report  # Удаляем старый отчёт, если он есть
+                  mv playwright-report $GITHUB_WORKSPACE/  # Перемещаем отчёт в workspace
 
     upload_report:
         needs: sites_workability_cheking_tests
-        runs-on: ubuntu-latest # Обычная виртуальная машина (без контейнера)
+        runs-on: ubuntu-latest # Запуск на хосте (без контейнера)
         steps:
             - name: Upload Playwright Report
               uses: actions/upload-artifact@v3
