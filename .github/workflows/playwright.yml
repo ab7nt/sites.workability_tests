@@ -39,15 +39,15 @@ jobs:
               run: cp -r /tmp/playwright-report $GITHUB_WORKSPACE/
 
     upload_report:
-        needs: sites_workability_cheking_tests  # Ждёт завершения тестов
-        runs-on: ubuntu-latest  # Запускаем на хосте (без контейнера)
+        needs: sites_workability_cheking_tests # Ждёт завершения тестов
+        runs-on: ubuntu-latest # Запускаем на хосте (без контейнера)
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
 
             - name: Upload Playwright Report
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v2
               with:
                   name: playwright-html-report
                   path: playwright-report/
-                  retention-days: 7  # Сохраняем отчёт на 7 дней
+                  retention-days: 7 # Сохраняем отчёт на 7 дней
