@@ -34,11 +34,20 @@ jobs:
                   mkdir -p /tmp/playwright-report
                   cp -r playwright-report/* /tmp/playwright-report/
 
-            # Загружаем отчет после выхода из контейнера
+            # Сохраняем отчёт в рабочей директории
+            - name: Move report to workspace
+              run: cp -r /tmp/playwright-report $GITHUB_WORKSPACE/
+
+    upload_report:
+        needs: sites_workability_cheking_tests  # Ждёт завершения тестов
+        runs-on: ubuntu-latest  # Запускаем на хосте (без контейнера)
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
             - name: Upload Playwright Report
-              if: always()
               uses: actions/upload-artifact@v3
               with:
                   name: playwright-html-report
-                  path: /tmp/playwright-report/
-                  retention-days: 7
+                  path: playwright-report/
+                  retention-days: 7  # Сохраняем отчёт на 7 дней
