@@ -1,4 +1,4 @@
-name: Playwright tests
+name: sites-workability-cheking
 
 on:
     workflow_dispatch:
@@ -8,10 +8,6 @@ jobs:
         runs-on: ubuntu-latest
         container:
             image: mcr.microsoft.com/playwright:v1.51.1
-            env:
-                HP_LOGIN: ${{ secrets.HP_LOGIN }}
-                HP_PASSWORD: ${{ secrets.HP_PASSWORD }}
-
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
