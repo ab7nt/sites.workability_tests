@@ -23,3 +23,12 @@ jobs:
             - name: Run Playwright tests and generate report
               run: |
                   npx playwright test --reporter=html
+                  mkdir -p /tmp/playwright-report
+                  cp -r playwright-report/* /tmp/playwright-report/
+
+            - name: Upload Playwright report as artifact
+              uses: actions/upload-artifact@v3
+              with:
+                  name: playwright-report
+                  path: /tmp/playwright-report/
+                  retention-days: 3
