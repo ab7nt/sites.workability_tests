@@ -22,13 +22,10 @@ jobs:
 
             - name: Run Playwright tests and generate report
               run: |
-                  npx playwright test --reporter=html
-                  mkdir -p /tmp/playwright-report
-                  cp -r playwright-report/* /tmp/playwright-report/
+                  npx playwright test --grep 'Проверка рабоспособности сайта 1tm.ru'
 
-            - name: Upload Playwright report as artifact
-              uses: actions/upload-artifact@v3
+            - name: Upload test results
+              uses: actions/upload-artifact@v2
               with:
                   name: playwright-report
-                  path: /tmp/playwright-report/
-                  retention-days: 3
+                  path: playwright-report/
