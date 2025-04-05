@@ -1,4 +1,4 @@
-name: Playwright Tests (Legacy Runner Support)
+name: Playwright Tests with Reliable Reporting
 
 on:
     schedule:
@@ -14,60 +14,69 @@ jobs:
             image: mcr.microsoft.com/playwright:v1.51.1
 
         steps:
-            # 1. Проверка кода (используем checkout@v3 для совместимости)
+            # 1. Подготовка (совместимая с вашим Runner)
             - name: Checkout code
               uses: actions/checkout@v3
 
-            # 2. Установка зависимостей
-            - name: Install dependencies
-              run: npm install
-
-            # 3. Запуск теста с подробной диагностикой
-            - name: Run test with diagnostics
-              id: run_tests
+            # 2. Явная установка Node.js и зависимостей
+            - name: Setup Node.js
               run: |
-                  # Поиск теста в проекте
-                  echo "Поиск теста в файлах:"
-                  grep -rl "Проверка работоспособности сайта 1tm.ru" . || echo "Тест не найден"
+                  apt-get update
+                  apt-get install -y nodejs npm
+                  npm install -g npm@latest
+                  npm install
 
-                  # Запуск теста
+            # 3. Запуск тестов с принудительным указанием пути для отчёта
+            - name: Run tests with forced report
+              run: |
+                  mkdir -p /test-results
                   npx playwright test \
                     --grep "Проверка работоспособности сайта 1tm.ru" \
-                    --reporter=html,line \
-                    --workers=1 \
-                    --timeout=60000 \
-                    --output=test-results || true
+                    --reporter=html \
+                    --output=/test-results \
+                    || true  # Продолжаем даже при ошибке тестов
 
-                  # Проверка существования отчета
-                  if [ -d "test-results" ]; then
-                    echo "::set-output name=report_exists::true"
+            # 4. Проверка и упаковка отчёта
+            - name: Verify and package report
+              run: |
+                  echo "Проверяем содержимое /test-results:"
+                  ls -la /test-results || echo "Директория не существует"
+
+                  if [ -d "/test-results/playwright-report" ]; then
+                    echo "Отчёт найден, упаковываем..."
+                    apt-get install -y zip
+                    cd /test-results/playwright-report
+                    zip -r /tmp/report.zip .
                   else
-                    echo "::error::Отчет не сгенерирован"
-                    echo "::set-output name=report_exists::false"
+                    echo "::error::Отчёт не сгенерирован!"
+                    exit 1
                   fi
 
-            # 4. Ручная загрузка отчета через API (без upload-artifact)
-            - name: Upload report manually
-              if: steps.run_tests.outputs.report_exists == 'true'
+            # 5. Копирование отчёта из контейнера на хост
+            - name: Extract report from container
               run: |
-                  # Установка curl если нужно
-                  apt-get update && apt-get install -y curl || true
+                  docker cp $(docker ps -ql):/tmp/report.zip ./report.zip
+                  ls -la ./report.zip || echo "Файл отчёта не найден"
 
-                  # Создаем архив
-                  zip -r report.zip test-results/
-
-                  # Загружаем через GitHub API
-                  curl -X POST \
-                    -H "Authorization: Bearer ${{ github.token }}" \
-                    -H "Accept: application/vnd.github.v3+json" \
-                    -H "Content-Type: application/zip" \
-                    --data-binary @report.zip \
-                    "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-report" \
-                    --fail
-
-            # 5. Информация о результате
-            - name: Show results
+            # 6. Альтернативная загрузка через API
+            - name: Upload report via API
               run: |
-                  echo "Тесты завершены со статусом: ${{ job.status }}"
+                  if [ -f "./report.zip" ]; then
+                    curl -X POST \
+                      -H "Authorization: Bearer ${{ github.token }}" \
+                      -H "Accept: application/vnd.github.v3+json" \
+                      -H "Content-Type: application/zip" \
+                      --data-binary @./report.zip \
+                      "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-report" \
+                      --fail
+                  else
+                    echo "::error::Файл отчёта не найден для загрузки"
+                    exit 1
+                  fi
+
+            # 7. Финал
+            - name: Final message
+              run: |
+                  echo "Процесс завершён!"
                   echo "Ссылка на артефакты:"
                   echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
