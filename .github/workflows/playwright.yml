@@ -17,32 +17,14 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Debug test structure
-              run: |
-                  echo "Содержимое тестовой директории:"
-                  find . -name "*.spec.ts" -o -name "*.test.ts" | xargs -I {} sh -c 'echo "Файл: {}"; head -n 10 {}'
-                  echo "Поиск теста по ключевым словам:"
-                  grep -r "Проверка работоспособности сайта 1tm.ru" . || echo "Тест не найден"
-
             - name: Install dependencies
               run: npm install
-
-            - name: Verify test exists
-              run: |
-                  TEST_FILE=$(grep -rl "Проверка работоспособности сайта 1tm.ru" tests/ || echo "")
-                  if [ -z "$TEST_FILE" ]; then
-                    echo "::error::Тест не найден в проекте"
-                    exit 1
-                  fi
-                  echo "Тест найден в файле: $TEST_FILE"
 
             - name: Run specific test
               run: |
                   npx playwright test \
                     --grep "Проверка работоспособности сайта 1tm.ru" \
                     --reporter=html,line \
-                    --workers=1 \
-                    --timeout=60000
 
             - name: Upload report
               if: always()
