@@ -12,26 +12,40 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            # 1. Запускаем контейнер и выполняем тесты
+            # 1. Подготовка рабочей директории
+            - name: Prepare workspace
+              run: |
+                  mkdir -p playwright-report
+                  chmod -R 777 playwright-report
+
+            # 2. Запуск тестов в контейнере с монтированием директории для отчёта
             - name: Run tests in container
-              id: run_tests
               run: |
                   docker run \
                     --shm-size=1gb \
                     -v $(pwd):/app \
                     -w /app \
+                    -e PLAYWRIGHT_HTML_REPORT=/app/playwright-report \
                     mcr.microsoft.com/playwright:v1.51.1 \
-                    /bin/bash -c "npm ci && npx playwright test --grep 'Проверка работоспособности сайта 1tm.ru' --reporter=html"
+                    /bin/bash -c "npm ci && npx playwright test --grep 'Проверка работоспособности сайта 1tm.ru' --reporter=html --output=/app/playwright-report"
               continue-on-error: true
 
-            # 2. Архивируем отчёт прямо на хосте (не в контейнере)
+            # 3. Проверка существования отчёта
+            - name: Verify report exists
+              run: |
+                  if [ ! -d "playwright-report" ]; then
+                    echo "::error::Report directory not found!"
+                    exit 1
+                  fi
+                  ls -la playwright-report/
+
+            # 4. Архивирование отчёта (без sudo)
             - name: Zip HTML report
               run: |
-                  sudo apt-get update && sudo apt-get install -y zip
-                  cd playwright-report
-                  zip -r ../playwright-report.zip ./*
+                  apt-get update && apt-get install -y zip || true
+                  cd playwright-report && zip -r ../playwright-report.zip ./*
 
-            # 3. Загружаем через GitHub API (без actions/upload-artifact)
+            # 5. Загрузка через GitHub API
             - name: Upload report via API
               run: |
                   curl -X POST \
@@ -39,9 +53,10 @@ jobs:
                     -H "Accept: application/vnd.github.v3+json" \
                     -H "Content-Type: application/zip" \
                     --data-binary @playwright-report.zip \
-                    "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-html-report"
+                    "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-html-report" \
+                    --fail
 
-            # 4. Выводим ссылку для скачивания
+            # 6. Ссылка на отчёт
             - name: Show report URL
               run: |
                   echo "Отчёт доступен здесь:"
