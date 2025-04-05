@@ -1,4 +1,4 @@
-name: Playwright Tests - Stable Version
+name: Playwright Tests - Final Solution
 
 on:
     schedule:
@@ -9,56 +9,63 @@ on:
 
 jobs:
     run_tests:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04 # Используем стабильную LTS-версию
         container:
             image: mcr.microsoft.com/playwright:v1.51.1
 
         steps:
-            # 1. Проверка кода (используем v3 для совместимости)
+            # 1. Проверка кода
             - name: Checkout code
               uses: actions/checkout@v3
 
-            # 2. Используем Node.js из контейнера Playwright
-            - name: Verify Node.js
+            # 2. Проверка окружения
+            - name: Verify environment
               run: |
-                  echo "Node.js version: $(node --version)"
-                  echo "npm version: $(npm --version)"
+                  echo "Node.js: $(node --version)"
+                  echo "npm: $(npm --version)"
+                  echo "Playwright: $(npx playwright --version)"
 
-            # 3. Установка зависимостей (без apt-get)
+            # 3. Установка зависимостей
             - name: Install dependencies
               run: |
-                  # Чистая установка через npm из контейнера
-                  npm install --no-audit --fund false --progress false
+                  npm install --no-audit --fund false
                   npx playwright install --with-deps
 
-            # 4. Поиск теста перед запуском
+            # 4. Поиск теста (современный способ передачи переменных)
             - name: Find test file
               id: find_test
               run: |
                   TEST_FILE=$(grep -rl "Проверка работоспособности сайта 1tm.ru" . || echo "")
                   if [ -z "$TEST_FILE" ]; then
+                    echo "test_exists=false" >> $GITHUB_OUTPUT
                     echo "::error::Тест не найден в проекте"
-                    echo "::set-output name=test_exists::false"
                     exit 1
                   else
+                    echo "test_exists=true" >> $GITHUB_OUTPUT
+                    echo "test_file=$TEST_FILE" >> $GITHUB_OUTPUT
                     echo "Тест найден в файле: $TEST_FILE"
-                    echo "::set-output name=test_exists::true"
-                    echo "::set-output name=test_file::$TEST_FILE"
                   fi
 
-            # 5. Запуск теста с явным указанием файла
+            # 5. Запуск теста
             - name: Run specific test
               if: steps.find_test.outputs.test_exists == 'true'
               run: |
-                  npx playwright test --grep "Проверка работоспособности сайта 1tm.ru" --reporter=html,line --output=playwright-report \
+                  npx playwright test \
+                    ${{ steps.find_test.outputs.test_file }} \
+                    --grep "Проверка работоспособности сайта 1tm.ru" \
+                    --reporter=html,line \
+                    --output=playwright-report \
+                    --workers=1 \
+                    --timeout=60000
 
-            # 6. Проверка и упаковка отчёта
+            # 6. Подготовка отчета
             - name: Prepare report
               if: always()
               run: |
                   if [ -d "playwright-report" ]; then
-                    echo "Отчёт найден в playwright-report/"
-                    cd playwright-report && zip -r ../report.zip .
+                    echo "Отчёт найден, упаковываем..."
+                    cd playwright-report
+                    zip -r ../report.zip .
                   else
                     echo "::error::Отчёт не сгенерирован!"
                     echo "Содержимое рабочей директории:"
@@ -66,7 +73,7 @@ jobs:
                     exit 1
                   fi
 
-            # 7. Загрузка через API GitHub
+            # 7. Загрузка отчета
             - name: Upload report
               if: always()
               run: |
@@ -78,14 +85,14 @@ jobs:
                       --data-binary @report.zip \
                       "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-report"
                   else
-                    echo "::error::Файл отчёта не найден"
+                    echo "::error::Файл отчёта не найден для загрузки"
                     exit 1
                   fi
 
-            # 8. Информация о результате
-            - name: Show results
+            # 8. Финал
+            - name: Final message
               if: always()
               run: |
-                  echo "Тесты завершены со статусом: ${{ job.status }}"
+                  echo "Процесс завершён со статусом: ${{ job.status }}"
                   echo "Ссылка на артефакты:"
                   echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
