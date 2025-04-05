@@ -4,6 +4,9 @@ on:
     schedule:
         - cron: '0 6 * * *' # каждый день в 9:00 по МСК
     workflow_dispatch:
+    push:
+        branches:
+            - '**'
 
 jobs:
     run_tests:
@@ -12,20 +15,31 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v3
 
-            - name: Run tests inside Playwright container
-              uses: addnab/docker-run-action@v3
-              with:
-                  image: mcr.microsoft.com/playwright:v1.51.1
-                  options: -v ${{ github.workspace }}:/work -w /work
-                  run: |
-                      npm install
-                      npx playwright test --reporter=html --grep 'Проверка рабоспособности сайта 1tm.ru'
-                      mkdir -p /tmp/playwright-report
-                      cp -r playwright-report/* /tmp/playwright-report/
+            - name: Install dependencies
+              run: npm install
 
-            - name: Upload report
-              uses: actions/upload-artifact@v3
+            - name: Run tests and copy report
+              run: |
+                  npx playwright test --reporter=html --grep 'Проверка рабоспособности сайта 1tm.ru'
+
+                  # Временная папка
+                  mkdir -p /tmp/playwright-report
+                  cp -r playwright-report/* /tmp/playwright-report/
+
+                  # Workspace
+                  mkdir -p $GITHUB_WORKSPACE/playwright-report
+                  cp -r /tmp/playwright-report/* $GITHUB_WORKSPACE/playwright-report/
+
+    upload_report:
+        needs: run_tests
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Upload Playwright HTML Report
+              uses: actions/upload-artifact@v2
               with:
                   name: playwright-html-report
-                  path: /tmp/playwright-report/
+                  path: playwright-report/
                   retention-days: 3
