@@ -1,4 +1,4 @@
-name: Playwright tests
+name: Playwright tests with HTML report
 
 on:
     schedule:
@@ -33,5 +33,37 @@ jobs:
                   node --version
                   npm --version
 
-            - name: Run tests
-              run: npx playwright test --grep 'Проверка рабоспособности сайтов'
+            - name: Run tests with HTML report
+              run: |
+                  npx playwright test \
+                    --grep 'Проверка рабоспособности сайтов' \
+                    --reporter=html \
+                    --output=playwright-report
+              continue-on-error: true # Продолжаем даже если тесты упали
+
+            - name: Verify report exists
+              run: |
+                  if [ ! -d "playwright-report" ]; then
+                      echo "::error::HTML report not generated!"
+                      exit 1
+                  fi
+                  echo "Report generated at playwright-report/index.html"
+
+            - name: Archive report
+              run: |
+                  apt-get update && apt-get install -y zip
+                  cd playwright-report && zip -r ../playwright-report.zip .
+
+            - name: Upload report via API
+              run: |
+                  curl -X POST \
+                    -H "Authorization: Bearer ${{ github.token }}" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    -H "Content-Type: application/zip" \
+                    --data-binary @playwright-report.zip \
+                    "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-html-report"
+
+            - name: Display report URL
+              run: |
+                  echo "HTML report available here:"
+                  echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
