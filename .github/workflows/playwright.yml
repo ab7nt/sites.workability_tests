@@ -1,4 +1,4 @@
-name: Playwright Tests - Final Solution
+name: Playwright tests
 
 on:
     schedule:
@@ -8,91 +8,30 @@ on:
         branches: ['**']
 
 jobs:
-    run_tests:
-        runs-on: ubuntu-20.04 # Используем стабильную LTS-версию
+    run_test:
+        runs-on: ubuntu-latest
         container:
             image: mcr.microsoft.com/playwright:v1.51.1
 
         steps:
-            # 1. Проверка кода
             - name: Checkout code
               uses: actions/checkout@v3
 
-            # 2. Проверка окружения
-            - name: Verify environment
-              run: |
-                  echo "Node.js: $(node --version)"
-                  echo "npm: $(npm --version)"
-                  echo "Playwright: $(npx playwright --version)"
+            - name: Cache Node.js modules
+              uses: actions/cache@v3
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
 
-            # 3. Установка зависимостей
             - name: Install dependencies
-              run: |
-                  npm install --no-audit --fund false
-                  npx playwright install --with-deps
+              run: npm install
 
-            # 4. Поиск теста (современный способ передачи переменных)
-            - name: Find test file
-              id: find_test
+            - name: Log Node.js and npm versions
               run: |
-                  TEST_FILE=$(grep -rl "Проверка работоспособности сайта 1tm.ru" . || echo "")
-                  if [ -z "$TEST_FILE" ]; then
-                    echo "test_exists=false" >> $GITHUB_OUTPUT
-                    echo "::error::Тест не найден в проекте"
-                    exit 1
-                  else
-                    echo "test_exists=true" >> $GITHUB_OUTPUT
-                    echo "test_file=$TEST_FILE" >> $GITHUB_OUTPUT
-                    echo "Тест найден в файле: $TEST_FILE"
-                  fi
+                  node --version
+                  npm --version
 
-            # 5. Запуск теста
-            - name: Run specific test
-              if: steps.find_test.outputs.test_exists == 'true'
-              run: |
-                  npx playwright test \
-                    ${{ steps.find_test.outputs.test_file }} \
-                    --grep "Проверка работоспособности сайта 1tm.ru" \
-                    --reporter=html,line \
-                    --output=playwright-report \
-                    --workers=1 \
-                    --timeout=60000
-
-            # 6. Подготовка отчета
-            - name: Prepare report
-              if: always()
-              run: |
-                  if [ -d "playwright-report" ]; then
-                    echo "Отчёт найден, упаковываем..."
-                    cd playwright-report
-                    zip -r ../report.zip .
-                  else
-                    echo "::error::Отчёт не сгенерирован!"
-                    echo "Содержимое рабочей директории:"
-                    ls -la
-                    exit 1
-                  fi
-
-            # 7. Загрузка отчета
-            - name: Upload report
-              if: always()
-              run: |
-                  if [ -f "report.zip" ]; then
-                    curl -X POST \
-                      -H "Authorization: Bearer ${{ github.token }}" \
-                      -H "Accept: application/vnd.github.v3+json" \
-                      -H "Content-Type: application/zip" \
-                      --data-binary @report.zip \
-                      "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-report"
-                  else
-                    echo "::error::Файл отчёта не найден для загрузки"
-                    exit 1
-                  fi
-
-            # 8. Финал
-            - name: Final message
-              if: always()
-              run: |
-                  echo "Процесс завершён со статусом: ${{ job.status }}"
-                  echo "Ссылка на артефакты:"
-                  echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            - name: Run tests
+              run: npx playwright test --grep 'Проверка рабоспособности сайтов'
