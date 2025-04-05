@@ -1,8 +1,8 @@
-name: sites-workability-checking
+name: Playwright Tests and Send Email Report
 
 on:
     schedule:
-        - cron: '0 6 * * *' # каждый день в 9:00 по МСК
+        - cron: '0 6 * * *'
     workflow_dispatch:
     push:
         branches:
@@ -11,6 +11,8 @@ on:
 jobs:
     run_tests:
         runs-on: ubuntu-latest
+        container:
+            image: mcr.microsoft.com/playwright:v1.51.1
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
@@ -18,31 +20,59 @@ jobs:
             - name: Install dependencies
               run: npm install
 
-            - name: Install browsers
-              run: npx playwright install
-
-            - name: Run tests and copy report
+            - name: Run Playwright tests and generate report
               run: |
-                  npx playwright test --reporter=html --grep 'Проверка рабоспособности сайта 1tm.ru'
-
-                  # Временная папка
+                  npx playwright test --reporter=html
                   mkdir -p /tmp/playwright-report
                   cp -r playwright-report/* /tmp/playwright-report/
 
-                  # Workspace
-                  mkdir -p $GITHUB_WORKSPACE/playwright-report
-                  cp -r /tmp/playwright-report/* $GITHUB_WORKSPACE/playwright-report/
-
-    upload_report:
-        needs: run_tests
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
-
-            - name: Upload Playwright HTML Report
-              uses: actions/upload-artifact@v2
+            - name: Upload report as artifact (optional)
+              uses: actions/upload-artifact@v3
               with:
-                  name: playwright-html-report
-                  path: playwright-report/
+                  name: playwright-report
+                  path: /tmp/playwright-report/
                   retention-days: 3
+
+    # send_email_report:
+    #     needs: run_tests
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         - name: Checkout code
+    #           uses: actions/checkout@v3
+
+    #         - name: Install Nodemailer for sending email
+    #           run: npm install nodemailer
+
+    #         - name: Send Email with Playwright Report
+    #           env:
+    #               EMAIL: ${{ secrets.EMAIL }}
+    #               EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+    #               RECIPIENT_EMAIL: 'recipient@example.com'
+    #           run: |
+    #               const nodemailer = require('nodemailer');
+    #               const fs = require('fs');
+
+    #               const reportHtml = fs.readFileSync('/tmp/playwright-report/index.html', 'utf-8');
+
+    #               const transporter = nodemailer.createTransport({
+    #                 service: 'gmail',
+    #                 auth: {
+    #                   user: process.env.EMAIL,
+    #                   pass: process.env.EMAIL_PASSWORD
+    #                 }
+    #               });
+
+    #               const mailOptions = {
+    #                 from: process.env.EMAIL,
+    #                 to: process.env.RECIPIENT_EMAIL,
+    #                 subject: 'Playwright Test Report',
+    #                 html: `<h1>Playwright Test Results</h1><div>${reportHtml}</div>`
+    #               };
+
+    #               transporter.sendMail(mailOptions, (error, info) => {
+    #                 if (error) {
+    #                   console.log('Error: ', error);
+    #                 } else {
+    #                   console.log('Email sent: ' + info.response);
+    #                 }
+    #               });
