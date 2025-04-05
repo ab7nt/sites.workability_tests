@@ -2,7 +2,7 @@ name: sites-workability-cheking
 
 on:
     schedule:
-        - cron: '0 6 * * *' # 09:00 по Москве (06:00 UTC)
+        - cron: '0 6 * * *'
     workflow_dispatch:
 
 jobs:
@@ -17,22 +17,31 @@ jobs:
             - name: Install dependencies
               run: npm install
 
-            - name: Run Playwright tests and move report
+            - name: Run Playwright tests and save report
               run: |
                   npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
-                  mkdir -p /tmp/html-report
-                  cp -r playwright-report/* /tmp/html-report/
+                  mkdir -p /tmp/playwright-report
+                  cp -r playwright-report/* /tmp/playwright-report/
 
-            - name: Copy report from container to host
+            - name: Copy report to workspace
               run: |
                   mkdir -p $GITHUB_WORKSPACE/playwright-report
-                  cp -r /tmp/html-report/* $GITHUB_WORKSPACE/playwright-report/
+                  cp -r /tmp/playwright-report/* $GITHUB_WORKSPACE/playwright-report/
 
     upload_report:
-        needs: sites_workability_cheking_tests
+        needs: run_tests
         runs-on: ubuntu-latest
         steps:
-            - name: Upload Playwright Report
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Download report artifact from previous job
+              uses: actions/download-artifact@v3
+              with:
+                  name: playwright-html-report
+                  path: playwright-report/
+
+            - name: Upload Playwright HTML Report
               uses: actions/upload-artifact@v3
               with:
                   name: playwright-html-report
