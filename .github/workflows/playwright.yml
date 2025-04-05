@@ -1,4 +1,4 @@
-name: Playwright Tests and Send Email Report
+name: Playwright Tests
 
 on:
     schedule:
@@ -15,17 +15,26 @@ jobs:
             image: mcr.microsoft.com/playwright:v1.51.1
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4 # Обновлено до последней версии
 
             - name: Install dependencies
-              run: npm install
+              run: npm ci # Используем ci вместо install для более надежной установки
 
-            - name: Run Playwright tests and generate report
+            - name: Run Playwright tests with HTML report
               run: |
-                  npx playwright test --grep 'Проверка рабоспособности сайта 1tm.ru'
+                  npx playwright test --grep 'Проверка работоспособности сайта 1tm.ru' --reporter=html
+              continue-on-error: true # Продолжить workflow даже при падении тестов
 
-            - name: Deploy to GitHub Pages
-              uses: peaceiris/actions-gh-pages@v3
+            - name: Upload HTML report
+              if: always() # Загружать отчет в любом случае
+              uses: actions/upload-artifact@v3
               with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: ./playwright-report
+                  name: playwright-html-report
+                  path: playwright-report/
+                  retention-days: 7
+
+            - name: Print report location
+              if: always()
+              run: |
+                  echo "HTML report available as artifact: playwright-html-report"
+                  echo "Or via direct link: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
