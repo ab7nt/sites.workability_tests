@@ -1,4 +1,4 @@
-name: Playwright Tests with Reliable Reporting
+name: Playwright Tests - Stable Version
 
 on:
     schedule:
@@ -14,69 +14,84 @@ jobs:
             image: mcr.microsoft.com/playwright:v1.51.1
 
         steps:
-            # 1. Подготовка (совместимая с вашим Runner)
+            # 1. Проверка кода (используем v3 для совместимости)
             - name: Checkout code
               uses: actions/checkout@v3
 
-            # 2. Явная установка Node.js и зависимостей
-            - name: Setup Node.js
+            # 2. Используем Node.js из контейнера Playwright
+            - name: Verify Node.js
               run: |
-                  apt-get update
-                  apt-get install -y nodejs npm
-                  npm install -g npm@latest
-                  npm install
+                  echo "Node.js version: $(node --version)"
+                  echo "npm version: $(npm --version)"
 
-            # 3. Запуск тестов с принудительным указанием пути для отчёта
-            - name: Run tests with forced report
+            # 3. Установка зависимостей (без apt-get)
+            - name: Install dependencies
               run: |
-                  mkdir -p /test-results
+                  # Чистая установка через npm из контейнера
+                  npm install --no-audit --fund false --progress false
+                  npx playwright install --with-deps
+
+            # 4. Поиск теста перед запуском
+            - name: Find test file
+              id: find_test
+              run: |
+                  TEST_FILE=$(grep -rl "Проверка работоспособности сайта 1tm.ru" . || echo "")
+                  if [ -z "$TEST_FILE" ]; then
+                    echo "::error::Тест не найден в проекте"
+                    echo "::set-output name=test_exists::false"
+                    exit 1
+                  else
+                    echo "Тест найден в файле: $TEST_FILE"
+                    echo "::set-output name=test_exists::true"
+                    echo "::set-output name=test_file::$TEST_FILE"
+                  fi
+
+            # 5. Запуск теста с явным указанием файла
+            - name: Run specific test
+              if: steps.find_test.outputs.test_exists == 'true'
+              run: |
                   npx playwright test \
+                    ${{ steps.find_test.outputs.test_file }} \
                     --grep "Проверка работоспособности сайта 1tm.ru" \
-                    --reporter=html \
-                    --output=/test-results \
-                    || true  # Продолжаем даже при ошибке тестов
+                    --reporter=html,line \
+                    --output=playwright-report \
+                    --workers=1 \
+                    --timeout=60000
 
-            # 4. Проверка и упаковка отчёта
-            - name: Verify and package report
+            # 6. Проверка и упаковка отчёта
+            - name: Prepare report
+              if: always()
               run: |
-                  echo "Проверяем содержимое /test-results:"
-                  ls -la /test-results || echo "Директория не существует"
-
-                  if [ -d "/test-results/playwright-report" ]; then
-                    echo "Отчёт найден, упаковываем..."
-                    apt-get install -y zip
-                    cd /test-results/playwright-report
-                    zip -r /tmp/report.zip .
+                  if [ -d "playwright-report" ]; then
+                    echo "Отчёт найден в playwright-report/"
+                    cd playwright-report && zip -r ../report.zip .
                   else
                     echo "::error::Отчёт не сгенерирован!"
+                    echo "Содержимое рабочей директории:"
+                    ls -la
                     exit 1
                   fi
 
-            # 5. Копирование отчёта из контейнера на хост
-            - name: Extract report from container
+            # 7. Загрузка через API GitHub
+            - name: Upload report
+              if: always()
               run: |
-                  docker cp $(docker ps -ql):/tmp/report.zip ./report.zip
-                  ls -la ./report.zip || echo "Файл отчёта не найден"
-
-            # 6. Альтернативная загрузка через API
-            - name: Upload report via API
-              run: |
-                  if [ -f "./report.zip" ]; then
+                  if [ -f "report.zip" ]; then
                     curl -X POST \
                       -H "Authorization: Bearer ${{ github.token }}" \
                       -H "Accept: application/vnd.github.v3+json" \
                       -H "Content-Type: application/zip" \
-                      --data-binary @./report.zip \
-                      "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-report" \
-                      --fail
+                      --data-binary @report.zip \
+                      "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-report"
                   else
-                    echo "::error::Файл отчёта не найден для загрузки"
+                    echo "::error::Файл отчёта не найден"
                     exit 1
                   fi
 
-            # 7. Финал
-            - name: Final message
+            # 8. Информация о результате
+            - name: Show results
+              if: always()
               run: |
-                  echo "Процесс завершён!"
+                  echo "Тесты завершены со статусом: ${{ job.status }}"
                   echo "Ссылка на артефакты:"
                   echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
