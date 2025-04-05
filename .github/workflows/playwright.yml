@@ -28,19 +28,6 @@ jobs:
                   mkdir -p $GITHUB_WORKSPACE/playwright-report
                   cp -r /tmp/playwright-report/* $GITHUB_WORKSPACE/playwright-report/
 
-    upload_report:
-        needs: sites_workability_cheking_tests
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
-
-            - name: Download report artifact from previous job
-              uses: actions/download-artifact@v3
-              with:
-                  name: playwright-html-report
-                  path: playwright-report/
-
             - name: Upload Playwright HTML Report
               uses: actions/upload-artifact@v3
               with:
