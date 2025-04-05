@@ -24,8 +24,8 @@ jobs:
               run: |
                   npx playwright test --grep 'Проверка рабоспособности сайта 1tm.ru'
 
-            - name: Upload test results
-              uses: actions/upload-artifact@v3
+            - name: Deploy to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v3
               with:
-                  name: playwright-report
-                  path: playwright-report/
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./playwright-report
