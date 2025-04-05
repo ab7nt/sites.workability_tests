@@ -22,9 +22,7 @@ jobs:
 
             - name: Run tests with HTML report
               run: |
-                  # Создаём директорию для отчёта
                   mkdir -p playwright-report
-                  # Запускаем тесты с явным указанием пути
                   npx playwright test \
                     --grep 'Проверка рабоспособности сайтов' \
                     --reporter=html \
@@ -35,24 +33,38 @@ jobs:
               run: |
                   if [ ! -f "playwright-report/index.html" ]; then
                       echo "::error::HTML report was not generated!"
-                      echo "Directory contents:"
                       ls -la playwright-report/
                       exit 1
                   fi
-                  echo "Report successfully generated at playwright-report/index.html"
+                  echo "Report successfully generated"
 
-            - name: Upload report
-              uses: actions/upload-artifact@v3
-              with:
-                  name: playwright-html-report
-                  path: playwright-report/
-                  retention-days: 7
+            - name: Install zip if needed
+              run: |
+                  if ! command -v zip &> /dev/null; then
+                      apt-get update && apt-get install -y zip
+                  fi
 
-            - name: Print report instructions
+            - name: Create report archive
+              run: |
+                  cd playwright-report && zip -r ../playwright-report.zip .
+
+            - name: Upload report via API
+              run: |
+                  curl -X POST \
+                    -H "Authorization: Bearer ${{ github.token }}" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    -H "Content-Type: application/zip" \
+                    --data-binary @playwright-report.zip \
+                    "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-html-report" \
+                    --fail || echo "API upload failed"
+
+            - name: Provide download instructions
               run: |
                   echo "=============================================="
                   echo "HOW TO ACCESS THE HTML REPORT:"
                   echo "1. Go to https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   echo "2. Under 'Artifacts' section, download 'playwright-html-report'"
-                  echo "3. Unzip and open 'index.html' in your browser"
+                  echo "3. Unzip and open 'index.html' in browser"
                   echo "=============================================="
+                  echo "File size: $(du -h playwright-report.zip | cut -f1)"
+                  echo "MD5 checksum: $(md5sum playwright-report.zip | cut -d' ' -f1)"
