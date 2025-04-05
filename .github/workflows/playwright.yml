@@ -1,4 +1,4 @@
-name: Playwright Tests with Container Report
+name: Playwright Tests
 
 on:
     schedule:
@@ -10,44 +10,53 @@ on:
 jobs:
     run_tests:
         runs-on: ubuntu-latest
+        container:
+            image: mcr.microsoft.com/playwright:v1.51.1
 
         steps:
-            # 1. Подготовка рабочей директории
             - name: Checkout code
               uses: actions/checkout@v4
 
-            # 2. Создаём package-lock.json если его нет
-            - name: Generate package-lock
-              run: npm install --package-lock-only
-
-            # 3. Запуск тестов в контейнере
-            - name: Run tests in container
+            - name: Debug test structure
               run: |
-                  docker run \
-                    --shm-size=1gb \
-                    -v $(pwd):/app \
-                    -w /app \
-                    mcr.microsoft.com/playwright:v1.51.1 \
-                    /bin/bash -c "npm ci && npx playwright test --grep 'Проверка работоспособности сайта 1tm.ru' --reporter=html --output=playwright-report"
-              continue-on-error: true
+                  echo "Содержимое тестовой директории:"
+                  find . -name "*.spec.ts" -o -name "*.test.ts" | xargs -I {} sh -c 'echo "Файл: {}"; head -n 10 {}'
+                  echo "Поиск теста по ключевым словам:"
+                  grep -r "Проверка работоспособности сайта 1tm.ru" . || echo "Тест не найден"
 
-            # 4. Архивирование отчёта
-            - name: Prepare report
+            - name: Install dependencies
+              run: npm install
+
+            - name: Verify test exists
               run: |
-                  cd playwright-report && zip -r ../playwright-report.zip ./*
+                  TEST_FILE=$(grep -rl "Проверка работоспособности сайта 1tm.ru" tests/ || echo "")
+                  if [ -z "$TEST_FILE" ]; then
+                    echo "::error::Тест не найден в проекте"
+                    exit 1
+                  fi
+                  echo "Тест найден в файле: $TEST_FILE"
 
-            # 5. Загрузка через GitHub API
+            - name: Run specific test
+              run: |
+                  npx playwright test \
+                    --grep "Проверка работоспособности сайта 1tm.ru" \
+                    --reporter=html,line \
+                    --workers=1 \
+                    --timeout=60000
+
             - name: Upload report
-              run: |
-                  curl -X POST \
-                    -H "Authorization: Bearer ${{ github.token }}" \
-                    -H "Accept: application/vnd.github.v3+json" \
-                    -H "Content-Type: application/zip" \
-                    --data-binary @playwright-report.zip \
-                    "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-html-report"
+              if: always()
+              uses: actions/upload-artifact@v3
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 7
 
-            # 6. Ссылка на отчёт
-            - name: Show report URL
+            - name: Show test results
+              if: always()
               run: |
-                  echo "Отчёт доступен здесь:"
-                  echo "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  echo "### Результаты теста"
+                  echo '```'
+                  grep -A 10 "Проверка работоспособности сайта 1tm.ru" playwright-report/index.html | sed 's/<[^>]*>//g'
+                  echo '```'
+                  echo "[Открыть полный отчёт](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)"
