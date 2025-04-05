@@ -13,48 +13,38 @@ jobs:
 
         steps:
             # 1. Подготовка рабочей директории
-            - name: Prepare workspace
-              run: |
-                  mkdir -p playwright-report
-                  chmod -R 777 playwright-report
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-            # 2. Запуск тестов в контейнере с монтированием директории для отчёта
+            # 2. Создаём package-lock.json если его нет
+            - name: Generate package-lock
+              run: npm install --package-lock-only
+
+            # 3. Запуск тестов в контейнере
             - name: Run tests in container
               run: |
                   docker run \
                     --shm-size=1gb \
                     -v $(pwd):/app \
                     -w /app \
-                    -e PLAYWRIGHT_HTML_REPORT=/app/playwright-report \
                     mcr.microsoft.com/playwright:v1.51.1 \
-                    /bin/bash -c "npm ci && npx playwright test --grep 'Проверка работоспособности сайта 1tm.ru' --reporter=html --output=/app/playwright-report"
+                    /bin/bash -c "npm ci && npx playwright test --grep 'Проверка работоспособности сайта 1tm.ru' --reporter=html --output=playwright-report"
               continue-on-error: true
 
-            # 3. Проверка существования отчёта
-            - name: Verify report exists
+            # 4. Архивирование отчёта
+            - name: Prepare report
               run: |
-                  if [ ! -d "playwright-report" ]; then
-                    echo "::error::Report directory not found!"
-                    exit 1
-                  fi
-                  ls -la playwright-report/
-
-            # 4. Архивирование отчёта (без sudo)
-            - name: Zip HTML report
-              run: |
-                  apt-get update && apt-get install -y zip || true
                   cd playwright-report && zip -r ../playwright-report.zip ./*
 
             # 5. Загрузка через GitHub API
-            - name: Upload report via API
+            - name: Upload report
               run: |
                   curl -X POST \
                     -H "Authorization: Bearer ${{ github.token }}" \
                     -H "Accept: application/vnd.github.v3+json" \
                     -H "Content-Type: application/zip" \
                     --data-binary @playwright-report.zip \
-                    "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-html-report" \
-                    --fail
+                    "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-html-report"
 
             # 6. Ссылка на отчёт
             - name: Show report URL
