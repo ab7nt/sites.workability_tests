@@ -18,6 +18,9 @@ jobs:
             - name: Install dependencies
               run: npm install
 
+            - name: Install browsers
+              run: npx playwright install
+
             - name: Run tests and copy report
               run: |
                   npx playwright test --reporter=html --grep 'Проверка рабоспособности сайта 1tm.ru'
