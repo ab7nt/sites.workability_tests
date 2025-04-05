@@ -2,7 +2,7 @@ name: sites-workability-checking
 
 on:
     schedule:
-        - cron: '0 6 * * *' # каждый день в 9:00 по МСК (UTC +3 = 6:00 UTC)
+        - cron: '0 6 * * *' # каждый день в 9:00 по МСК
     workflow_dispatch:
 
 jobs:
@@ -19,13 +19,13 @@ jobs:
 
             - name: Run tests and copy report
               run: |
-                  npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
+                  npx playwright test --reporter=html --grep 'Проверка рабоспособности сайта 1tm.ru'
 
-                  # Временная папка для предотвращения конфликтов
+                  # Временная папка
                   mkdir -p /tmp/playwright-report
                   cp -r playwright-report/* /tmp/playwright-report/
 
-                  # Копирование в доступный workspace
+                  # Workspace
                   mkdir -p $GITHUB_WORKSPACE/playwright-report
                   cp -r /tmp/playwright-report/* $GITHUB_WORKSPACE/playwright-report/
 
@@ -33,6 +33,9 @@ jobs:
         needs: run_tests
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout code
+              uses: actions/checkout@v3 # 👈 ОБЯЗАТЕЛЬНО
+
             - name: Upload Playwright HTML Report
               uses: actions/upload-artifact@v3
               with:
