@@ -28,7 +28,7 @@ jobs:
 
             - name: Upload HTML report
               if: always()
-              uses: actions/upload-artifact@v2 # Используем v2 вместо v3
+              uses: actions/upload-artifact@v1
               with:
                   name: playwright-html-report
                   path: playwright-report/
