@@ -13,21 +13,22 @@ jobs:
         runs-on: ubuntu-latest
         container:
             image: mcr.microsoft.com/playwright:v1.51.1
+
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4 # Обновлено до последней версии
+              uses: actions/checkout@v3 # Используем v3 вместо v4
 
             - name: Install dependencies
-              run: npm ci # Используем ci вместо install для более надежной установки
+              run: npm ci
 
-            - name: Run Playwright tests with HTML report
+            - name: Run Playwright tests
               run: |
                   npx playwright test --grep 'Проверка работоспособности сайта 1tm.ru' --reporter=html
-              continue-on-error: true # Продолжить workflow даже при падении тестов
+              continue-on-error: true
 
             - name: Upload HTML report
-              if: always() # Загружать отчет в любом случае
-              uses: actions/upload-artifact@v3
+              if: always()
+              uses: actions/upload-artifact@v2 # Используем v2 вместо v3
               with:
                   name: playwright-html-report
                   path: playwright-report/
@@ -37,4 +38,4 @@ jobs:
               if: always()
               run: |
                   echo "HTML report available as artifact: playwright-html-report"
-                  echo "Or via direct link: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+                  echo "Download link: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
