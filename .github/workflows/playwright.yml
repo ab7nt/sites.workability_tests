@@ -2,8 +2,8 @@ name: sites-workability-cheking
 
 on:
     schedule:
-        - cron: '0 6 * * *' # 09:00 MSK (Москва = UTC+3, значит 06:00 UTC)
-    workflow_dispatch: # Возможность запускать вручную
+        - cron: '0 6 * * *' # 09:00 по Москве (06:00 UTC)
+    workflow_dispatch:
 
 jobs:
     sites_workability_cheking_tests:
@@ -17,19 +17,24 @@ jobs:
             - name: Install dependencies
               run: npm install
 
-            - name: Run Playwright tests
+            - name: Run Playwright tests and move report
               run: |
                   npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
-                  mkdir -p $GITHUB_WORKSPACE/playwright-report  # Создаём папку, если её нет
-                  cp -r playwright-report/* $GITHUB_WORKSPACE/playwright-report/  # Копируем отчёт в workspace
+                  mkdir -p /tmp/html-report
+                  cp -r playwright-report/* /tmp/html-report/
+
+            - name: Copy report from container to host
+              run: |
+                  mkdir -p $GITHUB_WORKSPACE/playwright-report
+                  cp -r /tmp/html-report/* $GITHUB_WORKSPACE/playwright-report/
 
     upload_report:
         needs: sites_workability_cheking_tests
-        runs-on: ubuntu-latest # Запуск на хосте (без контейнера)
+        runs-on: ubuntu-latest
         steps:
             - name: Upload Playwright Report
               uses: actions/upload-artifact@v3
               with:
                   name: playwright-html-report
                   path: playwright-report/
-                  retention-days: 7 # Сохраняем отчёт на 7 дней
+                  retention-days: 7
