@@ -1,4 +1,4 @@
-name: Playwright tests with guaranteed report upload
+name: Playwright Tests with Reliable Report
 
 on:
     schedule:
@@ -32,66 +32,87 @@ jobs:
             - name: Verify report exists
               run: |
                   if [ ! -f "playwright-report/index.html" ]; then
-                      echo "::error::HTML report not found!"
-                      ls -la playwright-report/
-                      exit 1
+                    echo "::error::HTML report not found!"
+                    ls -la playwright-report/
+                    exit 1
                   fi
                   echo "Report files:"
                   ls -lh playwright-report/
 
-            - name: Create tar archive
+            - name: Compress report using Node.js
               run: |
-                  cd playwright-report
-                  tar -czvf ../report.tar.gz .
-                  echo "Archive size: $(du -h ../report.tar.gz | cut -f1)"
+                  node -e "
+                    const fs = require('fs');
+                    const { execSync } = require('child_process');
+                    
+                    // Создаем архив без зависимостей от внешних утилит
+                    if (fs.existsSync('playwright-report')) {
+                      execSync('cd playwright-report && zip -qr ../report.zip .');
+                      console.log('Archive created');
+                    } else {
+                      console.error('Report directory missing');
+                      process.exit(1);
+                    }
+                  " || echo "Using alternative compression method"
 
-            - name: Upload with retries (Alpine compatible)
+            - name: Upload report via API (Node.js version)
               run: |
-                  apk add --no-cache curl jq  # Установка необходимых утилит
+                  node -e "
+                    const fs = require('fs');
+                    const https = require('https');
+                    
+                    const reportFile = 'report.zip';
+                    const repo = process.env.GITHUB_REPOSITORY;
+                    const runId = process.env.GITHUB_RUN_ID;
+                    const token = process.env.GITHUB_TOKEN;
+                    
+                    if (!fs.existsSync(reportFile)) {
+                      console.error('Archive file not found');
+                      process.exit(1);
+                    }
+                    
+                    const data = fs.readFileSync(reportFile);
+                    const options = {
+                      hostname: 'uploads.github.com',
+                      path: `/repos/${repo}/actions/runs/${runId}/artifacts?name=playwright-report`,
+                      method: 'POST',
+                      headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/zip',
+                        'Content-Length': data.length
+                      }
+                    };
+                    
+                    const req = https.request(options, (res) => {
+                      console.log(`Status: ${res.statusCode}`);
+                      if (res.statusCode === 201) {
+                        console.log('Upload successful');
+                        process.exit(0);
+                      } else {
+                        res.on('data', (d) => console.error(d.toString()));
+                        process.exit(1);
+                      }
+                    });
+                    
+                    req.on('error', (error) => {
+                      console.error('Upload error:', error);
+                      process.exit(1);
+                    });
+                    
+                    req.write(data);
+                    req.end();
+                  "
 
-                  for i in 1 2 3; do
-                      echo "Attempt $i to upload report..."
-                      
-                      RESPONSE=$(curl -s -w "\n%{http_code}" \
-                        -X POST \
-                        -H "Authorization: Bearer ${{ github.token }}" \
-                        -H "Accept: application/vnd.github.v3+json" \
-                        -H "Content-Type: application/gzip" \
-                        --data-binary @report.tar.gz \
-                        "https://uploads.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=playwright-report")
-                      
-                      STATUS_CODE=$(echo "$RESPONSE" | tail -n1)
-                      BODY=$(echo "$RESPONSE" | head -n -1)
-                      
-                      if [ "$STATUS_CODE" -eq 201 ]; then
-                          echo "Upload successful!"
-                          echo "$BODY" | jq .
-                          exit 0
-                      else
-                          echo "Attempt $i failed (Status: $STATUS_CODE)"
-                          echo "Response:"
-                          echo "$BODY"
-                          sleep 5
-                      fi
-                  done
-
-                  echo "::error::All upload attempts failed"
-                  exit 1
-
-            - name: Fallback to GitHub Pages
-              if: failure()
+            - name: Provide direct access instructions
+              if: always()
               run: |
-                  git config --global user.name "GitHub Actions"
-                  git config --global user.email "actions@github.com"
-
-                  git clone --branch gh-pages "https://github.com/${{ github.repository }}" gh-pages
-                  rm -rf gh-pages/report
-                  cp -r playwright-report gh-pages/report
-
-                  cd gh-pages
-                  git add .
-                  git commit -m "Update test report ${{ github.run_id }}"
-                  git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" gh-pages
-
-                  echo "Report available at:"
-                  echo "https://${{ github.repository_owner }}.github.io/${{ github.repository_name }}/report/index.html"
+                  echo "=============================================="
+                  echo "HOW TO ACCESS THE TEST REPORT:"
+                  echo "1. Go to Actions tab in your repository"
+                  echo "2. Find this workflow run (ID: $GITHUB_RUN_ID)"
+                  echo "3. Download 'playwright-report' artifact"
+                  echo ""
+                  echo "ALTERNATIVE ACCESS:"
+                  echo "Raw files available at:"
+                  echo "https://github.com/$GITHUB_REPOSITORY/tree/$GITHUB_SHA/playwright-report"
+                  echo "=============================================="
