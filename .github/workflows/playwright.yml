@@ -54,8 +54,10 @@ jobs:
               if: always()
               id: set_email_body
               run: |
-                REPORT_URL="https://ab7nt.github.io/sites.workability_tests/"
-                printf "email_body=Результат проверки работоспособности сайтов: ${{ env.emoji }} ${{ env.status }}.\nВремя запуска: ${{ env.job_started_at }}\nСсылка на отчёт: $REPORT_URL\n" >> $GITHUB_ENV
+                  REPORT_URL="https://ab7nt.github.io/sites.workability_tests/"
+                  echo "email_body=Результат проверки работоспособности сайтов: ${{ env.emoji }} ${{ env.status }}.
+                  Время запуска: ${{ env.job_started_at }}
+                  Ссылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
 
             - name: Send email with report and status via Yandex
               if: always()
