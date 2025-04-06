@@ -34,9 +34,8 @@ export default defineConfig({
         headless: true, // Запуск тестов без интерфейса
         // baseURL: settings.envURL, // Base URL to use in actions like `await page.goto('/')`
         trace: 'on-first-retry', // Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer
-        screenshot: 'on',
-        video: 'retain-on-failure', // Запись видео только при ошибке (по желанию)
-        fullPage: true, // Снимок всего экрана для всех тестов
+        screenshot: 'only-on-failure',
+        // video: 'retain-on-failure', // Запись видео только при ошибке (по желанию)
         // timeout: 10 * 1000, // Время ожидания для всех явных ожиданий
     },
     outputDir: 'test-results/', // Папка для сохранения результатов
