@@ -1,4 +1,4 @@
-name: Sites workability cheking with html-report on GitHub Pages
+name: Sites workability checking with html-report on GitHub Pages
 
 on:
     schedule:
@@ -71,5 +71,5 @@ jobs:
                   from: ${{ secrets.EMAIL_USERNAME }}
 
             - name: Fail job if tests failed
-              if: env.exit_code != '0'
+              if: ${{ env.exit_code != 0 }}
               run: exit 1
