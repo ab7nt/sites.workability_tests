@@ -20,6 +20,10 @@ jobs:
             - name: Install dependencies
               run: npm install
 
+            - name: Capture job start time
+              id: start_time
+              run: echo "job_started_at=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
             - name: Run tests and generate report
               id: run_tests
               run: |
@@ -46,25 +50,22 @@ jobs:
                   publish_dir: ./report
                   publish_branch: gh-pages
 
-            - name: Debug - Show status
-              run: |
-                  echo "Status of tests: ${{ env.status }}"
-                  echo "Exit code: ${{ env.exit_code }}"
-
             - name: Set email body text
+              if: always()
               id: set_email_body
               run: |
                   REPORT_URL="https://ab7nt.github.io/sites.workability_tests/"
-                  echo "email_body=Результат проверки работоспособности сайтов: ${{ env.emoji }} ${{ env.status }}.%0AСсылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
+                  echo "email_body=Результат проверки работоспособности сайтов: ${{ env.emoji }} ${{ env.status }}. <br>Время запуска: ${{ env.job_started_at }} <br>Ссылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
 
             - name: Send email with report and status via Yandex
+              if: always()
               uses: dawidd6/action-send-mail@v3
               with:
                   server_address: smtp.yandex.ru
                   server_port: 587
                   username: ${{ secrets.EMAIL_USERNAME }}
                   password: ${{ secrets.EMAIL_PASSWORD }}
-                  subject: 'Playwright Test Report - ${{ env.emoji }} ${{ env.status }}'
+                  subject: 'Результат проверки работоспособности сайтов - ${{ env.emoji }} ${{ env.status }}'
                   body: ${{ env.email_body }}
                   to: ${{ secrets.EMAIL_USERNAME }}
                   from: ${{ secrets.EMAIL_USERNAME }}
