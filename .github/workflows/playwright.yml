@@ -41,10 +41,14 @@ jobs:
             - name: Set email body text
               id: set_email_body
               run: |
+                  # Установим ссылку на отчёт
+                  REPORT_URL="https://ab7nt.github.io/sites.workability_tests/report/index.html"
+
+                  # Проверка статуса тестов
                   if [ "${{ env.status }}" == "success" ]; then
-                    echo "email_body=Привет! Тесты завершены успешно." >> $GITHUB_ENV
+                    echo "email_body=Привет! Тесты завершены успешно. Ссылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
                   else
-                    echo "email_body=Привет! Тесты завершены с ошибками." >> $GITHUB_ENV
+                    echo "email_body=Привет! Тесты завершены с ошибками. Ссылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
                   fi
 
             - name: Send email with report and status via Yandex
@@ -56,5 +60,5 @@ jobs:
                   password: ${{ secrets.EMAIL_PASSWORD }} # Пароль или App Password
                   subject: 'Playwright Test Report - ${{ env.status }}'
                   body: ${{ env.email_body }}
-                  to: ${{ secrets.EMAIL_USERNAME }}
+                  to: ${{ secrets.EMAIL_USERNAME }} # Укажи email получателя
                   from: ${{ secrets.EMAIL_USERNAME }} # Твой логин для Yandex
