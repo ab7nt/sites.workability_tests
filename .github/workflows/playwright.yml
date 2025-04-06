@@ -47,14 +47,14 @@ jobs:
                     echo "email_body=Привет! Тесты завершены с ошибками." >> $GITHUB_ENV
                   fi
 
-            - name: Send email with report and status
+            - name: Send email with report and status via Yandex
               uses: dawidd6/action-send-mail@v3
               with:
-                  server_address: smtp.gmail.com
-                  server_port: 587
-                  username: ${{ secrets.EMAIL_USERNAME }} # Твой email
-                  password: ${{ secrets.EMAIL_PASSWORD }} # Твой пароль или AppPassword
+                  server_address: smtp.yandex.ru # SMTP сервер Yandex
+                  server_port: 587 # Порт для TLS
+                  username: ${{ secrets.YANDEX_USERNAME }} # Твой логин для Yandex
+                  password: ${{ secrets.YANDEX_PASSWORD }} # Пароль или App Password
                   subject: 'Playwright Test Report - ${{ env.status }}'
                   body: ${{ env.email_body }}
                   to: <email-получателя>
-                  from: ${{ secrets.EMAIL_USERNAME }} # Твой email
+                  from: ${{ secrets.YANDEX_USERNAME }} # Твой логин для Yandex
