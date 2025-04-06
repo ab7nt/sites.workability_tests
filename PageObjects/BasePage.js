@@ -1,3 +1,4 @@
+import { test } from 'playwright/test';
 import { expect } from 'playwright/test';
 
 export class BasePage {
@@ -22,7 +23,7 @@ export class BasePage {
     }
 
     // Снятие скриншота
-    async takeAScreenshot() {
+    async takeAScreenshot(page) {
         const screenshot = await page.screenshot({ fullPage: true });
 
         // Прикрепляем скриншот к отчёту
@@ -38,6 +39,6 @@ export class BasePage {
     async generalWorkabilityChecking() {
         await this.open();
         await this.checkingTheVisibilityOfElements();
-        await this.takeAScreenshot();
+        await this.takeAScreenshot(this.page);
     }
 }

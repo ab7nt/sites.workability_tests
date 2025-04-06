@@ -1,4 +1,4 @@
-name: Playwright Tests with GitHub Pages
+name: Sites workability cheking with html-report on GitHub Pages
 
 on:
     schedule:
