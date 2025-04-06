@@ -34,6 +34,3 @@ jobs:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./report
                   publish_branch: gh-pages
-
-            # - name: Output report URL
-            #   run: echo "The report can be viewed at: https://<your-username>.github.io/<your
