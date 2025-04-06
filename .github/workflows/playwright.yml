@@ -1,4 +1,4 @@
-name: Playwright Tests with Bulletproof Report
+name: Playwright Tests
 
 on:
     schedule:
@@ -14,15 +14,6 @@ jobs:
             image: mcr.microsoft.com/playwright:v1.51.1
 
         steps:
-            - name: Clear GitHub Actions Cache
-              run: |
-                  echo "Очистка кеша GitHub Actions..."
-                  curl -s -X DELETE \
-                    -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-                    -H "Accept: application/vnd.github.v3+json" \
-                    "https://api.github.com/repos/${{ github.repository }}/actions/caches" \
-                    || echo "Очистка кеша не удалась, продолжаем выполнение"
-
             - name: Checkout code
               uses: actions/checkout@v3
 
@@ -30,44 +21,11 @@ jobs:
               run: npm install
 
             - name: Run tests with HTML report
-              run: |
-                  mkdir -p playwright-report
-                  npx playwright test \
-                    --grep 'Проверка рабоспособности сайтов' \
-                    --reporter=html \
-                    --output=playwright-report \
-                    || echo "Tests completed with status $?"
+              run: npx playwright test --grep 'Проверка рабоспособности сайтов' --reporter=html
 
-            - name: Verify report exists
-              run: |
-                  if [ ! -f "playwright-report/index.html" ]; then
-                    echo "::error::HTML report not found!"
-                    ls -la playwright-report/
-                    exit 1
-                  fi
-                  echo "Report files:"
-                  ls -lh playwright-report/
-
-            - name: Prepare report files
-              run: |
-                  cp -r playwright-report/ playwright-report-files/
-                  echo "Report files prepared"
-
-            - name: Upload raw files
-              uses: actions/upload-artifact@v2
+            - name: Upload HTML report
+              if: always()
+              uses: actions/upload-artifact@v3
               with:
-                  name: playwright-report-files
-                  path: playwright-report-files/
-                  retention-days: 7
-
-            - name: Create direct access link
-              run: |
-                  echo "=============================================="
-                  echo "HOW TO ACCESS THE TEST REPORT:"
-                  echo "1. Download 'playwright-report-files' artifact"
-                  echo "2. Open index.html in browser"
-                  echo ""
-                  echo "ALTERNATIVE ACCESS:"
-                  echo "View files directly:"
-                  echo "https://github.com/$GITHUB_REPOSITORY/tree/$GITHUB_SHA/playwright-report"
-                  echo "=============================================="
+                  name: playwright-html-report
+                  path: playwright-report
