@@ -1,17 +1,39 @@
-name: Test Artifact
+name: Playwright Tests with GitHub Pages
 
-on: [push]
+on:
+    schedule:
+        - cron: '0 6 * * *'
+    workflow_dispatch:
+    push:
+        branches: ['main']
 
 jobs:
     test:
         runs-on: ubuntu-latest
+        container:
+            image: mcr.microsoft.com/playwright:v1.51.1
 
         steps:
-            - uses: actions/checkout@v3
+            - name: Checkout code
+              uses: actions/checkout@v3
 
-            - run: echo "Hello, world!" > test.txt
+            - name: Install dependencies
+              run: npm install
 
-            - uses: actions/upload-artifact@v2
+            - name: Run tests and generate report
+              run: npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
+
+            - name: Prepare report for GitHub Pages
+              run: |
+                  mv playwright-report report
+                  touch report/.nojekyll
+
+            - name: Deploy HTML report to GitHub Pages
+              uses: peaceiris/actions-gh-pages@v3
               with:
-                  name: test-artifact
-                  path: test.txt
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  publish_dir: ./report
+                  publish_branch: gh-pages
+
+            - name: Output report URL
+              run: echo "The report can be viewed at: https://<your-username>.github.io/<your-repository>/"
