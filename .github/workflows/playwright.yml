@@ -56,5 +56,5 @@ jobs:
                   password: ${{ secrets.EMAIL_PASSWORD }} # Пароль или App Password
                   subject: 'Playwright Test Report - ${{ env.status }}'
                   body: ${{ env.email_body }}
-                  to: <email-получателя>
+                  to: ${{ secrets.EMAIL_USERNAME }}
                   from: ${{ secrets.EMAIL_USERNAME }} # Твой логин для Yandex
