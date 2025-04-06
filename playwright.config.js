@@ -24,8 +24,8 @@ export default defineConfig({
     workers: process.env.CI ? 1 : undefined,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
-        ['html', { open: 'always' }],
-        // ['list'],
+        // ['html', { open: 'always' }],
+        ['list'],
         // ['allure-playwright', { outputFolder: 'allure-results' }],
     ],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -34,7 +34,9 @@ export default defineConfig({
         headless: true, // Запуск тестов без интерфейса
         // baseURL: settings.envURL, // Base URL to use in actions like `await page.goto('/')`
         trace: 'on-first-retry', // Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer
-        screenshot: 'on', // Делать скриншот только в случае ошибки
+        screenshot: 'on',
+        video: 'retain-on-failure', // Запись видео только при ошибке (по желанию)
+        fullPage: true, // Снимок всего экрана для всех тестов
         // timeout: 10 * 1000, // Время ожидания для всех явных ожиданий
     },
     outputDir: 'test-results/', // Папка для сохранения результатов

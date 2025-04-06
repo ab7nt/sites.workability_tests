@@ -30,5 +30,6 @@ export class BasePage {
     async generalWorkabilityChecking() {
         await this.open();
         await this.checkingTheVisibilityOfElements();
+        await this.takeAScreenshot();
     }
 }
