@@ -1,42 +1,17 @@
-name: Playwright Tests
+name: Test Artifact
 
-on:
-    schedule:
-        - cron: '0 6 * * *'
-    workflow_dispatch:
-    push:
-        branches: ['**']
+on: [push]
 
 jobs:
-    run_tests:
-        runs-on: ubuntu-latest
-        container:
-            image: mcr.microsoft.com/playwright:v1.51.1
-        outputs:
-            report-path: ${{ steps.save-report.outputs.report-path }}
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
-
-            - name: Install dependencies
-              run: npm install
-
-            - name: Run Playwright tests
-              run: npx playwright test --grep 'Проверка рабоспособности сайтов' --reporter=html
-
-            - name: Move report to shared location
-              run: |
-                  mkdir -p /tmp/playwright-report
-                  cp -r playwright-report/* /tmp/playwright-report
-              id: save-report
-
-    upload_report:
-        needs: run_tests
+    test:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Upload HTML report
-              uses: actions/upload-artifact@v3
+            - uses: actions/checkout@v3
+
+            - run: echo "Hello, world!" > test.txt
+
+            - uses: actions/upload-artifact@v3
               with:
-                  name: playwright-html-report
-                  path: /tmp/playwright-report
+                  name: test-artifact
+                  path: test.txt
