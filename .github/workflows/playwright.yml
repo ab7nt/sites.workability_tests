@@ -24,7 +24,11 @@ jobs:
               id: run_tests
               run: |
                   npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
-                  if [ $? -eq 0 ]; then echo "status=success" >> $GITHUB_ENV; else echo "status=failure" >> $GITHUB_ENV; fi
+                  if [ $? -eq 0 ]; then
+                    echo "status=success" >> $GITHUB_ENV
+                  else
+                    echo "status=failure" >> $GITHUB_ENV
+                  fi
 
             - name: Prepare report for GitHub Pages
               run: |
@@ -38,11 +42,15 @@ jobs:
                   publish_dir: ./report
                   publish_branch: gh-pages
 
+            - name: Debug - Show status
+              run: |
+                  echo "Status of tests: ${{ env.status }}"  # Выводим статус для отладки
+
             - name: Set email body text
               id: set_email_body
               run: |
                   # Установим ссылку на отчёт
-                  REPORT_URL="https://ab7nt.github.io/sites.workability_tests/report/index.html"
+                  REPORT_URL="https://ab7nt.github.io/sites.workability_tests/"
 
                   # Проверка статуса тестов
                   if [ "${{ env.status }}" == "success" ]; then
@@ -56,9 +64,9 @@ jobs:
               with:
                   server_address: smtp.yandex.ru # SMTP сервер Yandex
                   server_port: 587 # Порт для TLS
-                  username: ${{ secrets.EMAIL_USERNAME }} # Твой логин для Yandex
+                  username: ${{ secrets.EMAIL_USERNAME }} # Логин для Yandex
                   password: ${{ secrets.EMAIL_PASSWORD }} # Пароль или App Password
-                  subject: 'Playwright Test Report - ${{ env.status }}'
-                  body: ${{ env.email_body }}
-                  to: ${{ secrets.EMAIL_USERNAME }} # Укажи email получателя
-                  from: ${{ secrets.EMAIL_USERNAME }} # Твой логин для Yandex
+                  subject: 'Playwright Test Report - ${{ env.status }}' # Тема письма с указанием статуса
+                  body: ${{ env.email_body }} # Тело письма с информацией о тестах
+                  to: ${{ secrets.EMAIL_USERNAME }} # Получатель
+                  from: ${{ secrets.EMAIL_USERNAME }} # Логин для Yandex
