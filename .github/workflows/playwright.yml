@@ -1,4 +1,4 @@
-name: Playwright Tests with Node.js Report Upload
+name: Playwright Tests with Guaranteed Report
 
 on:
     schedule:
@@ -39,67 +39,79 @@ jobs:
                   echo "Report files:"
                   ls -lh playwright-report/
 
-            - name: Compress report using Node.js
+            - name: Create archive using pure Node.js
               run: |
-                  node <<EOF
+                  node <<"NODE_SCRIPT"
                   const fs = require('fs');
-                  const { execSync } = require('child_process');
+                  const zlib = require('zlib');
+                  const { promisify } = require('util');
+                  const pipeline = promisify(require('stream').pipeline);
 
-                  try {
-                    if (fs.existsSync('playwright-report')) {
-                      execSync('cd playwright-report && zip -qr ../report.zip .');
-                      console.log('Archive created successfully');
-                    } else {
-                      throw new Error('Report directory missing');
-                    }
-                  } catch (error) {
-                    console.error('Compression failed:', error.message);
-                    process.exit(1);
+                  async function createArchive() {
+                    const files = [
+                      'playwright-report/index.html',
+                      'playwright-report/assets/style.css',
+                      'playwright-report/assets/script.js'
+                    ];
+                    
+                    const output = fs.createWriteStream('report.tar.gz');
+                    const gzip = zlib.createGzip();
+                    
+                    const tar = require('tar').create({
+                      gzip: true,
+                      cwd: 'playwright-report'
+                    }, ['index.html', 'assets']);
+                    
+                    await pipeline(tar, output);
+                    console.log('Archive created successfully');
                   }
-                  EOF
 
-            - name: Upload report via Node.js
+                  createArchive().catch(err => {
+                    console.error('Archive creation failed:', err);
+                    process.exit(1);
+                  });
+                  NODE_SCRIPT
+
+            - name: Upload archive via Node.js
               run: |
-                  node <<EOF
+                  node <<"NODE_SCRIPT"
                   const fs = require('fs');
                   const https = require('https');
 
-                  const reportFile = 'report.zip';
                   const repo = process.env.GITHUB_REPOSITORY;
                   const runId = process.env.GITHUB_RUN_ID;
                   const token = process.env.GITHUB_TOKEN;
+                  const archivePath = 'report.tar.gz';
 
-                  if (!fs.existsSync(reportFile)) {
-                    console.error('Error: Archive file not found');
+                  if (!fs.existsSync(archivePath)) {
+                    console.error('Archive file not found');
                     process.exit(1);
                   }
 
-                  const data = fs.readFileSync(reportFile);
+                  const fileData = fs.readFileSync(archivePath);
                   const options = {
                     hostname: 'uploads.github.com',
                     path: \`/repos/\${repo}/actions/runs/\${runId}/artifacts?name=playwright-report\`,
                     method: 'POST',
                     headers: {
                       'Authorization': \`Bearer \${token}\`,
-                      'Content-Type': 'application/zip',
-                      'Content-Length': data.length,
+                      'Content-Type': 'application/gzip',
+                      'Content-Length': fileData.length,
                       'User-Agent': 'Node.js'
                     }
                   };
 
                   console.log('Uploading report...');
                   const req = https.request(options, (res) => {
-                    let responseBody = '';
-                    res.setEncoding('utf8');
-                    res.on('data', (chunk) => responseBody += chunk);
-                    
+                    let responseData = '';
+                    res.on('data', (chunk) => responseData += chunk);
                     res.on('end', () => {
                       if (res.statusCode === 201) {
                         console.log('Upload successful!');
                         process.exit(0);
                       } else {
-                        console.error(\`Upload failed with status \${res.statusCode}\`);
-                        console.error('Response:', responseBody);
+                        console.error(\`Upload failed: \${res.statusCode}\`);
+                        console.error(responseData);
                         process.exit(1);
                       }
                     });
@@ -110,19 +122,19 @@ jobs:
                     process.exit(1);
                   });
 
-                  req.write(data);
+                  req.write(fileData);
                   req.end();
-                  EOF
+                  NODE_SCRIPT
 
-            - name: Provide direct access
-              if: always()
+            - name: Provide access instructions
               run: |
-                  echo "=============================================="
-                  echo "REPORT ACCESS INSTRUCTIONS:"
-                  echo "1. Go to Actions tab in GitHub repository"
-                  echo "2. Locate this workflow run (ID: $GITHUB_RUN_ID)"
-                  echo "3. Download 'playwright-report' artifact"
-                  echo ""
-                  echo "DIRECT LINK TO ARTIFACTS:"
-                  echo "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-                  echo "==============================================""
+                  cat <<EOF
+                  ==============================================
+                  HOW TO ACCESS THE TEST REPORT:
+                  1. Go to: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+                  2. Under "Artifacts", download "playwright-report"
+
+                  DIRECT FILE ACCESS:
+                  - index.html: https://github.com/$GITHUB_REPOSITORY/tree/$GITHUB_SHA/playwright-report/index.html
+                  ==============================================
+                  EOF
