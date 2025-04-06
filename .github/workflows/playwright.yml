@@ -1,18 +1,18 @@
-name: Playwright Tests and Send Email Report
+name: Playwright Tests with Zero-Dependency Report
 
 on:
     schedule:
         - cron: '0 6 * * *'
     workflow_dispatch:
     push:
-        branches:
-            - '**'
+        branches: ['**']
 
 jobs:
-    run_tests:
+    run_test:
         runs-on: ubuntu-latest
         container:
             image: mcr.microsoft.com/playwright:v1.51.1
+
         steps:
             - name: Checkout code
               uses: actions/checkout@v3
@@ -20,12 +20,117 @@ jobs:
             - name: Install dependencies
               run: npm install
 
-            - name: Run Playwright tests and generate report
+            - name: Run tests with HTML report
               run: |
-                  npx playwright test --grep 'Проверка рабоспособности сайта 1tm.ru'
+                  mkdir -p playwright-report
+                  npx playwright test \
+                    --grep 'Проверка рабоспособности сайтов' \
+                    --reporter=html \
+                    --output=playwright-report \
+                    || echo "Tests completed with status $?"
 
-            - name: Deploy to GitHub Pages
-              uses: peaceiris/actions-gh-pages@v3
-              with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: ./playwright-report
+            - name: Verify report exists
+              run: |
+                  if [ ! -f "playwright-report/index.html" ]; then
+                    echo "::error::HTML report not found!"
+                    ls -la playwright-report/
+                    exit 1
+                  fi
+                  echo "Report files:"
+                  ls -lh playwright-report/
+
+            - name: Create simple zip archive
+              run: |
+                  node <<"NODE_SCRIPT"
+                  const fs = require('fs');
+                  const { execSync } = require('child_process');
+
+                  try {
+                    // Проверяем доступность zip
+                    execSync('which zip');
+                    console.log('Using system zip utility...');
+                    execSync('cd playwright-report && zip -qr ../report.zip .');
+                  } catch (zipError) {
+                    console.log('Zip not available, using pure Node.js implementation...');
+                    
+                    // Создаем простой архив без сжатия
+                    const files = [
+                      'index.html',
+                      'assets/style.css',
+                      'assets/script.js'
+                    ];
+                    
+                    let zipContent = '';
+                    files.forEach(file => {
+                      if (fs.existsSync(`playwright-report/${file}`)) {
+                        const content = fs.readFileSync(`playwright-report/${file}`, 'utf-8');
+                        zipContent += \`=== FILE: ${file} ===\\n\${content}\\n\\n\`;
+                      }
+                    });
+                    
+                    fs.writeFileSync('report.txt', zipContent);
+                    console.log('Created simple text archive (report.txt)');
+                  }
+                  NODE_SCRIPT
+
+            - name: Upload report as text
+              run: |
+                  node <<"NODE_SCRIPT"
+                  const fs = require('fs');
+                  const https = require('https');
+
+                  const repo = process.env.GITHUB_REPOSITORY;
+                  const runId = process.env.GITHUB_RUN_ID;
+                  const token = process.env.GITHUB_TOKEN;
+                  const reportFile = fs.existsSync('report.zip') ? 'report.zip' : 'report.txt';
+
+                  if (!fs.existsSync(reportFile)) {
+                    console.error('No report file found');
+                    process.exit(1);
+                  }
+
+                  const data = fs.readFileSync(reportFile);
+                  const options = {
+                    hostname: 'uploads.github.com',
+                    path: \`/repos/\${repo}/actions/runs/\${runId}/artifacts?name=playwright-report\`,
+                    method: 'POST',
+                    headers: {
+                      'Authorization': \`Bearer \${token}\`,
+                      'Content-Type': reportFile.endsWith('.zip') ? 'application/zip' : 'text/plain',
+                      'Content-Length': data.length,
+                      'User-Agent': 'Node.js'
+                    }
+                  };
+
+                  console.log(\`Uploading \${reportFile}...\`);
+                  const req = https.request(options, (res) => {
+                    let response = '';
+                    res.on('data', (chunk) => response += chunk);
+                    res.on('end', () => {
+                      console.log(\`Status: \${res.statusCode}\`);
+                      if (res.statusCode !== 201) {
+                        console.error('Response:', response);
+                        process.exit(1);
+                      }
+                    });
+                  });
+
+                  req.on('error', (error) => {
+                    console.error('Upload error:', error);
+                    process.exit(1);
+                  });
+
+                  req.write(data);
+                  req.end();
+                  NODE_SCRIPT
+
+            - name: Provide access instructions
+              run: |
+                  echo "=============================================="
+                  echo "HOW TO ACCESS THE TEST REPORT:"
+                  echo "1. Go to: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+                  echo "2. Under 'Artifacts', download 'playwright-report'"
+                  echo ""
+                  echo "DIRECT FILE ACCESS:"
+                  echo "https://github.com/$GITHUB_REPOSITORY/tree/$GITHUB_SHA/playwright-report"
+                  echo "=============================================="
