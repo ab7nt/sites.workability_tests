@@ -24,7 +24,7 @@ jobs:
               id: run_tests
               run: |
                   npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
-                  if [ $? -eq 0 ]; then echo "::set-output name=status::success"; else echo "::set-output name=status::failure"; fi
+                  if [ $? -eq 0 ]; then echo "status=success" >> $GITHUB_ENV; else echo "status=failure" >> $GITHUB_ENV; fi
 
             - name: Prepare report for GitHub Pages
               run: |
@@ -41,10 +41,10 @@ jobs:
             - name: Set email body text
               id: set_email_body
               run: |
-                  if [ "${{ steps.run_tests.outputs.status }}" == "success" ]; then
-                    echo "::set-output name=email_body::Привет! Тесты завершены успешно."; 
+                  if [ "${{ env.status }}" == "success" ]; then
+                    echo "email_body=Привет! Тесты завершены успешно." >> $GITHUB_ENV
                   else
-                    echo "::set-output name=email_body::Привет! Тесты завершены с ошибками."; 
+                    echo "email_body=Привет! Тесты завершены с ошибками." >> $GITHUB_ENV
                   fi
 
             - name: Send email with report and status
@@ -54,7 +54,7 @@ jobs:
                   server_port: 587
                   username: ${{ secrets.EMAIL_USERNAME }} # Твой email
                   password: ${{ secrets.EMAIL_PASSWORD }} # Твой пароль или AppPassword
-                  subject: 'Playwright Test Report - ${{ steps.run_tests.outputs.status }}'
-                  body: ${{ steps.set_email_body.outputs.email_body }}
+                  subject: 'Playwright Test Report - ${{ env.status }}'
+                  body: ${{ env.email_body }}
                   to: <email-получателя>
                   from: ${{ secrets.EMAIL_USERNAME }} # Твой email
