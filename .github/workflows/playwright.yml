@@ -21,7 +21,10 @@ jobs:
               run: npm install
 
             - name: Run tests and generate report
-              run: npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
+              id: run_tests
+              run: |
+                  npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
+                  if [ $? -eq 0 ]; then echo "::set-output name=status::success"; else echo "::set-output name=status::failure"; fi
 
             - name: Prepare report for GitHub Pages
               run: |
@@ -34,3 +37,24 @@ jobs:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./report
                   publish_branch: gh-pages
+
+            - name: Set email body text
+              id: set_email_body
+              run: |
+                  if [ "${{ steps.run_tests.outputs.status }}" == "success" ]; then
+                    echo "::set-output name=email_body::Привет! Тесты завершены успешно."; 
+                  else
+                    echo "::set-output name=email_body::Привет! Тесты завершены с ошибками."; 
+                  fi
+
+            - name: Send email with report and status
+              uses: dawidd6/action-send-mail@v3
+              with:
+                  server_address: smtp.gmail.com
+                  server_port: 587
+                  username: ${{ secrets.EMAIL_USERNAME }} # Твой email
+                  password: ${{ secrets.EMAIL_PASSWORD }} # Твой пароль или AppPassword
+                  subject: 'Playwright Test Report - ${{ steps.run_tests.outputs.status }}'
+                  body: ${{ steps.set_email_body.outputs.email_body }}
+                  to: <email-получателя>
+                  from: ${{ secrets.EMAIL_USERNAME }} # Твой email
