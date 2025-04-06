@@ -23,8 +23,16 @@ export class BasePage {
 
     // Снятие скриншота
     async takeAScreenshot() {
-        const screenShotPath = this.pageUrl.split('//')[1];
-        await this.page.screenshot({ path: `test-results/screenshots/${screenShotPath}.png`, fullPage: true });
+        const screenshot = await page.screenshot({ fullPage: true });
+
+        // Прикрепляем скриншот к отчёту
+        await test.info().attach('Скриншот страницы', {
+            body: screenshot,
+            contentType: 'image/png',
+        });
+
+        // const screenShotPath = this.pageUrl.split('//')[1];
+        // await this.page.screenshot({ path: `test-results/screenshots/${screenShotPath}.png`, fullPage: true });
     }
 
     async generalWorkabilityChecking() {
