@@ -54,7 +54,7 @@ jobs:
                   echo "Report files prepared"
 
             - name: Upload raw files
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v2
               with:
                   name: playwright-report-files
                   path: playwright-report-files/
