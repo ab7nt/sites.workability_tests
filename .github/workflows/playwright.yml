@@ -52,12 +52,8 @@ jobs:
                   # Установим ссылку на отчёт
                   REPORT_URL="https://ab7nt.github.io/sites.workability_tests/"
 
-                   # Проверка статуса тестов
-                  if [ "${{ env.status }}" == "success" ]; then
-                    echo "email_body=Привет! Тесты завершены успешно. Ссылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
-                  else
-                    echo "email_body=Привет! Тесты завершены с ошибками. Ссылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
-                  fi
+                   # Формируем тело письма с результатом тестов
+                  echo "email_body=Результат проверки работоспособности сайтов: ${{ env.status }}. Ссылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
 
             - name: Send email with report and status via Yandex
               uses: dawidd6/action-send-mail@v3
