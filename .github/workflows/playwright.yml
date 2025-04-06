@@ -36,4 +36,4 @@ jobs:
                   publish_branch: gh-pages
 
             - name: Output report URL
-              run: echo "The report can be viewed at: https://<your-username>.github.io/<your-repository>/"
+              run: echo "The report can be viewed at: https://<your-username>.github.io/<your
