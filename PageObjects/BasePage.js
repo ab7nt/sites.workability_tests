@@ -24,7 +24,7 @@ export class BasePage {
     // Снятие скриншота
     async takeAScreenshot() {
         const screenShotPath = this.pageUrl.split('//')[1];
-        await this.page.screenshot({ path: `test-results/screenshots/${screenShotPath}.png` });
+        await this.page.screenshot({ path: `test-results/screenshots/${screenShotPath}.png`, fullPage: true });
     }
 
     async generalWorkabilityChecking() {
