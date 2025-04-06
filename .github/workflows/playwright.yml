@@ -52,9 +52,9 @@ jobs:
               with:
                   server_address: smtp.yandex.ru # SMTP сервер Yandex
                   server_port: 587 # Порт для TLS
-                  username: ${{ secrets.YANDEX_USERNAME }} # Твой логин для Yandex
-                  password: ${{ secrets.YANDEX_PASSWORD }} # Пароль или App Password
+                  username: ${{ secrets.EMAIL_USERNAME }} # Твой логин для Yandex
+                  password: ${{ secrets.EMAIL_PASSWORD }} # Пароль или App Password
                   subject: 'Playwright Test Report - ${{ env.status }}'
                   body: ${{ env.email_body }}
                   to: <email-получателя>
-                  from: ${{ secrets.YANDEX_USERNAME }} # Твой логин для Yandex
+                  from: ${{ secrets.EMAIL_USERNAME }} # Твой логин для Yandex
