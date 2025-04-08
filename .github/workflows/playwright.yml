@@ -32,11 +32,12 @@ jobs:
                   EXIT_CODE=$?
                   echo "exit_code=$EXIT_CODE" >> $GITHUB_ENV
 
+                  # Обновляем статус
                   if [ $EXIT_CODE -eq 0 ]; then
-                    echo "status=success" >> $GITHUB_ENV
+                    echo "status=Успешно" >> $GITHUB_ENV
                     echo "emoji=✅" >> $GITHUB_ENV
                   else
-                    echo "status=failure" >> $GITHUB_ENV
+                    echo "status=С ошибками" >> $GITHUB_ENV
                     echo "emoji=❌" >> $GITHUB_ENV
                   fi
 
@@ -105,7 +106,9 @@ jobs:
                   </html>
                   EOF
                   )
-                  echo "email_html=$EMAIL_HTML" >> $GITHUB_ENV
+                      echo "email_html<<EOF" >> $GITHUB_ENV
+                      echo "$EMAIL_HTML" >> $GITHUB_ENV
+                      echo "EOF" >> $GITHUB_ENV
 
             - name: Send email with report and status via Yandex
               if: always()
