@@ -21,7 +21,6 @@ jobs:
               run: npm install
 
             - name: Capture job start time
-              id: start_time
               run: echo "job_started_at=$(TZ=Europe/Moscow date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
 
             - name: Run tests and generate report
@@ -39,6 +38,7 @@ jobs:
                     echo "status=С ошибками" >> $GITHUB_ENV
                     echo "emoji=❌" >> $GITHUB_ENV
                   fi
+
                   exit 0
 
             - name: Prepare report for GitHub Pages
@@ -53,56 +53,13 @@ jobs:
                   publish_dir: ./report
                   publish_branch: gh-pages
 
-            - name: Set email body HTML
+            - name: Set email body text
               if: always()
-              id: set_email_html
               run: |
                   REPORT_URL="https://ab7nt.github.io/sites.workability_tests/"
-                  echo "email_html<<EOF" >> $GITHUB_OUTPUT
-                  echo "<!DOCTYPE html>
-                  <html>
-                    <head>
-                      <meta charset='UTF-8'>
-                      <style>
-                        body {
-                          font-family: Arial, sans-serif;
-                          color: #333;
-                          background-color: #f9f9f9;
-                          padding: 20px;
-                        }
-                        .status {
-                          font-size: 18px;
-                          margin-bottom: 10px;
-                        }
-                        .status.Успешно { color: green; }
-                        .status.С\\ ошибками { color: red; }
-                        .time {
-                          font-size: 14px;
-                          margin-bottom: 15px;
-                          color: #555;
-                        }
-                        .link-button {
-                          display: inline-block;
-                          padding: 10px 20px;
-                          background-color: #2f80ed;
-                          color: white;
-                          text-decoration: none;
-                          border-radius: 6px;
-                          font-weight: bold;
-                        }
-                      </style>
-                    </head>
-                    <body>
-                      <div class='status ${{ env.status }}'>
-                        Результат проверки работоспособности сайтов: ${{ env.emoji }} <strong>${{ env.status }}</strong>
-                      </div>
-                      <div class='time'>
-                        Время запуска: <strong>${{ env.job_started_at }}</strong>
-                      </div>
-                      <a class='link-button' href='$REPORT_URL' target='_blank'>Открыть HTML-отчёт</a>
-                    </body>
-                  </html>" >> $GITHUB_OUTPUT
-                  echo "EOF" >> $GITHUB_OUTPUT
+                  echo "email_body=Результат проверки работоспособности сайтов: ${{ env.emoji }} ${{ env.status }}.
+                  Время запуска: ${{ env.job_started_at }}
+                  Ссылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
 
             - name: Send email with report and status via Yandex
               if: always()
@@ -113,7 +70,7 @@ jobs:
                   username: ${{ secrets.EMAIL_USERNAME }}
                   password: ${{ secrets.EMAIL_PASSWORD }}
                   subject: 'Результат проверки работоспособности сайтов - ${{ env.emoji }} ${{ env.status }}'
-                  body_html: ${{ steps.set_email_html.outputs.email_html }}
+                  body: ${{ env.email_body }}
                   to: ${{ secrets.EMAIL_RECIPIENTS }}
                   from: 'Автоматическое тестирование работоспособности сайтов'
 
