@@ -22,13 +22,16 @@ jobs:
 
             - name: Capture job start time
               id: start_time
-              run: echo "job_started_at=$(date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
+              run: echo "job_started_at=$(TZ=Europe/Moscow date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
 
             - name: Run tests and generate report
               id: run_tests
               run: |
-                  npx playwright test --reporter=html --grep 'Проверка рабоспособности сайтов'
+                  set +e
+                  npx playwright test --grep 'Проверка рабоспособности сайтов' --workers=100% --reporter=html
                   EXIT_CODE=$?
+                  echo "exit_code=$EXIT_CODE" >> $GITHUB_ENV
+
                   if [ $EXIT_CODE -eq 0 ]; then
                     echo "status=success" >> $GITHUB_ENV
                     echo "emoji=✅" >> $GITHUB_ENV
@@ -36,7 +39,8 @@ jobs:
                     echo "status=failure" >> $GITHUB_ENV
                     echo "emoji=❌" >> $GITHUB_ENV
                   fi
-                  echo "exit_code=$EXIT_CODE" >> $GITHUB_ENV
+
+                  exit 0
 
             - name: Prepare report for GitHub Pages
               run: |
