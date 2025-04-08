@@ -11,7 +11,7 @@ export class BasePage {
     }
 
     // Метод для отслеживания медленных запросов
-    async logSlowRequests(threshold = 60000) {
+    async logSlowRequests(threshold = 10 * 1000) {
         const slowRequests = [];
 
         this.page.on('requestfinished', async (request) => {
@@ -47,7 +47,7 @@ export class BasePage {
 
         // Логируем и прикрепляем медленные запросы, если они есть
         if (slowRequests.length > 0) {
-            console.log('⏱ Медленные запросы (более 60 сек):');
+            console.log('⏱ Медленные запросы (более 10 сек):');
             slowRequests.forEach((r) => {
                 console.log(`- ${r.method} ${r.url} [${r.duration}] (${r.resourceType})`);
             });

@@ -105,9 +105,7 @@ jobs:
                   </html>
                   EOF
                   )
-                      echo "email_html<<EOF" >> $GITHUB_ENV
-                      echo "$EMAIL_HTML" >> $GITHUB_ENV
-                      echo "EOF" >> $GITHUB_ENV
+                  echo "email_html=$EMAIL_HTML" >> $GITHUB_ENV
 
             - name: Send email with report and status via Yandex
               if: always()
