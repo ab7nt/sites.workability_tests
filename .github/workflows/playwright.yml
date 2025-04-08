@@ -8,7 +8,7 @@ on:
         branches: ['main']
 
 jobs:
-    test:
+    check_sites_workability:
         runs-on: ubuntu-latest
         container:
             image: mcr.microsoft.com/playwright:v1.51.1

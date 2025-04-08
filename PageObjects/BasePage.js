@@ -11,18 +11,27 @@ export class BasePage {
     }
 
     // Метод для отслеживания медленных запросов
-    async logSlowRequests(threshold = 5 * 1000) {
+    async logSlowRequests(threshold = 5 * 1000, timeout = 30 * 1000) {
         const slowRequests = [];
+        let timeoutReached = false;
 
-        // Возвращаем промис, который будет собирать данные до тех пор, пока не завершится тест
-        return new Promise((resolve) => {
-            this.page.on('requestfinished', (request) => {
+        // Таймаут для остановки ожидания через 30 секунд
+        const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => {
+                timeoutReached = true;
+                reject(new Error('Timeout reached'));
+            }, timeout)
+        );
+
+        // Функция для отслеживания запросов
+        const trackRequestsPromise = new Promise((resolve) => {
+            this.page.on('requestfinished', async (request) => {
                 const timing = request.timing();
-                if (!timing) return;
+                if (!timing || timeoutReached) return;
 
                 const duration = timing.responseEnd - timing.startTime;
                 if (duration > threshold) {
-                    // Добавляем медленные запросы
+                    // если запрос дольше порогового времени
                     slowRequests.push({
                         url: request.url(),
                         duration: (duration / 1000).toFixed(2) + 's',
@@ -32,14 +41,36 @@ export class BasePage {
                 }
             });
 
-            // Используем page.on('load') или page.waitForTimeout, чтобы дождаться окончания всех запросов
-            this.page.once('load', () => {
-                resolve(slowRequests);
-            });
+            resolve();
         });
+
+        // Ждем либо завершения всех запросов, либо таймаута
+        try {
+            await Promise.race([timeoutPromise, trackRequestsPromise]);
+        } catch (error) {
+            if (error.message !== 'Timeout reached') {
+                throw error; // пробрасываем другие ошибки
+            }
+            console.log('Таймаут для отслеживания медленных запросов достигнут.');
+        }
+
+        // Прикрепляем медленные запросы, если они есть
+        if (slowRequests.length > 0) {
+            console.log('⏱ Медленные запросы (более 5 сек):');
+            slowRequests.forEach((r) => {
+                console.log(`- ${r.method} ${r.url} [${r.duration}] (${r.resourceType})`);
+            });
+
+            await this.test.info().attach('Медленные запросы', {
+                body: Buffer.from(JSON.stringify(slowRequests, null, 2), 'utf-8'),
+                contentType: 'application/json',
+            });
+        }
+
+        return slowRequests;
     }
 
-    // Открытие страницы с отслеживанием медленных запросов
+    // Открытие страницы
     async open() {
         // Стартуем отслеживание медленных запросов
         const slowRequests = await this.logSlowRequests();
@@ -47,23 +78,6 @@ export class BasePage {
         // Открываем страницу
         const response = await this.page.goto(this.pageUrl, { referer: 'workability-checking' });
         expect(response.status()).toBe(200);
-
-        // Ожидаем полной загрузки страницы (networkidle)
-        // await this.page.waitForLoadState('networkidle');
-
-        // Логируем и прикрепляем медленные запросы, если они есть
-        if (slowRequests.length > 0) {
-            console.log('⏱ Медленные запросы (более 5 сек):');
-            slowRequests.forEach((r) => {
-                console.log(`- ${r.method} ${r.url} [${r.duration}] (${r.resourceType})`);
-            });
-
-            // Прикрепляем медленные запросы к отчёту
-            await test.info().attach('Медленные запросы', {
-                body: Buffer.from(JSON.stringify(slowRequests, null, 2), 'utf-8'),
-                contentType: 'application/json',
-            });
-        }
     }
 
     // // Открытие страницы
