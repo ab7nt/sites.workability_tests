@@ -11,26 +11,32 @@ export class BasePage {
     }
 
     // Метод для отслеживания медленных запросов
-    async logSlowRequests(threshold = 10 * 1000) {
+    async logSlowRequests(threshold = 5 * 1000) {
         const slowRequests = [];
 
-        this.page.on('requestfinished', async (request) => {
-            const timing = request.timing();
-            if (!timing) return;
+        // Возвращаем промис, который будет собирать данные до тех пор, пока не завершится тест
+        return new Promise((resolve) => {
+            this.page.on('requestfinished', (request) => {
+                const timing = request.timing();
+                if (!timing) return;
 
-            const duration = timing.responseEnd - timing.startTime;
-            if (duration > threshold) {
-                // больше threshold секунд
-                slowRequests.push({
-                    url: request.url(),
-                    duration: (duration / 1000).toFixed(2) + 's',
-                    method: request.method(),
-                    resourceType: request.resourceType(),
-                });
-            }
+                const duration = timing.responseEnd - timing.startTime;
+                if (duration > threshold) {
+                    // Добавляем медленные запросы
+                    slowRequests.push({
+                        url: request.url(),
+                        duration: (duration / 1000).toFixed(2) + 's',
+                        method: request.method(),
+                        resourceType: request.resourceType(),
+                    });
+                }
+            });
+
+            // Используем page.on('load') или page.waitForTimeout, чтобы дождаться окончания всех запросов
+            this.page.once('load', () => {
+                resolve(slowRequests);
+            });
         });
-
-        return slowRequests;
     }
 
     // Открытие страницы с отслеживанием медленных запросов
@@ -47,56 +53,15 @@ export class BasePage {
 
         // Логируем и прикрепляем медленные запросы, если они есть
         if (slowRequests.length > 0) {
-            console.log('⏱ Медленные запросы (более 10 сек):');
+            console.log('⏱ Медленные запросы (более 5 сек):');
             slowRequests.forEach((r) => {
                 console.log(`- ${r.method} ${r.url} [${r.duration}] (${r.resourceType})`);
             });
 
-            // Генерируем HTML-таблицу
-            const html = `
-              <!DOCTYPE html>
-              <html>
-              <head>
-                  <meta charset="UTF-8">
-                  <style>
-                      body { font-family: Arial, sans-serif; padding: 1rem; background: #fff; }
-                      table { border-collapse: collapse; width: 100%; }
-                      th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-                      th { background-color: #f5f5f5; }
-                  </style>
-              </head>
-              <body>
-                  <h2>Медленные запросы (более 10 секунд)</h2>
-                  <table>
-                      <tr>
-                          <th>Метод</th>
-                          <th>URL</th>
-                          <th>Длительность</th>
-                          <th>Тип ресурса</th>
-                      </tr>
-                      ${slowRequests
-                          .map(
-                              (req) => `
-                          <tr>
-                              <td>${req.method}</td>
-                              <td>${req.url}</td>
-                              <td>${req.duration}</td>
-                              <td>${req.resourceType}</td>
-                          </tr>
-                      `
-                          )
-                          .join('')}
-                  </table>
-              </body>
-              </html>
-          `;
-
-            const htmlBuffer = Buffer.from(html, 'utf-8');
-
-            // Прикрепляем к отчёту
-            await test.info().attach('Медленные запросы (таблица)', {
-                body: htmlBuffer,
-                contentType: 'text/html',
+            // Прикрепляем медленные запросы к отчёту
+            await test.info().attach('Медленные запросы', {
+                body: Buffer.from(JSON.stringify(slowRequests, null, 2), 'utf-8'),
+                contentType: 'application/json',
             });
         }
     }
