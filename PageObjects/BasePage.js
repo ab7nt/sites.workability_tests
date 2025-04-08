@@ -43,7 +43,7 @@ export class BasePage {
         expect(response.status()).toBe(200);
 
         // Ожидаем полной загрузки страницы (networkidle)
-        await this.page.waitForLoadState('networkidle');
+        // await this.page.waitForLoadState('networkidle');
 
         // Логируем и прикрепляем медленные запросы, если они есть
         if (slowRequests.length > 0) {
@@ -129,10 +129,17 @@ export class BasePage {
         });
     }
 
+    // Прокрутка до низа страницы
+    async scrollToEndOfThePAge() {
+        await this.page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        await this.page.waitForTimeout(3 * 1000); // Дать время на загрузку
+    }
+
     // Объединение методов проверки в одну функцию
     async generalWorkabilityChecking() {
         await this.open();
         await this.checkingTheVisibilityOfElements();
+        await this.scrollToEndOfThePAge();
         await this.takeAScreenshotForReport(this.page);
     }
 }
