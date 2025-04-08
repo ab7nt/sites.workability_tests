@@ -21,6 +21,7 @@ jobs:
               run: npm install
 
             - name: Capture job start time
+              id: start_time
               run: echo "job_started_at=$(TZ=Europe/Moscow date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
 
             - name: Run tests and generate report
@@ -55,11 +56,15 @@ jobs:
 
             - name: Set email body text
               if: always()
+              id: set_email_body
               run: |
                   REPORT_URL="https://ab7nt.github.io/sites.workability_tests/"
-                  echo "email_body=Результат проверки работоспособности сайтов: ${{ env.emoji }} ${{ env.status }}.
+                  EMAIL_BODY="Результат проверки работоспособности сайтов: ${{ env.emoji }} ${{ env.status }}.
                   Время запуска: ${{ env.job_started_at }}
-                  Ссылка на отчёт: $REPORT_URL" >> $GITHUB_ENV
+                  Ссылка на отчёт: $REPORT_URL"
+                  echo "email_body<<EOF" >> $GITHUB_ENV
+                  echo "$EMAIL_BODY" >> $GITHUB_ENV
+                  echo "EOF" >> $GITHUB_ENV
 
             - name: Send email with report and status via Yandex
               if: always()
