@@ -22,7 +22,7 @@ jobs:
 
             - name: Capture job start time
               id: start_time
-              run: echo "job_started_at=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+              run: echo "job_started_at=$(date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
 
             - name: Run tests and generate report
               id: run_tests
@@ -72,7 +72,7 @@ jobs:
                   password: ${{ secrets.EMAIL_PASSWORD }}
                   subject: 'Результат проверки работоспособности сайтов - ${{ env.emoji }} ${{ env.status }}'
                   body: ${{ env.email_body }}
-                  to: ${{ secrets.EMAIL_USERNAME }}
+                  to: ${{ secrets.EMAIL_RECIPIENTS }}
                   from: 'Автоматическое тестирование работоспособности сайтов'
 
             - name: Fail job if tests failed
