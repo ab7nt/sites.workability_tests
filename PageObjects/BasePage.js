@@ -72,12 +72,12 @@ export class BasePage {
 
     // Открытие страницы
     async open() {
-        // Стартуем отслеживание медленных запросов
-        const slowRequests = await this.logSlowRequests();
+        await this.logSlowRequests(); // Используем await, чтобы дождаться завершения отслеживания запросов
 
         // Открываем страницу
         const response = await this.page.goto(this.pageUrl, { referer: 'workability-checking' });
         expect(response.status()).toBe(200);
+        await this.page.waitForLoadState('networkidle'); // Ожидаем завершения всех запросов
     }
 
     // // Открытие страницы
