@@ -15,6 +15,7 @@ export class BasePage {
     async open() {
         const response = await this.page.goto(this.pageUrl, { referer: 'workability-checking' });
         expect(response.status()).toBe(200);
+        await this.page.waitForLoadState('networkidle');
     }
 
     // Провека видимости элементов
@@ -36,6 +37,7 @@ export class BasePage {
         // await this.page.screenshot({ path: `test-results/screenshots/${screenShotPath}.png`, fullPage: true });
     }
 
+    // Объединение методов проверки в одну функцию
     async generalWorkabilityChecking() {
         await this.open();
         await this.checkingTheVisibilityOfElements();
