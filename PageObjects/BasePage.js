@@ -52,10 +52,51 @@ export class BasePage {
                 console.log(`- ${r.method} ${r.url} [${r.duration}] (${r.resourceType})`);
             });
 
-            // Прикрепляем медленные запросы к отчёту
-            await test.info().attach('Медленные запросы', {
-                body: Buffer.from(JSON.stringify(slowRequests, null, 2), 'utf-8'),
-                contentType: 'application/json',
+            // Генерируем HTML-таблицу
+            const html = `
+              <!DOCTYPE html>
+              <html>
+              <head>
+                  <meta charset="UTF-8">
+                  <style>
+                      body { font-family: Arial, sans-serif; padding: 1rem; background: #fff; }
+                      table { border-collapse: collapse; width: 100%; }
+                      th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+                      th { background-color: #f5f5f5; }
+                  </style>
+              </head>
+              <body>
+                  <h2>Медленные запросы (более 10 секунд)</h2>
+                  <table>
+                      <tr>
+                          <th>Метод</th>
+                          <th>URL</th>
+                          <th>Длительность</th>
+                          <th>Тип ресурса</th>
+                      </tr>
+                      ${slowRequests
+                          .map(
+                              (req) => `
+                          <tr>
+                              <td>${req.method}</td>
+                              <td>${req.url}</td>
+                              <td>${req.duration}</td>
+                              <td>${req.resourceType}</td>
+                          </tr>
+                      `
+                          )
+                          .join('')}
+                  </table>
+              </body>
+              </html>
+          `;
+
+            const htmlBuffer = Buffer.from(html, 'utf-8');
+
+            // Прикрепляем к отчёту
+            await test.info().attach('Медленные запросы (таблица)', {
+                body: htmlBuffer,
+                contentType: 'text/html',
             });
         }
     }
