@@ -73,7 +73,7 @@ jobs:
                   subject: 'Результат проверки работоспособности сайтов - ${{ env.emoji }} ${{ env.status }}'
                   body: ${{ env.email_body }}
                   to: ${{ secrets.EMAIL_USERNAME }}
-                  from: ${{ secrets.EMAIL_USERNAME }}
+                  from: 'Автоматическое тестирование работоспособности сайтов'
 
             - name: Fail job if tests failed
               if: ${{ env.exit_code != 0 }}
