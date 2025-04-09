@@ -20,17 +20,20 @@ jobs:
             - name: Install dependencies
               run: |
                   npm install
-                  npm install -D allure-playwright allure-commandline
+                  npm install -D allure-playwright @playwright/test allure-commandline
 
             - name: Capture job start time
               id: start_time
               run: echo "job_started_at=$(TZ=Europe/Moscow date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
 
-            - name: Run tests and generate Allure results
+            - name: Create Allure results directory
+              run: mkdir -p allure-results
+
+            - name: Run tests
               id: run_tests
               run: |
                   set +e
-                  npx playwright test --grep 'Проверка работоспособности сайтов' --reporter=allure-playwright
+                  npx playwright test --grep 'Проверка работоспособности сайтов' --reporter=line,allure-playwright
                   EXIT_CODE=$?
                   echo "exit_code=$EXIT_CODE" >> $GITHUB_ENV
 
@@ -41,43 +44,50 @@ jobs:
                     echo "status=С ошибками" >> $GITHUB_ENV
                     echo "emoji=❌" >> $GITHUB_ENV
                   fi
-
                   exit 0
 
-            - name: List Allure results
-              run: ls -la allure-results
+            - name: Generate Allure report
+              if: always()
+              run: |
+                  npx allure generate allure-results --clean -o allure-report
+                  echo "ALLURE_REPORT_PATH=$(realpath allure-report)" >> $GITHUB_ENV
 
-            - name: Generate Allure HTML report
-              run: npx allure-commandline generate --clean allure-results
+            - name: Verify report generation
+              if: always()
+              run: |
+                  if [ ! -d "$ALLURE_REPORT_PATH" ]; then
+                    echo "::error::Allure report generation failed!"
+                    exit 1
+                  fi
+                  echo "Report generated at: $ALLURE_REPORT_PATH"
 
-            - name: List Allure HTML report
-              run: ls -la allure-report
-
-            - name: Prepare Allure report for GitHub Pages
+            - name: Prepare for GitHub Pages
+              if: always()
               run: |
                   mv allure-report report
                   touch report/.nojekyll
+                  echo "REPORT_URL=https://$GITHUB_REPOSITORY_OWNER.github.io/${GITHUB_REPOSITORY#*/}/" >> $GITHUB_ENV
 
-            - name: Deploy Allure report to GitHub Pages
+            - name: Deploy to GitHub Pages
+              if: always()
               uses: peaceiris/actions-gh-pages@v3
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./report
                   publish_branch: gh-pages
+                  force_orphan: true
+                  keep_files: false
 
-            - name: Set email body text
+            - name: Prepare notification
               if: always()
-              id: set_email_body
               run: |
-                  REPORT_URL="https://ab7nt.github.io/sites.workability_tests/"
-                  EMAIL_BODY="Результат проверки работоспособности сайтов: ${{ env.emoji }} ${{ env.status }}.
-                  Время запуска: ${{ env.job_started_at }}
-                  Ссылка на отчёт: $REPORT_URL"
                   echo "email_body<<EOF" >> $GITHUB_ENV
-                  echo "$EMAIL_BODY" >> $GITHUB_ENV
+                  echo "Результат проверки работоспособности сайтов: ${{ env.emoji }} ${{ env.status }}" >> $GITHUB_ENV
+                  echo "Время запуска: ${{ env.job_started_at }}" >> $GITHUB_ENV
+                  echo "Ссылка на отчёт: ${{ env.REPORT_URL }}" >> $GITHUB_ENV
                   echo "EOF" >> $GITHUB_ENV
 
-            - name: Send email with report and status via Yandex
+            - name: Send email notification
               if: always()
               uses: dawidd6/action-send-mail@v3
               with:
@@ -89,6 +99,7 @@ jobs:
                   body: ${{ env.email_body }}
                   to: ${{ secrets.EMAIL_RECIPIENTS }}
                   from: 'Автоматическое тестирование работоспособности сайтов'
+                  content_type: 'text/plain'
 
             - name: Fail job if tests failed
               if: ${{ env.exit_code != 0 }}
