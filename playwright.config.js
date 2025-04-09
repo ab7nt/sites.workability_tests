@@ -24,8 +24,9 @@ export default defineConfig({
     workers: process.env.CI ? 1 : undefined,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
+        ['allure-playwright'],
         // ['html', { open: 'always' }],
-        ['list'],
+        // ['list'],
         // ['allure-playwright', { outputFolder: 'allure-results' }],
     ],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -33,7 +34,7 @@ export default defineConfig({
     use: {
         headless: true,
         // baseURL: settings.envURL, // Base URL to use in actions like `await page.goto('/')`
-        trace: 'retain-on-failure', 
+        trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
         // video: 'retain-on-failure', // Запись видео только при ошибке (по желанию)
         // timeout: 10 * 1000, // Время ожидания для всех явных ожиданий
