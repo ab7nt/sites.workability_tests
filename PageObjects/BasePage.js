@@ -80,13 +80,6 @@ export class BasePage {
         // await this.page.waitForLoadState('networkidle'); // Ожидаем завершения всех запросов
     }
 
-    // // Открытие страницы
-    // async open() {
-    //     const response = await this.page.goto(this.pageUrl, { referer: 'workability-checking' });
-    //     expect(response.status()).toBe(200);
-    //     await this.page.waitForLoadState('networkidle');
-    // }
-
     // Провека видимости элементов
     async checkingTheVisibilityOfElements() {
         expect(this.headerTitle).toBeVisible();
