@@ -14,13 +14,6 @@ jobs:
             image: mcr.microsoft.com/playwright:v1.51.1
 
         steps:
-            - name: Initialize status variables
-              run: |
-                  echo "job_status=Успешно" >> $GITHUB_ENV
-                  echo "job_emoji=✅" >> $GITHUB_ENV
-                  echo "tests_exit_code=0" >> $GITHUB_ENV
-                  echo "job_exit_code=0" >> $GITHUB_ENV
-
             - name: Checkout code
               uses: actions/checkout@v3
 
@@ -30,98 +23,40 @@ jobs:
                   java -version
                   npm install
                   npm install -D allure-playwright @playwright/test allure-commandline
-              if: ${{ always() }}
-
-            - name: Capture job start time
-              id: start_time
-              run: echo "job_started_at=$(TZ=Europe/Moscow date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
 
             - name: Create Allure results directory
               run: mkdir -p allure-results
 
+            - name: Set custom project name for Allure
+              run: |
+                  echo '{
+                    "Project": "Мониторинг сайтов",
+                    "Environment": "Production",
+                    "TestSuite": "Проверка работоспособности",
+                    "CI": "GitHub Actions"
+                  }' > allure-results/allure-environment.json
+
             - name: Run tests
-              id: run_tests
               run: |
-                  set +e
                   npx playwright test --grep 'Проверка работоспособности сайтов' --reporter=line,allure-playwright
-                  TESTS_EXIT_CODE=$?
-                  echo "tests_exit_code=$TESTS_EXIT_CODE" >> $GITHUB_ENV
-                  exit 0
 
-            - name: Generate Allure report
-              if: always()
+            - name: Generate Allure report with custom branding
               run: |
-                  npx allure generate ./allure-results --clean -o ./allure-report
-                  echo "ALLURE_REPORT_PATH=./allure-report" >> $GITHUB_ENV
-
-            - name: Verify report generation
-              if: always()
-              run: |
-                  if [ ! -d "./allure-report" ]; then
-                    echo "::error::Allure report generation failed!"
-                    echo "job_status=С ошибками" >> $GITHUB_ENV
-                    echo "job_emoji=❌" >> $GITHUB_ENV
-                    echo "job_exit_code=1" >> $GITHUB_ENV
-                    ls -la
-                  fi
+                  npx allure generate allure-results --clean -o allure-report \
+                    --title "Отчёт мониторинга сайтов" \
+                    --logo /path/to/logo.png \
+                    --report-url https://your-github-pages.url
 
             - name: Prepare for GitHub Pages
-              if: always()
               run: |
                   mkdir -p report
-                  cp -r ./allure-report/* ./report/ || echo "::warning::Failed to copy report files"
-                  touch ./report/.nojekyll
-                  echo "REPORT_URL=https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/" >> $GITHUB_ENV
+                  cp -r allure-report/* report/
+                  touch report/.nojekyll
 
             - name: Deploy to GitHub Pages
-              if: always()
               uses: peaceiris/actions-gh-pages@v3
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./report
                   publish_branch: gh-pages
                   force_orphan: true
-
-            - name: Check test results
-              if: always()
-              run: |
-                  if [ ${{ env.tests_exit_code }} -ne 0 ]; then
-                    echo "job_status=С ошибками" >> $GITHUB_ENV
-                    echo "job_emoji=❌" >> $GITHUB_ENV
-                  fi
-
-            - name: Prepare notification
-              if: always()
-              run: |
-                  echo "email_body<<EOF" >> $GITHUB_ENV
-                  echo "Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }}" >> $GITHUB_ENV
-                  echo "Время запуска: ${{ env.job_started_at }}" >> $GITHUB_ENV
-                  echo "Ссылка на отчёт: ${{ env.REPORT_URL }}" >> $GITHUB_ENV
-                  if [ ${{ env.tests_exit_code }} -ne 0 ]; then
-                    echo "Тесты завершились с ошибками (код: ${{ env.tests_exit_code }})" >> $GITHUB_ENV
-                  fi
-                  if [ ${{ env.job_exit_code }} -ne 0 ]; then
-                    echo "Job завершился с ошибками (код: ${{ env.job_exit_code }})" >> $GITHUB_ENV
-                  fi
-                  echo "EOF" >> $GITHUB_ENV
-
-            - name: Send email notification
-              if: always()
-              uses: dawidd6/action-send-mail@v3
-              with:
-                  server_address: smtp.yandex.ru
-                  server_port: 587
-                  username: ${{ secrets.EMAIL_USERNAME }}
-                  password: ${{ secrets.EMAIL_PASSWORD }}
-                  subject: 'Результат проверки работоспособности сайтов - ${{ env.job_emoji }} ${{ env.job_status }}'
-                  body: ${{ env.email_body }}
-                  to: ${{ secrets.EMAIL_RECIPIENTS }}
-                  from: 'Автоматическое тестирование работоспособности сайтов'
-
-            - name: Final job status check
-              if: ${{ env.job_exit_code != 0 || env.tests_exit_code != 0 }}
-              run: |
-                  echo "Job завершен со статусом: ${{ env.job_status }}"
-                  echo "Код тестов: ${{ env.tests_exit_code }}"
-                  echo "Код job: ${{ env.job_exit_code }}"
-                  exit 1
