@@ -101,10 +101,15 @@ export class BasePage {
         });
     }
 
-    // Прокрутка до низа страницы
+    // Прокрутка до низа страницы и обратно
     async scrollToEndOfThePAge() {
-        await this.page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-        await this.page.waitForTimeout(3 * 1000); // Дать время на загрузку
+        await this.page.evaluate(() => {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        });
+        await this.page.waitForTimeout(2 * 1000); // Дать время на загрузку
+        await this.page.evaluate(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     }
 
     // Объединение методов проверки в одну функцию
