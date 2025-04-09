@@ -45,7 +45,7 @@ jobs:
                   exit 0
 
             - name: Generate Allure HTML report
-              run: npx allure generate
+              run: npx allure generate allure-results
 
             - name: Prepare Allure report for GitHub Pages
               run: |
