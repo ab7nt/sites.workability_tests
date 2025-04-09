@@ -12,5 +12,8 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "description": ""
+    "description": "",
+    "devDependencies": {
+        "allure-playwright": "latest"
+    }
 }
