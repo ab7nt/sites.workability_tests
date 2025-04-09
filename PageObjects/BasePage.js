@@ -110,6 +110,7 @@ export class BasePage {
         await this.page.evaluate(() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+        await this.page.waitForTimeout(2 * 1000); // Дать время на загрузку
     }
 
     // Объединение методов проверки в одну функцию
