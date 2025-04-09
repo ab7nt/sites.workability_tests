@@ -17,8 +17,14 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v3
 
-            - name: Install dependencies
+            - name: Install Java and dependencies
               run: |
+                  # Установка Java (необходима для Allure)
+                  apt-get update && apt-get install -y openjdk-17-jre
+                  # Проверка установки Java
+                  java -version
+
+                  # Установка Node.js зависимостей
                   npm install
                   npm install -D allure-playwright @playwright/test allure-commandline
 
@@ -49,24 +55,26 @@ jobs:
             - name: Generate Allure report
               if: always()
               run: |
-                  npx allure generate allure-results --clean -o allure-report
-                  echo "ALLURE_REPORT_PATH=$(realpath allure-report)" >> $GITHUB_ENV
+                  # Явно указываем путь к allure
+                  npx allure generate ./allure-results --clean -o ./allure-report
+                  echo "ALLURE_REPORT_PATH=./allure-report" >> $GITHUB_ENV
 
             - name: Verify report generation
               if: always()
               run: |
-                  if [ ! -d "$ALLURE_REPORT_PATH" ]; then
+                  if [ ! -d "./allure-report" ]; then
                     echo "::error::Allure report generation failed!"
+                    ls -la # Для отладки: покажем содержимое директории
                     exit 1
                   fi
-                  echo "Report generated at: $ALLURE_REPORT_PATH"
 
             - name: Prepare for GitHub Pages
               if: always()
               run: |
-                  mv allure-report report
-                  touch report/.nojekyll
-                  echo "REPORT_URL=https://$GITHUB_REPOSITORY_OWNER.github.io/${GITHUB_REPOSITORY#*/}/" >> $GITHUB_ENV
+                  mkdir -p report
+                  cp -r ./allure-report/* ./report/
+                  touch ./report/.nojekyll
+                  echo "REPORT_URL=https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/" >> $GITHUB_ENV
 
             - name: Deploy to GitHub Pages
               if: always()
@@ -76,7 +84,6 @@ jobs:
                   publish_dir: ./report
                   publish_branch: gh-pages
                   force_orphan: true
-                  keep_files: false
 
             - name: Prepare notification
               if: always()
@@ -99,7 +106,6 @@ jobs:
                   body: ${{ env.email_body }}
                   to: ${{ secrets.EMAIL_RECIPIENTS }}
                   from: 'Автоматическое тестирование работоспособности сайтов'
-                  content_type: 'text/plain'
 
             - name: Fail job if tests failed
               if: ${{ env.exit_code != 0 }}
