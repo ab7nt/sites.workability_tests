@@ -11,7 +11,7 @@ export class BasePage {
     }
 
     // Метод для отслеживания медленных запросов
-    async logSlowRequests(threshold = 5 * 1000, timeout = 30 * 1000) {
+    async logSlowRequests(threshold = 5 * 1000, timeout = 10 * 1000) {
         const slowRequests = [];
         let timeoutReached = false;
 
@@ -77,7 +77,7 @@ export class BasePage {
         // Открываем страницу
         const response = await this.page.goto(this.pageUrl, { referer: 'workability-checking' });
         expect(response.status()).toBe(200);
-        await this.page.waitForLoadState('networkidle'); // Ожидаем завершения всех запросов
+        // await this.page.waitForLoadState('networkidle'); // Ожидаем завершения всех запросов
     }
 
     // // Открытие страницы
