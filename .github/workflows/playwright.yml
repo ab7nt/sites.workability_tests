@@ -60,3 +60,47 @@ jobs:
                   publish_dir: ./report
                   publish_branch: gh-pages
                   force_orphan: true
+
+            - name: Check test results
+              if: always()
+              run: |
+                  if [ ${{ env.tests_exit_code }} -ne 0 ]; then
+                    echo "job_status=С ошибками" >> $GITHUB_ENV
+                    echo "job_emoji=❌" >> $GITHUB_ENV
+                  fi
+
+            - name: Prepare notification
+              if: always()
+              run: |
+                  echo "email_body<<EOF" >> $GITHUB_ENV
+                  echo "Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }}" >> $GITHUB_ENV
+                  echo "Время запуска: ${{ env.job_started_at }}" >> $GITHUB_ENV
+                  echo "Ссылка на отчёт: ${{ env.REPORT_URL }}" >> $GITHUB_ENV
+                  if [ ${{ env.tests_exit_code }} -ne 0 ]; then
+                    echo "Тесты завершились с ошибками (код: ${{ env.tests_exit_code }})" >> $GITHUB_ENV
+                  fi
+                  if [ ${{ env.job_exit_code }} -ne 0 ]; then
+                    echo "Job завершился с ошибками (код: ${{ env.job_exit_code }})" >> $GITHUB_ENV
+                  fi
+                  echo "EOF" >> $GITHUB_ENV
+
+            - name: Send email notification
+              if: always()
+              uses: dawidd6/action-send-mail@v3
+              with:
+                  server_address: smtp.yandex.ru
+                  server_port: 587
+                  username: ${{ secrets.EMAIL_USERNAME }}
+                  password: ${{ secrets.EMAIL_PASSWORD }}
+                  subject: 'Результат проверки работоспособности сайтов - ${{ env.job_emoji }} ${{ env.job_status }}'
+                  body: ${{ env.email_body }}
+                  to: ${{ secrets.EMAIL_RECIPIENTS }}
+                  from: 'Автоматическое тестирование работоспособности сайтов'
+
+            - name: Final job status check
+              if: ${{ env.job_exit_code != 0 || env.tests_exit_code != 0 }}
+              run: |
+                  echo "Job завершен со статусом: ${{ env.job_status }}"
+                  echo "Код тестов: ${{ env.tests_exit_code }}"
+                  echo "Код job: ${{ env.job_exit_code }}"
+                  exit 1
