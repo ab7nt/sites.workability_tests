@@ -101,7 +101,7 @@ jobs:
               if: always()
               run: |
                   echo "email_body<<EOF" >> $GITHUB_ENV
-                  echo "Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }}" >> $GITHUB_ENV
+                  echo "Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }} (${{ env.job_started_at }})" >> $GITHUB_ENV
                   echo "Время запуска: ${{ env.job_started_at }}" >> $GITHUB_ENV
                   echo "Ссылка на отчёт: ${{ env.REPORT_URL }}" >> $GITHUB_ENV
                   if [ ${{ env.tests_exit_code }} -ne 0 ]; then
