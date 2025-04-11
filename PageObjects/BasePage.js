@@ -123,6 +123,12 @@ export class BasePage {
 
     // Объединённая проверка
     async generalWorkabilityChecking() {
+        const testInfo = test.info();
+
+        // Добавим параметры (например, URL)
+        testInfo.annotations.push({ type: 'param', description: `URL сайта: ${this.pageUrl}` });
+        testInfo.annotations.push({ type: 'param', description: `Проверка элемента: h1` });
+
         await this.open();
         await this.checkingTheVisibilityOfElements();
         await this.scrollToEndOfThePAge();
