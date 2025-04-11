@@ -82,7 +82,7 @@ export class BasePage {
 
     // Провека видимости элементов
     async checkingTheVisibilityOfElements() {
-        expect(this.headerTitle).toBeVisible();
+        await expect(this.headerTitle).toBeVisible();
     }
 
     // Снятие скриншота
@@ -114,10 +114,29 @@ export class BasePage {
     }
 
     // Объединение методов проверки в одну функцию
+    // async generalWorkabilityChecking() {
+    //     await this.open();
+    //     await this.checkingTheVisibilityOfElements();
+    //     await this.scrollToEndOfThePAge();
+    //     await this.takeAScreenshotForReport(this.page);
+    // }
+
+    // Объединение методов проверки в одну функцию
     async generalWorkabilityChecking() {
-        await this.open();
-        await this.checkingTheVisibilityOfElements();
-        await this.scrollToEndOfThePAge();
-        await this.takeAScreenshotForReport(this.page);
+        await test.step('Открытие главной страницы', async () => {
+            await this.open();
+        });
+
+        await test.step('Проверка видимости ключевых элементов', async () => {
+            await this.checkingTheVisibilityOfElements();
+        });
+
+        await test.step('Скролл страницы вниз и вверх', async () => {
+            await this.scrollToEndOfThePAge();
+        });
+
+        await test.step('Снятие скриншота и прикрепление к отчёту', async () => {
+            await this.takeAScreenshotForReport(this.page);
+        });
     }
 }
