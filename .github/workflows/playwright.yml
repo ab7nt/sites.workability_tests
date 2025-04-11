@@ -54,12 +54,6 @@ jobs:
                   echo "tests_exit_code=$?" >> $GITHUB_ENV
                   exit 0
 
-            - name: Add Allure environment info
-              run: |
-                  echo "Project=Site Workability Checker" > allure-results/environment.properties
-                  echo "Browser=Chromium" >> allure-results/environment.properties
-                  echo "CI=GitHub Actions" >> allure-results/environment.properties
-
             - name: Generate Allure report
               if: always()
               run: |
