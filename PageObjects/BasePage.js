@@ -108,7 +108,7 @@ export class BasePage {
 
     // Прокрутка страницы вниз и вверх
     async scrollToEndOfThePAge() {
-        await test.step('Скролл страницы вниз и вверх', async () => {
+        await test.step('Скролл страницы для нормализации загрузки', async () => {
             await this.page.evaluate(() => {
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             });
