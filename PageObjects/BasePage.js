@@ -95,9 +95,14 @@ export class BasePage {
     }
 
     // Скриншот страницы и прикрепление к отчёту
-    async takeAScreenshotForReport(page) {
+    async takeAScreenshotForReport(options = {}) {
+        // Параметры по умолчанию
+        const screenshotOptions = {
+            fullPage: options.fullPage ?? false,
+        };
+
         await test.step('Снятие скриншота страницы и прикрепление к отчёту', async () => {
-            const screenshot = await page.screenshot({ fullPage: true });
+            const screenshot = await this.page.screenshot(screenshotOptions);
 
             await test.info().attach('Скриншот страницы', {
                 body: screenshot,
@@ -126,6 +131,6 @@ export class BasePage {
         await this.open();
         await this.checkingTheVisibilityOfElements();
         await this.scrollToEndOfThePAge();
-        await this.takeAScreenshotForReport(this.page);
+        await this.takeAScreenshotForReport({ fullPage: true });
     }
 }
