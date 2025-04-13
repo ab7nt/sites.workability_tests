@@ -42,6 +42,18 @@ describe('Проверка работоспособности сайтов', () 
     // test('Проверка работоспособности сайта 1tm.ru', async ({ page }) => {
     //     const oneTmMainPage = new OneTmMainPage(page);
 
+    //     await test.step('Проверка главной страницы', async () => {
+    //         await oneTmMainPage.generalWorkabilityChecking();
+    //     });
+
+    //     await test.step('Проверка меню', async () => {
+    //         await oneTmMainPage.catalogChecking();
+    //     });
+
+    //     await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+    //         await oneTmMainPage.checkingQuickOrderPopup();
+    //     });
+
     //     // Общая проверка работоспособности
     //     await oneTmMainPage.generalWorkabilityChecking();
     // });
@@ -53,11 +65,21 @@ describe('Проверка работоспособности сайтов', () 
     //     await literaMainPage.generalWorkabilityChecking();
     // });
 
-    // test('Проверка работоспособности сайта vea.ru', async ({ page }) => {
-    //     const veaMainPage = new VeaMainPage(page);
-    //     // Общая проверка работоспособности
-    //     await veaMainPage.generalWorkabilityChecking();
-    // });
+    test('Проверка работоспособности сайта vea.ru', async ({ page }) => {
+        const veaMainPage = new VeaMainPage(page);
+
+        await test.step('Проверка главной страницы', async () => {
+            await veaMainPage.generalWorkabilityChecking();
+        });
+
+        await test.step('Проверка меню услуг', async () => {
+            await veaMainPage.navMenuChecking();
+        });
+
+        await test.step('Проверка поп-апа "Оставьте заявку"', async () => {
+            await veaMainPage.checkingQuickOrderPopup();
+        });
+    });
 
     // test('Проверка работоспособности сайта sequoiapay.io', async ({ page }) => {
     //     const sequoiaMainPage = new SequoiaMainPage(page);
