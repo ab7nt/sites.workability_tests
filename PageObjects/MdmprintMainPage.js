@@ -1,3 +1,5 @@
+import { test, expect } from '@playwright/test';
+
 import { BasePage } from './BasePage';
 
 export class MdmprintMainPage extends BasePage {
@@ -24,28 +26,30 @@ export class MdmprintMainPage extends BasePage {
     }
 
     async catalogChecking() {
-        // Открытие меню каталога
-        await this.catalogButton.click();
-        await this.catalogLeftSide.waitFor('visible');
+        await test.step('Проверка меню каталога', async () => {
+            // Открытие меню каталога
+            await this.catalogButton.click();
+            await this.catalogLeftSide.waitFor('visible');
 
-        // Клик по случайной категории
-        await this.selectRandomCategory();
-
-        await this.page.pause();
+            // Клик по случайной категории и снятие скриншота
+            await this.selectRandomCategory();
+        });
     }
 
     async selectRandomCategory() {
-        // Получаем все элементы категорий
-        const categories = await this.categoriesItems.all();
+        await test.step('Раскрытие случайной категории в меню каталога', async () => {
+            // Получаем все элементы категорий
+            const categories = await this.categoriesItems.all();
 
-        // Выбираем случайный индекс
-        let randomIndex = Math.floor(Math.random() * categories.length);
-        const randomCategory = categories[randomIndex];
+            // Выбираем случайный индекс
+            let randomIndex = Math.floor(Math.random() * categories.length);
+            const randomCategory = categories[randomIndex];
 
-        // Кликаем на случайную категорию
-        await randomCategory.click();
+            // Кликаем на случайную категорию
+            await randomCategory.click();
 
-        // Снятие скриншота видимой области
-        await this.takeAScreenshotForReport();
+            // Снятие скриншота видимой области
+            await this.takeAScreenshotForReport();
+        });
     }
 }

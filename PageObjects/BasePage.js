@@ -128,9 +128,11 @@ export class BasePage {
 
     // Объединённая проверка
     async generalWorkabilityChecking() {
-        await this.open();
-        await this.checkingTheVisibilityOfElements();
-        await this.scrollToEndOfThePAge();
-        await this.takeAScreenshotForReport({ fullPage: true });
+        await test.step('Проверка главной страницы', async () => {
+            await this.open();
+            await this.checkingTheVisibilityOfElements();
+            await this.scrollToEndOfThePAge();
+            await this.takeAScreenshotForReport({ fullPage: true });
+        });
     }
 }
