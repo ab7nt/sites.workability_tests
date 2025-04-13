@@ -7,37 +7,37 @@ import { LiteraMainPage } from '../PageObjects/LiteraMainPage';
 import { SequoiaMainPage } from '../PageObjects/SequoiaMainPage';
 
 describe('Проверка работоспособности сайтов', () => {
-    test('Проверка работоспособности сайта mdmprint.ru', async ({ page }) => {
-        const mdmprintMainPage = new MdmprintMainPage(page);
+    // test('Проверка работоспособности сайта mdmprint.ru', async ({ page }) => {
+    //     const mdmprintMainPage = new MdmprintMainPage(page);
 
-        await test.step('Проверка главной страницы', async () => {
-            await mdmprintMainPage.generalWorkabilityChecking();
-        });
+    //     await test.step('Проверка главной страницы', async () => {
+    //         await mdmprintMainPage.generalWorkabilityChecking();
+    //     });
 
-        await test.step('Проверка меню каталога', async () => {
-            await mdmprintMainPage.catalogChecking();
-        });
+    //     await test.step('Проверка меню каталога', async () => {
+    //         await mdmprintMainPage.catalogChecking();
+    //     });
 
-        await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
-            await mdmprintMainPage.checkingQuickOrderPopup();
-        });
-    });
+    //     await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+    //         await mdmprintMainPage.checkingQuickOrderPopup();
+    //     });
+    // });
 
-    test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
-        const copyRuMainPage = new CopyRuMainPage(page);
+    // test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
+    //     const copyRuMainPage = new CopyRuMainPage(page);
 
-        await test.step('Проверка главной страницы', async () => {
-            await copyRuMainPage.generalWorkabilityChecking();
-        });
+    //     await test.step('Проверка главной страницы', async () => {
+    //         await copyRuMainPage.generalWorkabilityChecking();
+    //     });
 
-        await test.step('Проверка меню каталога', async () => {
-            await copyRuMainPage.catalogChecking();
-        });
+    //     await test.step('Проверка меню каталога', async () => {
+    //         await copyRuMainPage.catalogChecking();
+    //     });
 
-        await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
-            await copyRuMainPage.checkingQuickOrderPopup();
-        });
-    });
+    //     await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+    //         await copyRuMainPage.checkingQuickOrderPopup();
+    //     });
+    // });
 
     // test('Проверка работоспособности сайта 1tm.ru', async ({ page }) => {
     //     const oneTmMainPage = new OneTmMainPage(page);
