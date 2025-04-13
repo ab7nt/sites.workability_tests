@@ -51,8 +51,12 @@ jobs:
               run: |
                   set +e
                   npx playwright test --grep 'Проверка работоспособности сайтов' --reporter=line,allure-playwright
-                  echo "tests_exit_code=$?" >> $GITHUB_ENV
-                  exit 0
+                  tests_exit=$?
+                  echo "tests_exit_code=$tests_exit" >> $GITHUB_ENV
+                  if [ $tests_exit -ne 0 ]; then
+                    echo "job_exit_code=1" >> $GITHUB_ENV
+                  fi
+                  exit $tests_exit
 
             - name: Generate Allure report
               if: always()
@@ -77,7 +81,10 @@ jobs:
               if: always()
               run: |
                   mkdir -p report
-                  cp -r ./allure-report/* ./report/ || echo "::warning::Failed to copy report files"
+                  cp -r ./allure-report/* ./report/ || {
+                    echo "::warning::Failed to copy report files"
+                    echo "job_exit_code=1" >> $GITHUB_ENV
+                  }
                   touch ./report/.nojekyll
 
             - name: Deploy to GitHub Pages
@@ -89,12 +96,18 @@ jobs:
                   publish_branch: gh-pages
                   force_orphan: true
 
-            - name: Update job status based on test results
+            - name: Update job status
               if: always()
               run: |
-                  if [ ${{ env.tests_exit_code }} -ne 0 ]; then
+                  if [ ${{ env.job_exit_code }} -ne 0 ] || [ ${{ env.tests_exit_code }} -ne 0 ]; then
                     echo "job_status=С ошибками" >> $GITHUB_ENV
                     echo "job_emoji=❌" >> $GITHUB_ENV
+                  fi
+                  # Если job был отменен
+                  if [[ "${{ job.status }}" == "cancelled" ]]; then
+                    echo "job_status=Отменен" >> $GITHUB_ENV
+                    echo "job_emoji=🚫" >> $GITHUB_ENV
+                    echo "job_exit_code=1" >> $GITHUB_ENV
                   fi
 
             - name: Prepare notification
@@ -109,6 +122,9 @@ jobs:
                   fi
                   if [ ${{ env.job_exit_code }} -ne 0 ]; then
                     echo "Job завершился с ошибками (код: ${{ env.job_exit_code }})" >> $GITHUB_ENV
+                  fi
+                  if [[ "${{ job.status }}" == "cancelled" ]]; then
+                    echo "Job был отменен вручную или системой" >> $GITHUB_ENV
                   fi
                   echo "EOF" >> $GITHUB_ENV
 
@@ -125,7 +141,7 @@ jobs:
                   to: ${{ secrets.EMAIL_RECIPIENTS }}
                   from: 'Автоматическое тестирование работоспособности сайтов'
 
-            - name: Final job status check
+            - name: Force fail job if needed
               if: ${{ env.job_exit_code != 0 || env.tests_exit_code != 0 }}
               run: |
                   echo "Job завершен со статусом: ${{ env.job_status }}"
