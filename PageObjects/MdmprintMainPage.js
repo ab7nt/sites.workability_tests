@@ -13,6 +13,10 @@ export class MdmprintMainPage extends BasePage {
         this.header = page.locator('div.header-content_desktop');
         // Кнопка "Каталог"
         this.catalogButton = this.header.locator('div.header-catalog__btn');
+        // Кнопка "Быстрый заказ"
+        this.quickOrder = this.header.locator('button[data-popup="quick-order"]');
+
+        // Каталог
         // Сам каталог (список категорий)
         this.catalogLeftSide = this.header.locator('div.header-catalog__content');
         // Категории
@@ -32,8 +36,23 @@ export class MdmprintMainPage extends BasePage {
                 await this.catalogLeftSide.waitFor('visible');
             });
 
-            // Клик по случайной категории и снятие скриншота
-            await this.selectRandomCategory();
+            await test.step('Раскрытие случайной категории в меню каталога', async () => {
+                // Получаем все элементы категорий
+                const categories = await this.categoriesItems.all();
+
+                // Выбираем случайный индекс
+                let randomIndex = Math.floor(Math.random() * categories.length);
+                const randomCategory = categories[randomIndex];
+
+                // Кликаем на случайную категорию
+                await randomCategory.click();
+            });
+
+            // Снятие скриншота видимой области
+            await this.takeAScreenshotForReport();
+
+            // // Клик по случайной категории и снятие скриншота
+            // await this.selectRandomCategory();
         });
     }
 
