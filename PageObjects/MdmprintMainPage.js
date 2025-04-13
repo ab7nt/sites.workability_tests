@@ -27,9 +27,10 @@ export class MdmprintMainPage extends BasePage {
 
     async catalogChecking() {
         await test.step('Проверка меню каталога', async () => {
-            // Открытие меню каталога
-            await this.catalogButton.click();
-            await this.catalogLeftSide.waitFor('visible');
+            await test.step('Открытие меню каталога', async () => {
+                await this.catalogButton.click();
+                await this.catalogLeftSide.waitFor('visible');
+            });
 
             // Клик по случайной категории и снятие скриншота
             await this.selectRandomCategory();
