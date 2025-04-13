@@ -10,8 +10,10 @@ describe('Проверка работоспособности сайтов', () 
     test('Проверка работоспособности сайта mdmprint.ru', async ({ page }) => {
         const mdmprintMainPage = new MdmprintMainPage(page);
 
-        // Общая проверка работоспособности
-        await mdmprintMainPage.generalWorkabilityChecking();
+        await test.step('Проверка главной страницы', async () => {
+            // Общая проверка работоспособности
+            await mdmprintMainPage.generalWorkabilityChecking();
+        });
 
         // Проверка каталога
         await mdmprintMainPage.catalogChecking();

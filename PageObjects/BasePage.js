@@ -128,7 +128,7 @@ export class BasePage {
 
     // Объединённая проверка
     async generalWorkabilityChecking() {
-        await test.step('Проверка главной страницы', async () => {
+        await test.step('Общие проверки', async () => {
             await this.open();
             await this.checkingTheVisibilityOfElements();
             await this.scrollToEndOfThePAge();
