@@ -11,12 +11,16 @@ describe('Проверка работоспособности сайтов', () 
         const mdmprintMainPage = new MdmprintMainPage(page);
 
         await test.step('Проверка главной страницы', async () => {
-            // Общая проверка работоспособности
             await mdmprintMainPage.generalWorkabilityChecking();
         });
 
-        // Проверка каталога
-        await mdmprintMainPage.catalogChecking();
+        await test.step('Проверка меню каталога', async () => {
+            await mdmprintMainPage.catalogChecking();
+        });
+
+        await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+            await mdmprintMainPage.checkingQuickOrderPopup();
+        });
     });
 
     // test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
