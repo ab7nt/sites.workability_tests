@@ -40,9 +40,9 @@ export class VeaMainPage extends BasePage {
 
             // Наведение курсора на случайную категорию
             await randomNavItemLink.hover();
-            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
+            // await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
 
-            await this.page.pause();
+            // await this.page.pause();
         });
 
         await this.takeAScreenshotForReport();
@@ -52,7 +52,7 @@ export class VeaMainPage extends BasePage {
         await test.step('Открытие поп-апа "Оставить заявку"', async () => {
             await this.requestButtonInHeader.click();
             await this.submitRequestPopup.waitFor('visible');
-            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
+            // await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport();
