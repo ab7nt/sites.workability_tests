@@ -23,12 +23,21 @@ describe('Проверка работоспособности сайтов', () 
         });
     });
 
-    // test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
-    //     const copyRuMainPage = new CopyRuMainPage(page);
+    test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
+        const copyRuMainPage = new CopyRuMainPage(page);
 
-    //     // Общая проверка работоспособности
-    //     await copyRuMainPage.generalWorkabilityChecking();
-    // });
+        await test.step('Проверка главной страницы', async () => {
+            await copyRuMainPage.generalWorkabilityChecking();
+        });
+
+        await test.step('Проверка меню каталога', async () => {
+            await copyRuMainPage.catalogChecking();
+        });
+
+        await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+            await copyRuMainPage.checkingQuickOrderPopup();
+        });
+    });
 
     // test('Проверка работоспособности сайта 1tm.ru', async ({ page }) => {
     //     const oneTmMainPage = new OneTmMainPage(page);

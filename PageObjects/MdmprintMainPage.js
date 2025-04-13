@@ -8,7 +8,6 @@ export class MdmprintMainPage extends BasePage {
     constructor(page) {
         super(page);
 
-        // Локаторы
         // Хедер
         this.header = page.locator('div.header-content_desktop');
         // Кнопка "Каталог"
