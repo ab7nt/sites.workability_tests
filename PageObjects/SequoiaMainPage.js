@@ -25,7 +25,7 @@ export class SequoiaMainPage extends BasePage {
     async changeSiteLanguage() {
         await test.step('Проверка английского текста в заголовке', async () => {
             // Проверка английского текста в заголовке (с заменёнными неразрывными пробелами)
-            let headerTitleText = await this.headerTitle.innerText();
+            const headerTitleText = await this.headerTitle.innerText();
             expect(headerTitleText.replace(/\s/g, ' ')).toEqual('Processing payments for various Business Segments');
         });
 
@@ -38,7 +38,7 @@ export class SequoiaMainPage extends BasePage {
 
         await test.step('Проверка руссского текста в заголовке ', async () => {
             // Проверка руссского текста в заголовке  (с заменёнными неразрывными пробелами) и снятие скриншота
-            headerTitleText = await this.headerTitle.innerText();
+            const headerTitleText = await this.headerTitle.innerText();
             expect(headerTitleText.replace(/\s/g, ' ')).toEqual('Приём платежей для бизнеса различных сегментов');
         });
 
