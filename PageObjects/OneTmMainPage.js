@@ -40,6 +40,7 @@ export class OneTmMainPage extends BasePage {
 
             // Наведение курсора на случайную категорию
             await randomCategories.hover();
+            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
 
             await this.page.pause();
         });
@@ -50,7 +51,6 @@ export class OneTmMainPage extends BasePage {
     async checkingOnlineConsultationPopup() {
         await test.step('Открытие поп-апа "Онлайн-консультация"', async () => {
             await this.onlineConsultationButtonInHeader.click();
-            // await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
             await this.onlineConsultationPopup.waitFor('visible');
         });
 

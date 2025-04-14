@@ -50,7 +50,7 @@ describe('Проверка работоспособности сайтов', () 
             await oneTmMainPage.burgerMenuChecking();
         });
 
-        await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+        await test.step('Проверка поп-апа "Онлайн-консультация"', async () => {
             await oneTmMainPage.checkingOnlineConsultationPopup();
         });
     });
