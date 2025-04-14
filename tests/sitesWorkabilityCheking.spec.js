@@ -61,6 +61,14 @@ describe('Проверка работоспособности сайтов', () 
         await test.step('Проверка главной страницы', async () => {
             await literaMainPage.generalWorkabilityChecking();
         });
+
+        await test.step('Проверка бургер-меню', async () => {
+            await literaMainPage.burgerMenuChecking();
+        });
+
+        await test.step('Проверка поп-апа "Оставьте заявку"', async () => {
+            await literaMainPage.checkingSubmitRequestPopup();
+        });
     });
 
     test('Проверка работоспособности сайта vea.ru', async ({ page }) => {
@@ -75,7 +83,7 @@ describe('Проверка работоспособности сайтов', () 
         });
 
         await test.step('Проверка поп-апа "Оставьте заявку"', async () => {
-            await veaMainPage.checkingQuickOrderPopup();
+            await veaMainPage.checkingSubmitRequestPopup();
         });
     });
 
