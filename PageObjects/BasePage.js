@@ -128,23 +128,37 @@ export class BasePage {
 
     // Скриншот выбранной области
     async screenshotOfTheSelectedArea(element) {
-        const box = await element.boundingBox();
-        const fullHeight = await element.evaluate((el) => el.scrollHeight);
+        await test.step('Скриншот конкретного элемента', async () => {
+            // Делаем скриншот всего содержимого элемента (включая скролл)
+            const screenshot = await element.screenshot();
 
-        const screenshot = await this.page.screenshot({
-            clip: {
-                x: box.x,
-                y: box.y,
-                width: box.width,
-                height: fullHeight, // Используем scrollHeight вместо box.height
-            },
-        });
-
-        await test.info().attach('Скриншот страницы', {
-            body: screenshot,
-            contentType: 'image/png',
+            // Прикрепляем к отчёту
+            await test.info().attach('Скриншот страницы', {
+                body: screenshot,
+                contentType: 'image/png',
+            });
         });
     }
+
+    // // Скриншот выбранной области
+    // async screenshotOfTheSelectedArea(element) {
+    //     const box = await element.boundingBox();
+    //     const fullHeight = await element.evaluate((el) => el.scrollHeight);
+
+    //     const screenshot = await this.page.screenshot({
+    //         clip: {
+    //             x: box.x,
+    //             y: box.y,
+    //             width: box.width,
+    //             height: fullHeight, // Используем scrollHeight вместо box.height
+    //         },
+    //     });
+
+    //     await test.info().attach('Скриншот страницы', {
+    //         body: screenshot,
+    //         contentType: 'image/png',
+    //     });
+    // }
 
     // Объединённая проверка
     async generalWorkabilityChecking() {
