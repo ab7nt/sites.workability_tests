@@ -43,9 +43,7 @@ export class LiteraMainPage extends BasePage {
             await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
-        await this.screenshotOfTheSelectedArea(this.burgerMenu);
-
-        // await this.takeAScreenshotForReport();
+        await this.takeAScreenshotForReport();
 
         await test.step('Скрытие бургер-меню', async () => {
             await this.burgerMenuButton.click();
