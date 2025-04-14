@@ -23,17 +23,24 @@ export class SequoiaMainPage extends BasePage {
     }
 
     async changeSiteLanguage() {
-        // Проверка английского текста в заголовке (с заменёнными неразрывными пробелами)
-        let headerTitleText = await this.headerTitle.innerText();
-        expect(headerTitleText.replace(/\s/g, ' ')).toEqual('Processing payments for various Business Segments');
-        // Выбор языка в дропдауне
-        await this.changeLanguageDropdownButton.hover();
-        await this.changeLanguageItemLink.click();
-        await this.page.waitForLoadState('networkidle');
+        await test.step('Проверка английского текста в заголовке', async () => {
+            // Проверка английского текста в заголовке (с заменёнными неразрывными пробелами)
+            let headerTitleText = await this.headerTitle.innerText();
+            expect(headerTitleText.replace(/\s/g, ' ')).toEqual('Processing payments for various Business Segments');
+        });
 
-        // Проверка руссского текста в заголовке  (с заменёнными неразрывными пробелами) и снятие скриншота
-        headerTitleText = await this.headerTitle.innerText();
-        expect(headerTitleText.replace(/\s/g, ' ')).toEqual('Приём платежей для бизнеса различных сегментов');
+        await test.step('Выбор языка в меню хедера', async () => {
+            // Выбор языка в дропдауне
+            await this.changeLanguageDropdownButton.hover();
+            await this.changeLanguageItemLink.click();
+            await this.page.waitForLoadState('networkidle');
+        });
+
+        await test.step('Проверка руссского текста в заголовке ', async () => {
+            // Проверка руссского текста в заголовке  (с заменёнными неразрывными пробелами) и снятие скриншота
+            headerTitleText = await this.headerTitle.innerText();
+            expect(headerTitleText.replace(/\s/g, ' ')).toEqual('Приём платежей для бизнеса различных сегментов');
+        });
 
         await this.takeAScreenshotForReport({ fullPage: true });
     }
