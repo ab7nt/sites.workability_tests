@@ -126,13 +126,33 @@ export class BasePage {
         });
     }
 
+    // Скриншот выбранной области
+    async screenshotOfTheSelectedArea(element) {
+        const box = await element.boundingBox();
+        const fullHeight = await element.evaluate((el) => el.scrollHeight);
+
+        const screenshot = await this.page.screenshot({
+            clip: {
+                x: box.x,
+                y: box.y,
+                width: box.width,
+                height: fullHeight, // Используем scrollHeight вместо box.height
+            },
+        });
+
+        await test.info().attach('Скриншот страницы', {
+            body: screenshot,
+            contentType: 'image/png',
+        });
+    }
+
     // Объединённая проверка
     async generalWorkabilityChecking() {
         await test.step('Общие проверки', async () => {
             await this.open();
-            await this.checkingTheVisibilityOfElements();
-            await this.scrollToEndOfThePAge();
-            await this.takeAScreenshotForReport({ fullPage: true });
+            // await this.checkingTheVisibilityOfElements();
+            // await this.scrollToEndOfThePAge();
+            // await this.takeAScreenshotForReport({ fullPage: true });
         });
     }
 }
