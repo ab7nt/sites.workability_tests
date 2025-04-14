@@ -1,2 +1,2 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","8429","Проверка работоспособности сайта litera.studio","chromium","Mon Apr 14 16:58:39 UTC 2025","passed","Mon Apr 14 16:58:48 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
+"","8813","Проверка работоспособности сайта litera.studio","chromium","Mon Apr 14 17:34:18 UTC 2025","passed","Mon Apr 14 17:34:26 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
