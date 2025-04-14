@@ -24,13 +24,6 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v3
 
-            - name: Download previous Allure history
-              uses: actions/download-artifact@v3
-              with:
-                  name: allure-history
-                  path: allure-report/history
-              continue-on-error: true # Игнорируем ошибку при первом запуске
-
             - name: Install Java and dependencies
               run: |
                   apt-get update && apt-get install -y openjdk-17-jre
@@ -65,27 +58,13 @@ jobs:
                   fi
                   exit $tests_exit
 
-            - name: Generate Allure report with history
+            - name: Generate Allure report
               if: always()
               run: |
-                  # Копируем историю в результаты тестов
-                  mkdir -p allure-results/history
-                  cp -r allure-report/history/* allure-results/history/ || echo "No previous history found"
-
-                  # Генерируем отчёт с историей
                   npx allure generate allure-results --clean -o allure-report \
                     --title "Отчёт мониторинга сайтов" \
-                    --report-url https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/ \
-                    --history-folder allure-results/history
+                    --report-url https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/
                   echo "REPORT_URL=https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/" >> $GITHUB_ENV
-
-            - name: Save Allure history
-              if: always()
-              uses: actions/upload-artifact@v3
-              with:
-                  name: allure-history
-                  path: allure-report/history
-                  retention-days: 7 # Храним историю 7 дней
 
             - name: Verify report generation
               if: always()
@@ -115,8 +94,7 @@ jobs:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./report
                   publish_branch: gh-pages
-                  force_orphan: false # Важно для сохранения истории!
-                  keep_files: true # Сохраняем историю между деплоями
+                  force_orphan: true
 
             - name: Update job status
               if: always()
@@ -139,7 +117,6 @@ jobs:
                   echo "Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }}" >> $GITHUB_ENV
                   echo "Время запуска: ${{ env.job_started_at }}" >> $GITHUB_ENV
                   echo "Ссылка на отчёт: ${{ env.REPORT_URL }}" >> $GITHUB_ENV
-                  echo "История запусков доступна во вкладке 'Trends'" >> $GITHUB_ENV
                   if [ ${{ env.tests_exit_code }} -ne 0 ]; then
                     echo "Тесты завершились с ошибками (код: ${{ env.tests_exit_code }})" >> $GITHUB_ENV
                   fi
