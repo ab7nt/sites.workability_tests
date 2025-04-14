@@ -62,21 +62,4 @@ export class MdmprintMainPage extends BasePage {
 
         await this.takeAScreenshotForReport();
     }
-
-    // async selectRandomCategory() {
-    //     await test.step('Раскрытие случайной категории в меню каталога', async () => {
-    //         // Получаем все элементы категорий
-    //         const categories = await this.categoriesItems.all();
-
-    //         // Выбираем случайный индекс
-    //         let randomIndex = Math.floor(Math.random() * categories.length);
-    //         const randomCategory = categories[randomIndex];
-
-    //         // Кликаем на случайную категорию
-    //         await randomCategory.click();
-
-    //         // Снятие скриншота видимой области
-    //         await this.takeAScreenshotForReport();
-    //     });
-    // }
 }

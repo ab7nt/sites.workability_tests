@@ -31,18 +31,16 @@ export class VeaMainPage extends BasePage {
         });
 
         await test.step('Наведение на случайный пункт в меню услуг', async () => {
-            // Получаем все элементы категорий
+            // Получаем все элементы услуг
             const navItemLink = await this.servicesNavItemLink.all();
 
             // Выбираем случайный индекс
             let randomIndex = Math.floor(Math.random() * navItemLink.length);
             const randomNavItemLink = navItemLink[randomIndex];
 
-            // Наведение курсора на случайную категорию
+            // Наведение курсора на случайную услугу
             await randomNavItemLink.hover();
-            // await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
-
-            // await this.page.pause();
+            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport();
@@ -52,7 +50,6 @@ export class VeaMainPage extends BasePage {
         await test.step('Открытие поп-апа "Оставить заявку"', async () => {
             await this.requestButtonInHeader.click();
             await this.submitRequestPopup.waitFor('visible');
-            // await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport();
