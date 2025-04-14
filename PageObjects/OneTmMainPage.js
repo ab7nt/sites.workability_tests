@@ -41,8 +41,6 @@ export class OneTmMainPage extends BasePage {
             // Наведение курсора на случайную категорию
             await randomCategories.hover();
             await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
-
-            await this.page.pause();
         });
 
         await this.takeAScreenshotForReport();

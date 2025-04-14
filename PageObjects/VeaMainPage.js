@@ -46,7 +46,7 @@ export class VeaMainPage extends BasePage {
         await this.takeAScreenshotForReport();
     }
 
-    async checkingQuickOrderPopup() {
+    async checkingSubmitRequestPopup() {
         await test.step('Открытие поп-апа "Оставить заявку"', async () => {
             await this.requestButtonInHeader.click();
             await this.submitRequestPopup.waitFor('visible');
