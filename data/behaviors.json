@@ -1,1 +1,1 @@
-{"uid":"b1a8273437954620fa374b796ffaacdd","name":"behaviors","children":[]}
+{"uid":"b1a8273437954620fa374b796ffaacdd","name":"behaviors","children":[{"name":"Проверка работоспособности сайта mdmprint.ru","uid":"fcc8ac16ebf03167","parentUid":"b1a8273437954620fa374b796ffaacdd","status":"passed","time":{"start":1744713658452,"stop":1744713668905,"duration":10453},"flaky":false,"newFailed":false,"newPassed":false,"newBroken":false,"retriesCount":0,"retriesStatusChange":false,"parameters":["chromium"],"tags":[]}]}

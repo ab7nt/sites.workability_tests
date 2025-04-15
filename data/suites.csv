@@ -1,0 +1,2 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","10453","Проверка работоспособности сайта mdmprint.ru","chromium","Tue Apr 15 10:40:58 UTC 2025","passed","Tue Apr 15 10:41:08 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
