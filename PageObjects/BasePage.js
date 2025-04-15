@@ -119,7 +119,7 @@ export class BasePage {
             finalScreenshots.push({
                 name: screenshotName,
                 content: screenshot,
-                timestamp: new Date().toLocaleString(),
+                timestamp: new Date(Date.now() + 3 * 3600 * 1000).toLocaleString(), // Время по Москве
             });
         });
     }
