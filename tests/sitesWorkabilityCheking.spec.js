@@ -1,5 +1,3 @@
-import '../fixtures.js';
-
 import { test, describe } from 'playwright/test';
 import { VeaMainPage } from '../PageObjects/VeaMainPage';
 import { MdmprintMainPage } from '../PageObjects/MdmprintMainPage';
