@@ -1,7 +1,2 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","7270","Проверка работоспособности сайта sequoiapay.io","chromium","Tue Apr 15 06:15:54 UTC 2025","passed","Tue Apr 15 06:16:01 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
-"","9316","Проверка работоспособности сайта copy.ru","chromium","Tue Apr 15 06:15:12 UTC 2025","passed","Tue Apr 15 06:15:22 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
-"","10446","Проверка работоспособности сайта mdmprint.ru","chromium","Tue Apr 15 06:15:02 UTC 2025","passed","Tue Apr 15 06:15:12 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
-"","9760","Проверка работоспособности сайта vea.ru","chromium","Tue Apr 15 06:15:44 UTC 2025","passed","Tue Apr 15 06:15:54 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
-"","9578","Проверка работоспособности сайта 1tm.ru","chromium","Tue Apr 15 06:15:22 UTC 2025","passed","Tue Apr 15 06:15:31 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
-"","13112","Проверка работоспособности сайта litera.studio","chromium","Tue Apr 15 06:15:31 UTC 2025","passed","Tue Apr 15 06:15:44 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
+"","9889","Проверка работоспособности сайта mdmprint.ru","chromium","Tue Apr 15 08:02:13 UTC 2025","passed","Tue Apr 15 08:02:23 UTC 2025","Проверка работоспособности сайтов","sitesWorkabilityCheking.spec.js","",""
