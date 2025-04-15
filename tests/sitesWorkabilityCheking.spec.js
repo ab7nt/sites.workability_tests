@@ -1,3 +1,5 @@
+import '../fixtures';
+
 import { test, describe } from 'playwright/test';
 import { VeaMainPage } from '../PageObjects/VeaMainPage';
 import { MdmprintMainPage } from '../PageObjects/MdmprintMainPage';
@@ -22,7 +24,7 @@ describe('Проверка работоспособности сайтов', () 
             await mdmprintMainPage.checkingQuickOrderPopup();
         });
 
-        await mdmprintMainPage.attachFinalScreenshots();
+        // await mdmprintMainPage.attachFinalScreenshots();
     });
 
     // test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
