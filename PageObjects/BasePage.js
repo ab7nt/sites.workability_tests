@@ -151,18 +151,18 @@ export class BasePage {
         });
     }
 
-    async attachAllScreenshotsToReport() {
-        if (this.finalScreenshots.length > 0) {
-            await test.step('Все скриншоты теста', async () => {
-                for (const shot of this.finalScreenshots) {
-                    await test.info().attach(`[Итог] ${shot.name}`, {
-                        body: shot.buffer,
-                        contentType: 'image/png',
-                    });
-                }
-            });
-        }
-    }
+    // async attachAllScreenshotsToReport() {
+    //     if (this.finalScreenshots.length > 0) {
+    //         await test.step('Все скриншоты теста', async () => {
+    //             for (const shot of this.finalScreenshots) {
+    //                 await test.info().attach(`[Итог] ${shot.name}`, {
+    //                     body: shot.buffer,
+    //                     contentType: 'image/png',
+    //                 });
+    //             }
+    //         });
+    //     }
+    // }
 
     // Объединённая проверка
     async generalWorkabilityChecking() {

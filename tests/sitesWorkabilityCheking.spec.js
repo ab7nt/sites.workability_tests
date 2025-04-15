@@ -22,7 +22,7 @@ describe('Проверка работоспособности сайтов', () 
             await mdmprintMainPage.checkingQuickOrderPopup();
         });
 
-        await mdmprintMainPage.attachAllScreenshotsToReport();
+        await mdmprintMainPage.attachFinalScreenshots();
     });
 
     // test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
