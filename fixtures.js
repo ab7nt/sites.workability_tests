@@ -17,5 +17,6 @@ async function attachFinalScreenshots() {
                 });
             }
         });
+        finalScreenshots.length = 0;
     }
 }

@@ -9,7 +9,7 @@ export class BasePage {
         this.page = page;
 
         // Хранилище для скриншотов, которые нужно добавить в конец отчёта
-        this.finalScreenshots = [];
+        // this.finalScreenshots = [];
 
         // Общие локаторы
         this.headerTitle = page.locator('h1');
@@ -116,12 +116,11 @@ export class BasePage {
             });
 
             // Сохраняем для финального прикрепления
-            this.finalScreenshots.push({
+            finalScreenshots.push({
                 name: screenshotName,
                 content: screenshot,
                 timestamp: new Date().toLocaleString(),
             });
-            this.finalScreenshots = [];
         });
     }
 
