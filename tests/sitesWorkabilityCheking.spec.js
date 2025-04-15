@@ -1,6 +1,7 @@
+import { test, describe } from 'playwright/test';
+
 import '../fixtures.js';
 
-import { test, describe } from 'playwright/test';
 import { VeaMainPage } from '../PageObjects/VeaMainPage';
 import { MdmprintMainPage } from '../PageObjects/MdmprintMainPage';
 import { CopyRuMainPage } from '../PageObjects/CopyRuMainPage';
@@ -23,10 +24,6 @@ describe('Проверка работоспособности сайтов', () 
         await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
             await mdmprintMainPage.checkingQuickOrderPopup();
         });
-
-        // await test.step('Сбор всех скриншотов', async () => {
-        //     await mdmprintMainPage.attachFinalScreenshots();
-        // });
     });
 
     // test('Проверка работоспособности сайта copy.ru', async ({ page }) => {

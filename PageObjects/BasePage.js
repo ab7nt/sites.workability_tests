@@ -119,23 +119,9 @@ export class BasePage {
             finalScreenshots.push({
                 name: screenshotName,
                 content: screenshot,
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toLocaleString(),
             });
         });
-    }
-
-    // Метод для прикрепления всех скриншотов в конец отчёта
-    async attachFinalScreenshots() {
-        if (this.finalScreenshots.length > 0) {
-            await test.step('Все скриншоты теста', async () => {
-                for (const shot of this.finalScreenshots) {
-                    await test.info().attach(`[ФИНАЛЬНЫЙ] ${shot.name} (${shot.timestamp})`, {
-                        body: shot.content,
-                        contentType: 'image/png',
-                    });
-                }
-            });
-        }
     }
 
     // Прокрутка страницы вниз и вверх
@@ -152,19 +138,6 @@ export class BasePage {
             await this.page.waitForTimeout(2000);
         });
     }
-
-    // async attachAllScreenshotsToReport() {
-    //     if (this.finalScreenshots.length > 0) {
-    //         await test.step('Все скриншоты теста', async () => {
-    //             for (const shot of this.finalScreenshots) {
-    //                 await test.info().attach(`[Итог] ${shot.name}`, {
-    //                     body: shot.buffer,
-    //                     contentType: 'image/png',
-    //                 });
-    //             }
-    //         });
-    //     }
-    // }
 
     // Объединённая проверка
     async generalWorkabilityChecking() {
