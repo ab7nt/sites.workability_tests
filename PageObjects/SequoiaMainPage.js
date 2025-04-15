@@ -42,6 +42,6 @@ export class SequoiaMainPage extends BasePage {
             expect(headerTitleText.replace(/\s/g, ' ')).toEqual('Приём платежей для бизнеса различных сегментов');
         });
 
-        await this.takeAScreenshotForReport({ fullPage: true });
+        await this.takeAScreenshotForReport('Главная страница на русском языке', { fullPage: true });
     }
 }

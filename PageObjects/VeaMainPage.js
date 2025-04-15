@@ -43,7 +43,7 @@ export class VeaMainPage extends BasePage {
             await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
-        await this.takeAScreenshotForReport();
+        await this.takeAScreenshotForReport('Меню услуг');
     }
 
     async checkingSubmitRequestPopup() {
@@ -52,6 +52,6 @@ export class VeaMainPage extends BasePage {
             await this.submitRequestPopup.waitFor('visible');
         });
 
-        await this.takeAScreenshotForReport();
+        await this.takeAScreenshotForReport('Поп-ап "Оставить заявку"');
     }
 }

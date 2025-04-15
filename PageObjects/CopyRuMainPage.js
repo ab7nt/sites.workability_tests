@@ -48,7 +48,7 @@ export class CopyRuMainPage extends BasePage {
             await randomCategory.hover();
         });
 
-        await this.takeAScreenshotForReport();
+        await this.takeAScreenshotForReport('Каталог');
     }
 
     async checkingQuickOrderPopup() {
@@ -57,6 +57,6 @@ export class CopyRuMainPage extends BasePage {
             await this.quickOrderPopup.waitFor('visible');
         });
 
-        await this.takeAScreenshotForReport();
+        await this.takeAScreenshotForReport('Поп-ап "Быстрый заказ"');
     }
 }

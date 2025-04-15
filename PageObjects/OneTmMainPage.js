@@ -43,7 +43,7 @@ export class OneTmMainPage extends BasePage {
             await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
-        await this.takeAScreenshotForReport();
+        await this.takeAScreenshotForReport('Бургер меню');
     }
 
     async checkingOnlineConsultationPopup() {
@@ -52,6 +52,6 @@ export class OneTmMainPage extends BasePage {
             await this.onlineConsultationPopup.waitFor('visible');
         });
 
-        await this.takeAScreenshotForReport();
+        await this.takeAScreenshotForReport('Поп-ап "Онлайн-консультация"');
     }
 }

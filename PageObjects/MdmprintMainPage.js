@@ -51,7 +51,7 @@ export class MdmprintMainPage extends BasePage {
             await randomCategory.click();
         });
 
-        await this.takeAScreenshotForReport();
+        await this.takeAScreenshotForReport('Каталог');
     }
 
     async checkingQuickOrderPopup() {
@@ -60,6 +60,6 @@ export class MdmprintMainPage extends BasePage {
             await this.quickOrderPopup.waitFor('visible');
         });
 
-        await this.takeAScreenshotForReport();
+        await this.takeAScreenshotForReport('Поп-ап "Быстрый заказ"');
     }
 }
