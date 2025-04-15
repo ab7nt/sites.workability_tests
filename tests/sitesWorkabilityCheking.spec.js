@@ -1,3 +1,5 @@
+import '../fixtures.js';
+
 import { test, describe } from 'playwright/test';
 import { VeaMainPage } from '../PageObjects/VeaMainPage';
 import { MdmprintMainPage } from '../PageObjects/MdmprintMainPage';
@@ -22,9 +24,9 @@ describe('Проверка работоспособности сайтов', () 
             await mdmprintMainPage.checkingQuickOrderPopup();
         });
 
-        await test.step('Сбор всех скриншотов', async () => {
-            await mdmprintMainPage.attachFinalScreenshots();
-        });
+        // await test.step('Сбор всех скриншотов', async () => {
+        //     await mdmprintMainPage.attachFinalScreenshots();
+        // });
     });
 
     // test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
