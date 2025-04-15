@@ -6,6 +6,9 @@ export class BasePage {
     constructor(page) {
         this.page = page;
 
+        // Хранилище для скриншотов, которые нужно добавить в конец отчёта
+        this.finalScreenshots = [];
+
         // Общие локаторы
         this.headerTitle = page.locator('h1');
     }
@@ -95,7 +98,7 @@ export class BasePage {
     }
 
     // Скриншот страницы и прикрепление к отчёту
-    async takeAScreenshotForReport(options = {}) {
+    async takeAScreenshotForReport(screenshotName = 'Скриншот', options = {}) {
         // Параметры по умолчанию
         const screenshotOptions = {
             fullPage: options.fullPage ?? false,
@@ -104,11 +107,33 @@ export class BasePage {
         await test.step('Снятие скриншота страницы и прикрепление к отчёту', async () => {
             const screenshot = await this.page.screenshot(screenshotOptions);
 
-            await test.info().attach('Скриншот страницы', {
+            // Прикрепляем к текущему шагу
+            await test.info().attach(screenshotName, {
                 body: screenshot,
                 contentType: 'image/png',
             });
+
+            // Сохраняем для финального прикрепления
+            this.finalScreenshots.push({
+                name: screenshotName,
+                content: screenshot,
+                timestamp: new Date().toISOString(),
+            });
         });
+    }
+
+    // Метод для прикрепления всех скриншотов в конец отчёта
+    async attachFinalScreenshots() {
+        if (this.finalScreenshots.length > 0) {
+            await test.step('Все скриншоты теста', async () => {
+                for (const shot of this.finalScreenshots) {
+                    await test.info().attach(`[ФИНАЛЬНЫЙ] ${shot.name} (${shot.timestamp})`, {
+                        body: shot.content,
+                        contentType: 'image/png',
+                    });
+                }
+            });
+        }
     }
 
     // Прокрутка страницы вниз и вверх
@@ -126,13 +151,26 @@ export class BasePage {
         });
     }
 
+    async attachAllScreenshotsToReport() {
+        if (this.finalScreenshots.length > 0) {
+            await test.step('Все скриншоты теста', async () => {
+                for (const shot of this.finalScreenshots) {
+                    await test.info().attach(`[Итог] ${shot.name}`, {
+                        body: shot.buffer,
+                        contentType: 'image/png',
+                    });
+                }
+            });
+        }
+    }
+
     // Объединённая проверка
     async generalWorkabilityChecking() {
         await test.step('Общие проверки', async () => {
             await this.open();
             await this.checkingTheVisibilityOfElements();
             await this.scrollToEndOfThePAge();
-            await this.takeAScreenshotForReport({ fullPage: true });
+            await this.takeAScreenshotForReport('Главная страница', { fullPage: true });
         });
     }
 }
