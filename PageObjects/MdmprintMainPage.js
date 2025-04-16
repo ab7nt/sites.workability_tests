@@ -103,21 +103,23 @@ export class MdmprintMainPage extends BasePage {
             // Наведение курсора на случайный пункт
             await randomResultItem.hover();
 
-            await test.step('Проверка страницы результатов поиска', async () => {
-                // Клик по кнопке поиска и ожидание перехода на страницу результатов
-                const [response] = await Promise.all([
-                    this.page.waitForNavigation({ waitUntil: 'load' }),
-                    this.searchButton.click(),
-                ]);
+            await this.takeAScreenshotForReport('Дропдаун результатов поиска');
+        });
 
-                // Проверяем URL и статус
-                expect(this.page.url()).toContain('mdmprint.ru/?s=');
-                expect(response.status()).toBe(200);
-            });
+        await test.step('Проверка страницы результатов поиска', async () => {
+            // Клик по кнопке поиска и ожидание перехода на страницу результатов
+            const [response] = await Promise.all([
+                this.page.waitForNavigation({ waitUntil: 'load' }),
+                this.searchButton.click(),
+            ]);
+
+            // Проверяем URL и статус
+            expect(this.page.url()).toContain('mdmprint.ru/?s=');
+            expect(response.status()).toBe(200);
+
+            await this.scrollToEndOfThePAge();
 
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
         });
-
-        await this.takeAScreenshotForReport('Дропдаун результатов поиска');
     }
 }
