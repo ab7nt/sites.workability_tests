@@ -130,7 +130,6 @@ jobs:
                   echo "Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }}" >> $GITHUB_ENV
                   echo "Время запуска: ${{ env.job_started_at }}" >> $GITHUB_ENV
                   echo "Ссылка на отчёт: ${{ env.REPORT_URL }}" >> $GITHUB_ENV
-                  echo "История запусков доступна во вкладке 'Trends'" >> $GITHUB_ENV
                   if [ ${{ env.tests_exit_code }} -ne 0 ]; then
                     echo "Тесты завершились с ошибками (код: ${{ env.tests_exit_code }})" >> $GITHUB_ENV
                   fi

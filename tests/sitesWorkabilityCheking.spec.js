@@ -24,6 +24,10 @@ describe('Проверка работоспособности сайтов', () 
         await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
             await mdmprintMainPage.checkingQuickOrderPopup();
         });
+
+        await test.step('Проверка поиска', async () => {
+            await mdmprintMainPage.checkingSearch();
+        });
     });
 
     test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
