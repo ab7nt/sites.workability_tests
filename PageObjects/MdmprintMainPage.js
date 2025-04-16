@@ -103,6 +103,7 @@ export class MdmprintMainPage extends BasePage {
             // Наведение курсора на случайный пункт
             await randomResultItem.hover();
 
+            // Скриншот
             await this.takeAScreenshotForReport('Дропдаун результатов поиска');
         });
 
@@ -117,8 +118,8 @@ export class MdmprintMainPage extends BasePage {
             expect(this.page.url()).toContain('mdmprint.ru/?s=');
             expect(response.status()).toBe(200);
 
+            // Скролл и скриншот
             await this.scrollToEndOfThePAge();
-
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
         });
     }
