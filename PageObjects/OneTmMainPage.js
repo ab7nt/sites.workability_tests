@@ -50,6 +50,7 @@ export class OneTmMainPage extends BasePage {
         await test.step('Открытие поп-апа "Онлайн-консультация"', async () => {
             await this.onlineConsultationButtonInHeader.click();
             await this.onlineConsultationPopup.waitFor('visible');
+            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Поп-ап "Онлайн-консультация"');

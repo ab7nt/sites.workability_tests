@@ -54,6 +54,7 @@ export class LiteraMainPage extends BasePage {
         await test.step('Открытие поп-апа "Оставить заявку"', async () => {
             await this.requestButton.click();
             await this.submitRequestPopup.waitFor('visible');
+            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Поп-ап ""Оставить заявку""');

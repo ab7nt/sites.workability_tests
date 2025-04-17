@@ -55,6 +55,7 @@ export class CopyRuMainPage extends BasePage {
         await test.step('Открытие поп-апа "Быстрый заказ"', async () => {
             await this.quickOrderButton.click();
             await this.quickOrderPopup.waitFor('visible');
+            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Поп-ап "Быстрый заказ"');
