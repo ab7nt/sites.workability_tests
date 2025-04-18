@@ -133,7 +133,7 @@ export class BasePage {
     }
 
     // Прокрутка страницы вниз и вверх
-    async scrollToEndOfThePAge() {
+    async scrollToEndOfThePage() {
         await test.step('Скролл страницы для нормализации загрузки', async () => {
             await this.page.evaluate(() => {
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
@@ -152,7 +152,7 @@ export class BasePage {
         await test.step('Общие проверки', async () => {
             await this.open();
             await this.checkingTheVisibilityOfElements();
-            await this.scrollToEndOfThePAge();
+            await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Главная страница', { fullPage: true });
         });
     }

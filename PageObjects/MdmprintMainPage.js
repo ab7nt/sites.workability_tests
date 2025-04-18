@@ -120,7 +120,7 @@ export class MdmprintMainPage extends BasePage {
             expect(response.status()).toBe(200);
 
             // Скролл и скриншот
-            await this.scrollToEndOfThePAge();
+            await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
         });
     }
