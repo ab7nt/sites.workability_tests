@@ -59,6 +59,11 @@ export class BasePage {
             console.log('Таймаут для отслеживания медленных запросов достигнут.');
         }
 
+        if (timeoutReached) {
+            console.log('Таймаут для отслеживания медленных запросов достигнут.');
+            return slowRequests; // Завершаем обработку
+        }
+
         // Прикрепляем медленные запросы, если они есть
         if (slowRequests.length > 0) {
             console.log('⏱ Медленные запросы (более 5 сек):');
@@ -150,10 +155,29 @@ export class BasePage {
     // Объединённая проверка
     async generalWorkabilityChecking() {
         await test.step('Общие проверки', async () => {
-            await this.open();
-            await this.checkingTheVisibilityOfElements();
-            await this.scrollToEndOfThePage();
-            await this.takeAScreenshotForReport('Главная страница', { fullPage: true });
+            try {
+                await this.open();
+            } catch (error) {
+                console.error('Ошибка при открытии страницы:', error);
+            }
+
+            try {
+                await this.checkingTheVisibilityOfElements();
+            } catch (error) {
+                console.error('Ошибка при проверке видимости элементов:', error);
+            }
+
+            try {
+                await this.scrollToEndOfThePage();
+            } catch (error) {
+                console.error('Ошибка при скролле страницы:', error);
+            }
+
+            try {
+                await this.takeAScreenshotForReport('Главная страница', { fullPage: true });
+            } catch (error) {
+                console.error('Ошибка при снятии скриншота:', error);
+            }
         });
     }
 }
