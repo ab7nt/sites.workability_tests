@@ -12,7 +12,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@playwright/test": "^1.51.1"
+        "@playwright/test": "1.51.1"
     },
     "devDependencies": {
         "allure-playwright": "^2.0.0"
