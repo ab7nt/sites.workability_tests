@@ -1,0 +1,133 @@
+# Test info
+
+- Name: Проверка работоспособности сайтов >> Проверка работоспособности сайта mdmprint.ru
+- Location: /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.js:13:9
+
+# Error details
+
+```
+Error: browserType.launch: Executable doesn't exist at /ms-playwright/chromium_headless_shell-1169/chrome-linux/headless_shell
+╔══════════════════════════════════════════════════════════════════════╗
+║ Looks like Playwright Test or Playwright was just updated to 1.52.0. ║
+║ Please update docker image as well.                                  ║
+║ -  current: mcr.microsoft.com/playwright:v1.51.1-noble               ║
+║ - required: mcr.microsoft.com/playwright:v1.52.0-noble               ║
+║                                                                      ║
+║ <3 Playwright Team                                                   ║
+╚══════════════════════════════════════════════════════════════════════╝
+```
+
+# Test source
+
+```ts
+   1 | import { test, describe } from 'playwright/test';
+   2 |
+   3 | import '../fixtures.js';
+   4 |
+   5 | import { VeaMainPage } from '../PageObjects/VeaMainPage';
+   6 | import { MdmprintMainPage } from '../PageObjects/MdmprintMainPage';
+   7 | import { CopyRuMainPage } from '../PageObjects/CopyRuMainPage';
+   8 | import { OneTmMainPage } from '../PageObjects/OneTmMainPage';
+   9 | import { LiteraMainPage } from '../PageObjects/LiteraMainPage';
+   10 | import { SequoiaMainPage } from '../PageObjects/SequoiaMainPage';
+   11 |
+   12 | describe('Проверка работоспособности сайтов', () => {
+>  13 |     test('Проверка работоспособности сайта mdmprint.ru', async ({ page }) => {
+      |         ^ Error: browserType.launch: Executable doesn't exist at /ms-playwright/chromium_headless_shell-1169/chrome-linux/headless_shell
+   14 |         const mdmprintMainPage = new MdmprintMainPage(page);
+   15 |
+   16 |         await test.step('Проверка главной страницы', async () => {
+   17 |             await mdmprintMainPage.generalWorkabilityChecking();
+   18 |         });
+   19 |
+   20 |         await test.step('Проверка меню каталога', async () => {
+   21 |             await mdmprintMainPage.catalogChecking();
+   22 |         });
+   23 |
+   24 |         await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+   25 |             await mdmprintMainPage.checkingQuickOrderPopup();
+   26 |         });
+   27 |
+   28 |         await test.step('Проверка поиска', async () => {
+   29 |             await mdmprintMainPage.checkingSearch();
+   30 |         });
+   31 |     });
+   32 |
+   33 |     test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
+   34 |         const copyRuMainPage = new CopyRuMainPage(page);
+   35 |
+   36 |         await test.step('Проверка главной страницы', async () => {
+   37 |             await copyRuMainPage.generalWorkabilityChecking();
+   38 |         });
+   39 |
+   40 |         await test.step('Проверка меню каталога', async () => {
+   41 |             await copyRuMainPage.catalogChecking();
+   42 |         });
+   43 |
+   44 |         await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+   45 |             await copyRuMainPage.checkingQuickOrderPopup();
+   46 |         });
+   47 |     });
+   48 |
+   49 |     test('Проверка работоспособности сайта 1tm.ru', async ({ page }) => {
+   50 |         const oneTmMainPage = new OneTmMainPage(page);
+   51 |
+   52 |         await test.step('Проверка главной страницы', async () => {
+   53 |             await oneTmMainPage.generalWorkabilityChecking();
+   54 |         });
+   55 |
+   56 |         await test.step('Проверка бургер-меню', async () => {
+   57 |             await oneTmMainPage.burgerMenuChecking();
+   58 |         });
+   59 |
+   60 |         await test.step('Проверка поп-апа "Онлайн-консультация"', async () => {
+   61 |             await oneTmMainPage.checkingOnlineConsultationPopup();
+   62 |         });
+   63 |     });
+   64 |
+   65 |     test('Проверка работоспособности сайта litera.studio', async ({ page }) => {
+   66 |         const literaMainPage = new LiteraMainPage(page);
+   67 |
+   68 |         await test.step('Проверка главной страницы', async () => {
+   69 |             await literaMainPage.generalWorkabilityChecking();
+   70 |         });
+   71 |
+   72 |         await test.step('Проверка бургер-меню', async () => {
+   73 |             await literaMainPage.burgerMenuChecking();
+   74 |         });
+   75 |
+   76 |         await test.step('Проверка поп-апа "Оставьте заявку"', async () => {
+   77 |             await literaMainPage.checkingSubmitRequestPopup();
+   78 |         });
+   79 |     });
+   80 |
+   81 |     test('Проверка работоспособности сайта vea.ru', async ({ page }) => {
+   82 |         const veaMainPage = new VeaMainPage(page);
+   83 |
+   84 |         await test.step('Проверка главной страницы', async () => {
+   85 |             await veaMainPage.generalWorkabilityChecking();
+   86 |         });
+   87 |
+   88 |         await test.step('Проверка меню услуг', async () => {
+   89 |             await veaMainPage.navMenuChecking();
+   90 |         });
+   91 |
+   92 |         await test.step('Проверка поп-апа "Оставьте заявку"', async () => {
+   93 |             await veaMainPage.checkingSubmitRequestPopup();
+   94 |         });
+   95 |     });
+   96 |
+   97 |     test('Проверка работоспособности сайта sequoiapay.io', async ({ page }) => {
+   98 |         const sequoiaMainPage = new SequoiaMainPage(page);
+   99 |
+  100 |         await test.step('Проверка главной страницы', async () => {
+  101 |             await sequoiaMainPage.generalWorkabilityChecking();
+  102 |         });
+  103 |
+  104 |         await test.step('Проверка смены языка', async () => {
+  105 |             await sequoiaMainPage.changeSiteLanguage();
+  106 |         });
+  107 |     });
+  108 | });
+  109 |
+```
