@@ -5,7 +5,12 @@ import { finalScreenshots } from '../data/finalScreenshots';
 export class BasePage {
     pageUrl = null;
 
+    /**
+     * @param {import('playwright').Page} page
+     */
+
     constructor(page) {
+        /** @type {import('playwright').Page} */
         this.page = page;
 
         // Хранилище для скриншотов, которые нужно добавить в конец отчёта
