@@ -1,0 +1,1176 @@
+# Test info
+
+- Name: Проверка работоспособности сайтов >> Проверка работоспособности сайта mdmprint.ru
+- Location: /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.js:13:9
+
+# Error details
+
+```
+Error: locator.click: Test timeout of 30000ms exceeded.
+Call log:
+  - waiting for locator('div.header-content_desktop').locator('button.header-catalog__category').nth(7)
+    - locator resolved to <button class="tab header-catalog__category" data-tab="HeaderCatalog|HeaderCatalog_7">…</button>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <div class="n2-ss-layer-col n2-ss-layer-with-background n2-ss-layer-content n-uc-S7fZ3fRdBe1M-inner">…</div> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <p class="n2-font-23096ff3c308e5da5cea6400a33587eb-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-23096ff3c308e5da5cea6400a33587eb-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 100ms
+    - waiting for element to be visible, enabled and stable
+    - element is not stable
+  2 × retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="" loading="eager" id="n2-ss-3item6" data-skip-lazy="1" class="skip-lazy bjs lzl-ed" src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg" data-lzl-src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg"/> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-23096ff3c308e5da5cea6400a33587eb-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-23096ff3c308e5da5cea6400a33587eb-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="" loading="eager" id="n2-ss-3item6" data-skip-lazy="1" class="skip-lazy bjs lzl-ed" src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg" data-lzl-src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg"/> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 500ms
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <img alt="" loading="eager" id="n2-ss-3item6" data-skip-lazy="1" class="skip-lazy bjs lzl-ed" src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg" data-lzl-src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg"/> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  2 × retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-23096ff3c308e5da5cea6400a33587eb-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 500ms
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <div class="n2-ss-layer-col n2-ss-layer-with-background n2-ss-layer-content n-uc-4eq4YcrcL06s-inner">…</div> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  2 × retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="" loading="eager" id="n2-ss-3item11" data-skip-lazy="1" class="skip-lazy bjs lzl-ed" src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg" data-lzl-src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg"/> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-23096ff3c308e5da5cea6400a33587eb-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-23096ff3c308e5da5cea6400a33587eb-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="" loading="eager" id="n2-ss-3item11" data-skip-lazy="1" class="skip-lazy bjs lzl-ed" src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg" data-lzl-src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg"/> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 500ms
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <img alt="" loading="eager" id="n2-ss-3item11" data-skip-lazy="1" class="skip-lazy bjs lzl-ed" src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg" data-lzl-src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_new.svg"/> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  2 × retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-23096ff3c308e5da5cea6400a33587eb-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 500ms
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <div class="n2-ss-layer-row n2-ss-layer-with-background n-uc-Tf3R9uVgNv00-inner">…</div> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  2 × retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="" loading="eager" id="n2-ss-3item16" data-skip-lazy="1" class="skip-lazy bjs lzl-ed" src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_black.svg" data-lzl-src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_black.svg"/> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-782ede3841ec4d97fc5597365ab62d89-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-782ede3841ec4d97fc5597365ab62d89-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+    - retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <img alt="" loading="eager" id="n2-ss-3item16" data-skip-lazy="1" class="skip-lazy bjs lzl-ed" src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_black.svg" data-lzl-src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_black.svg"/> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 500ms
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - <img alt="" loading="eager" id="n2-ss-3item16" data-skip-lazy="1" class="skip-lazy bjs lzl-ed" src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_black.svg" data-lzl-src="//mdmprint.ru/wp-content/uploads/2024/02/logotype_black.svg"/> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  2 × retrying click action
+      - waiting 500ms
+      - waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+      - scrolling into view if needed
+      - done scrolling
+      - <p class="n2-font-782ede3841ec4d97fc5597365ab62d89-paragraph">…</p> from <div class="page-nwp">…</div> subtree intercepts pointer events
+  - retrying click action
+    - waiting 500ms
+
+    at /__w/sites.workability_tests/sites.workability_tests/PageObjects/MdmprintMainPage.js:64:34
+    at MdmprintMainPage.catalogChecking (/__w/sites.workability_tests/sites.workability_tests/PageObjects/MdmprintMainPage.js:55:9)
+    at /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.js:21:13
+    at /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.js:20:9
+```
+
+# Page snapshot
+
+```yaml
+- text: Менеджер Здравствуйте! Готовы помочь вам. Напишите нам, если у вас появятся вопросы.
+- img
+- banner:
+  - link "Студия дизайна":
+    - /url: https://litera.studio/
+    - text: Студия дизайна
+    - img
+  - link "Сувениры с логотипом":
+    - /url: https://mdmgifts.ru/
+    - text: Сувениры с логотипом
+    - img
+  - link "Оплата":
+    - /url: https://mdmprint.ru/oplata
+  - link "Доставка":
+    - /url: https://mdmprint.ru/dostavka
+  - link "Требования к макетам":
+    - /url: https://mdmprint.ru/trebovaniya-k-maketam
+  - text: zakaz@mdmprint.ru
+  - link "+7 (495) 256-10-00":
+    - /url: tel:+74952561000
+  - link:
+    - /url: https://t.me/MDMprint_bot?start=CAazpU7lLmW
+    - img
+  - link "Портфолио":
+    - /url: https://mdmprint.ru/portfolio
+  - link "Блог":
+    - /url: https://mdmprint.ru/blog
+  - link "Новости":
+    - /url: https://mdmprint.ru/news
+  - link "Написать директору":
+    - /url: https://mdmprint.ru/napisat-direktoru-mdmprint
+  - link "Экскурсия":
+    - /url: https://mdmprint.ru/ehkskursiya-po-tipografii
+  - link "Отзывы":
+    - /url: https://mdmprint.ru/otzyvy
+  - link "О компании":
+    - /url: https://mdmprint.ru/o-nas
+  - link "Преимущества компании":
+    - /url: https://mdmprint.ru/preimushhestva-kompanii
+  - link "Контакты":
+    - /url: https://mdmprint.ru/contacts
+  - link "Наша команда":
+    - /url: https://mdmprint.ru/team
+  - img
+  - img
+  - text: Каталог
+  - img
+  - text: Каталог продукции
+  - button "Листовая полиграфия":
+    - text: Листовая полиграфия
+    - img
+  - button "Многостраничная полиграфия":
+    - text: Многостраничная полиграфия
+    - img
+  - button "Наклейки, этикетки, стикеры":
+    - text: Наклейки, этикетки, стикеры
+    - img
+  - button "Визитки":
+    - text: Визитки
+    - img
+  - button "Коробки и упаковка":
+    - text: Коробки и упаковка
+    - img
+  - button "Колоды карт":
+    - text: Колоды карт
+    - img
+  - button "Настольные игры":
+    - text: Настольные игры
+    - img
+  - button "Полиграфия для выставок":
+    - text: Полиграфия для выставок
+    - img
+  - button "Полиграфия для маркетплейсов":
+    - text: Полиграфия для маркетплейсов
+    - img
+  - button "Полиграфия для туризма":
+    - text: Полиграфия для туризма
+    - img
+  - button "Календари":
+    - text: Календари
+    - img
+  - button "Сувениры с логотипом":
+    - text: Сувениры с логотипом
+    - img
+  - button "Корпоративный мерч":
+    - text: Корпоративный мерч
+    - img
+  - button "Широкоформатная печать":
+    - text: Широкоформатная печать
+    - img
+  - button "Рекламные конструкции":
+    - text: Рекламные конструкции
+    - img
+  - button "Печать на текстиле":
+    - text: Печать на текстиле
+    - img
+  - button "Печать на акриле":
+    - text: Печать на акриле
+    - img
+  - button "Печать на лентах":
+    - text: Печать на лентах
+    - img
+  - button "Проектная документация":
+    - text: Проектная документация
+    - img
+  - button "Каталог материалов":
+    - text: Каталог материалов
+    - img
+  - button "POS-материалы":
+    - text: POS-материалы
+    - img
+  - button "Пластиковые карты":
+    - text: Пластиковые карты
+    - img
+  - button "Папки":
+    - text: Папки
+    - img
+  - button "Технологии печати":
+    - text: Технологии печати
+    - img
+  - search:
+    - img
+    - textbox "Поиск на сайте"
+    - text: Поиск на сайте
+    - button:
+      - img
+  - button "Быстрый заказ"
+- img "Печать 3d стикеров в mdmprint"
+- img "Корпоративные сувениры в mdmprint"
+- img "Печать на акриле в mdmprint"
+- img "Упакуем ваш продукт в mdmprint"
+- img "Полиграфия для селлеров в mdmprint"
+- img "Печать для выставок в mdmprint"
+- img "Печать на текстиле в mdmprint"
+- img "Полиграфические услуги в mdmprint"
+- img "Mdmprint в социальных сетях"
+- note: Печать 3D стикеров
+- heading "Цифровая типография МДМпринт" [level=1]
+- heading "Полиграфические услуги" [level=2]
+- link "Визитки Визитки":
+  - /url: https://mdmprint.ru/pechat-vizitok
+  - paragraph: Визитки
+  - img "Визитки"
+- link "Календари Календари":
+  - /url: https://mdmprint.ru/pechat-kalendarey
+  - paragraph: Календари
+  - img "Календари"
+- link "Наклейки, Этикетки, Стикеры Наклейки, Этикетки, Стикеры":
+  - /url: https://mdmprint.ru/pechat-etiketok-i-nakleek
+  - paragraph: Наклейки, Этикетки, Стикеры
+  - img "Наклейки, Этикетки, Стикеры"
+- link "Многостраничная полиграфия Многостраничная полиграфия":
+  - /url: https://mdmprint.ru/mnogostranichnaya-poligrafiya
+  - paragraph: Многостраничная полиграфия
+  - img "Многостраничная полиграфия"
+- link "Папки Папки":
+  - /url: https://mdmprint.ru/papki
+  - paragraph: Папки
+  - img "Папки"
+- link "Листовая полиграфия Листовая полиграфия":
+  - /url: https://mdmprint.ru/listovaya-poligrafiya
+  - paragraph: Листовая полиграфия
+  - img "Листовая полиграфия"
+- link "POS-материалы pos-материалы":
+  - /url: https://mdmprint.ru/izgotovlenie-pos-materialov
+  - paragraph: POS-материалы
+  - img "pos-материалы"
+- link "Наружная печать Наружная печать":
+  - /url: https://mdmprint.ru/naruzhnaya-pechat
+  - paragraph: Наружная печать
+  - img "Наружная печать"
+- link "Проектная документация Проектная документация":
+  - /url: https://mdmprint.ru/pechat-proektnoj-dokumentacii
+  - paragraph: Проектная документация
+  - img "Проектная документация"
+- link "Пластиковые карты Пластиковые карты":
+  - /url: https://mdmprint.ru/izgotovlenie-plastikovyh-kart
+  - paragraph: Пластиковые карты
+  - img "Пластиковые карты"
+- link "Рекламные конструкции Рекламные конструкции":
+  - /url: https://mdmprint.ru/izgotovlenie-reklamnyh-konstrukcij
+  - paragraph: Рекламные конструкции
+  - img "Рекламные конструкции"
+- link "Коробки и упаковка Коробки и упаковка":
+  - /url: https://mdmprint.ru/pechat-i-izgotovlenie-korobok
+  - paragraph: Коробки и упаковка
+  - img "Коробки и упаковка"
+- heading "Корпоративные сувениры" [level=2]
+- group "1 / 7":
+  - link "Фирменный шоппер":
+    - /url: https://mdmprint.ru/portfolio/firmennyj-shopper-2
+    - img "Фирменный шоппер"
+- group "2 / 7":
+  - link "Фирменный блокнот":
+    - /url: https://mdmprint.ru/portfolio/bloknot-dlya-franchajzi-mdmprint
+    - img "Фирменный блокнот"
+- group "3 / 7":
+  - link "Брендированные карандаши":
+    - /url: https://mdmprint.ru/portfolio/firmaeenie-karandashi
+    - img "Брендированные карандаши"
+- group "4 / 7":
+  - link "Фирменные пластиковые ручки":
+    - /url: https://mdmprint.ru/portfolio/firmennye-plastikovye-ruchki
+    - img "Фирменные пластиковые ручки"
+- group "5 / 7":
+  - link "Фирменный стикерпак со смолой":
+    - /url: https://mdmprint.ru/portfolio/firmennyj-stikerpak-so-smoloj
+    - img "Фирменный стикерпак со смолой"
+- group "6 / 7":
+  - link "Фирменная кружка":
+    - /url: https://mdmprint.ru/portfolio/firmennaya-kruzhka
+    - img "Фирменная кружка"
+- group "7 / 7":
+  - link "Фирменный набор “Внутри важное”":
+    - /url: https://mdmprint.ru/portfolio/firmennyj-nabor-vnutri-vazhnoe
+    - img "Фирменный набор “Внутри важное”"
+- button "Previous slide" [disabled]:
+  - img
+- button "Next slide":
+  - img
+- link "Перейти в раздел":
+  - /url: https://mdmprint.ru/korporativnyj-merch
+- heading "Портфолио" [level=2]
+- group "1 / 6":
+  - link "Стикерпак с УФ ДТФ наклейками":
+    - /url: https://mdmprint.ru/portfolio/stikerpak-s-uf-dtf-naklejkami
+    - img "Стикерпак с УФ ДТФ наклейками"
+- group "2 / 6":
+  - link "УФ ДТФ наклейки на термос":
+    - /url: https://mdmprint.ru/portfolio/uf-dtf-naklejki-na-termos
+    - img "УФ ДТФ наклейки на термос"
+- group "3 / 6":
+  - link "УФ ДТФ наклейки на power bank":
+    - /url: https://mdmprint.ru/portfolio/uf-dtf-naklejki-na-power-bank
+    - img "УФ ДТФ наклейки на power bank"
+- group "4 / 6":
+  - link "УФ ДТФ наклейка на тубус":
+    - /url: https://mdmprint.ru/portfolio/uf-dtf-naklejka-na-tubus
+    - img "УФ ДТФ наклейка на тубус"
+- group "5 / 6":
+  - link "Набор УФ ДТФ наклеек":
+    - /url: https://mdmprint.ru/portfolio/nabor-uf-dtf-nakleek
+    - img "Набор УФ ДТФ наклеек"
+- group "6 / 6":
+  - link "Набор мотивирующих открыток":
+    - /url: https://mdmprint.ru/portfolio/nabor-motiviruyushhih-otkrytok
+    - img "Набор мотивирующих открыток"
+- button "Previous slide" [disabled]:
+  - img
+- button "Next slide":
+  - img
+- heading "Наши видео" [level=2]
+- group "1 / 20":
+  - img
+- group "2 / 20":
+  - img
+- group "3 / 20":
+  - img
+- group "4 / 20":
+  - img
+- group "5 / 20":
+  - img
+- group "6 / 20":
+  - img
+- group "7 / 20":
+  - img
+- group "8 / 20":
+  - img
+- group "9 / 20":
+  - img
+- group "10 / 20":
+  - img
+- group "11 / 20":
+  - img
+- group "12 / 20":
+  - img
+- group "13 / 20":
+  - img
+- group "14 / 20":
+  - img
+- group "15 / 20":
+  - img
+- group "16 / 20":
+  - img
+- group "17 / 20":
+  - img
+- group "18 / 20":
+  - img
+- group "19 / 20":
+  - img
+- group "20 / 20":
+  - img
+- button "Previous slide" [disabled]:
+  - img
+- button "Next slide":
+  - img
+- heading "Преимущества" [level=2]
+- img
+- paragraph: Общение в мессенджерах
+- paragraph: Оперативная связь по любым вопросам с отделом продаж типографии
+- img
+- paragraph: 250+ готовых форм для вырубки
+- paragraph: Экономим ваши деньги и время, затрачиваемые на изготовление заказа
+- img
+- paragraph: Скидки бизнесу на брендирование
+- paragraph: Подчеркнем фирменный стиль и подготовим велком пак для сотрудников
+- img
+- paragraph: Выгода селлерам на маркетплейсах
+- paragraph: Напечатаем упаковку и сопроводительную полиграфию для ваших товаров
+- img
+- paragraph: Работаем с 2012 года
+- paragraph: Полиграфические услуги любой сложности для вашего бизнеса
+- img
+- paragraph: 900+ классных работ в портфолио
+- paragraph: Регулярно добавляем новые примеры работ в портфолио на сайте
+- heading "О нас говорят в соцсетях" [level=2]
+- group "1 / 15"
+- group "2 / 15":
+  - img
+- group "3 / 15":
+  - img
+- group "4 / 15"
+- group "5 / 15"
+- group "6 / 15"
+- group "7 / 15"
+- group "8 / 15"
+- group "9 / 15":
+  - img
+- group "10 / 15"
+- group "11 / 15":
+  - img
+- group "12 / 15"
+- group "13 / 15":
+  - img
+- group "14 / 15":
+  - img
+- group "15 / 15":
+  - img
+- button "Previous slide" [disabled]:
+  - img
+- button "Next slide":
+  - img
+- heading [level=2]
+- link "ВКонтакте ВКонтакте https://vk.com/print2me":
+  - /url: https://vk.com/print2me
+  - img "ВКонтакте"
+  - text: ВКонтакте
+  - img
+  - text: https://vk.com/print2me
+- link "Telegram Telegram https://t.me/mdmprint":
+  - /url: https://t.me/mdmprint
+  - img "Telegram"
+  - text: Telegram
+  - img
+  - text: https://t.me/mdmprint
+- link "Одноклассники Одноклассники https://ok.ru/group/54334602412229":
+  - /url: https://ok.ru/group/54334602412229
+  - img "Одноклассники"
+  - text: Одноклассники
+  - img
+  - text: https://ok.ru/group/54334602412229
+- link "Instagram Instagram https://www.instagram.com/mdmprint.ru/":
+  - /url: https://www.instagram.com/mdmprint.ru/
+  - img "Instagram"
+  - text: Instagram
+  - img
+  - text: https://www.instagram.com/mdmprint.ru/
+- link "Threads Threads https://www.threads.net/@mdmprint.ru":
+  - /url: https://www.threads.net/@mdmprint.ru
+  - img "Threads"
+  - text: Threads
+  - img
+  - text: https://www.threads.net/@mdmprint.ru
+- link "TikTok TikTok https://www.tiktok.com/@mdmprint":
+  - /url: https://www.tiktok.com/@mdmprint
+  - img "TikTok"
+  - text: TikTok
+  - img
+  - text: https://www.tiktok.com/@mdmprint
+- link "YouTube YouTube https://www.youtube.com/print2me":
+  - /url: https://www.youtube.com/print2me
+  - img "YouTube"
+  - text: YouTube
+  - img
+  - text: https://www.youtube.com/print2me
+- link "Дзен Дзен https://zen.yandex.ru/mdmprint":
+  - /url: https://zen.yandex.ru/mdmprint
+  - img "Дзен"
+  - text: Дзен
+  - img
+  - text: https://zen.yandex.ru/mdmprint
+- link "TenChat TenChat https://tenchat.ru/mdmprint":
+  - /url: https://tenchat.ru/mdmprint
+  - img "TenChat"
+  - text: TenChat
+  - img
+  - text: https://tenchat.ru/mdmprint
+- link "Pinterest Pinterest https://ru.pinterest.com/mdmprint/":
+  - /url: https://ru.pinterest.com/mdmprint/
+  - img "Pinterest"
+  - text: Pinterest
+  - img
+  - text: https://ru.pinterest.com/mdmprint/
+- link "Rutube Rutube https://rutube.ru/channel/42463860/":
+  - /url: https://rutube.ru/channel/42463860/
+  - img "Rutube"
+  - text: Rutube
+  - img
+  - text: https://rutube.ru/channel/42463860/
+- img "TenChat"
+- heading "Нас благодарят" [level=2]
+- group "1 / 15":
+  - img "Нас благодарят 1"
+- group "2 / 15":
+  - img "Нас благодарят 2"
+- group "3 / 15":
+  - img "Нас благодарят 3"
+- group "4 / 15":
+  - img "Нас благодарят 4"
+- group "5 / 15":
+  - img "Нас благодарят 5"
+- group "6 / 15":
+  - img "Нас благодарят 6"
+- group "7 / 15":
+  - img "Нас благодарят 7"
+- group "8 / 15":
+  - img "Нас благодарят 8"
+- group "9 / 15":
+  - img "Нас благодарят 9"
+- group "10 / 15":
+  - img "Нас благодарят 10"
+- group "11 / 15":
+  - img "Нас благодарят 11"
+- group "12 / 15":
+  - img "Нас благодарят 12"
+- group "13 / 15":
+  - img "Нас благодарят 13"
+- group "14 / 15":
+  - img "Нас благодарят 14"
+- group "15 / 15":
+  - img "Нас благодарят 15"
+- button "Previous slide" [disabled]:
+  - img
+- button "Next slide":
+  - img
+- heading "Наш Telegram" [level=2]
+- group "1 / 10":
+  - link "Как выбрать идеальный вариант печати для вашего проекта? Выбор бумаги и отделки — решающий штрих, который делает вашу печатную продукцию запоминающейся.":
+    - /url: https://t.me/MDMprint/1570
+    - paragraph: Как выбрать идеальный вариант печати для вашего проекта? Выбор бумаги и отделки — решающий штрих, который делает вашу печатную продукцию запоминающейся.
+- group "2 / 10":
+  - link "Вы уже заказали печать бизнес-полиграфии со скидкой 15%? В апреле печатаем каталоги, книги, журналы и другую полиграфию с выгодой для вашего бизнеса.":
+    - /url: https://t.me/MDMprint/1563
+    - paragraph: Вы уже заказали печать бизнес-полиграфии со скидкой 15%? В апреле печатаем каталоги, книги, журналы и другую полиграфию с выгодой для вашего бизнеса.
+- group "3 / 10":
+  - link "Набор открыток на OZON Если вы давно не заглядывали в наш магазин на OZON, советуем как можно скорее это исправить. Там появилось море новинок!":
+    - /url: https://t.me/MDMprint/1559
+    - paragraph: Набор открыток на OZON Если вы давно не заглядывали в наш магазин на OZON, советуем как можно скорее это исправить. Там появилось море новинок!
+- group "4 / 10":
+  - link "Продлеваем акцию на печать книг, журналов, каталогов и... Другой полиграфии не только с переплётом на КБС, но и на КШС. Оформите в апреле заказ любым способом со скидкой 15%.":
+    - /url: https://t.me/MDMprint/1557
+    - paragraph: Продлеваем акцию на печать книг, журналов, каталогов и... Другой полиграфии не только с переплётом на КБС, но и на КШС. Оформите в апреле заказ любым способом со скидкой 15%.
+- group "5 / 10":
+  - 'link "Бирдекели: мерч, который всегда под рукой Брендированная подставка под кружку - маленькая, но заметная деталь, которая сделает вашу компанию ещё ближе к клиенту."':
+    - /url: https://t.me/MDMprint/1552
+    - paragraph: "Бирдекели: мерч, который всегда под рукой Брендированная подставка под кружку - маленькая, но заметная деталь, которая сделает вашу компанию ещё ближе к клиенту."
+- group "6 / 10":
+  - link "Так выглядит стенд из ПВХ И да, вы можете заказать у нас изготовление таких стендов с вашим персональным дизайном.":
+    - /url: https://t.me/MDMprint/1550
+    - paragraph: Так выглядит стенд из ПВХ И да, вы можете заказать у нас изготовление таких стендов с вашим персональным дизайном.
+- group "7 / 10":
+  - link "Почему колоды карт печатают на мелованном картоне? В отличие от дизайнерской бумаги, у мелованного картона гладкая структура и тонер равномерно ложится на поверхность.":
+    - /url: https://t.me/MDMprint/1547
+    - paragraph: Почему колоды карт печатают на мелованном картоне? В отличие от дизайнерской бумаги, у мелованного картона гладкая структура и тонер равномерно ложится на поверхность.
+- group "8 / 10":
+  - link "Планируете обновить каталоги, журналы и другую бизнес-полиграфию? До конца марта у нас действует скидка 15% на печать многостраничной полиграфии с переплётом на КБС.":
+    - /url: https://t.me/MDMprint/1546
+    - paragraph: Планируете обновить каталоги, журналы и другую бизнес-полиграфию? До конца марта у нас действует скидка 15% на печать многостраничной полиграфии с переплётом на КБС.
+- group "9 / 10":
+  - link "Хотите выпустить собственную колоду карт? Мы воплотим вашу идею в жизнь – от стильного бюджетного варианта до премиального исполнения с кашированной упаковкой!":
+    - /url: https://t.me/MDMprint/1539
+    - paragraph: Хотите выпустить собственную колоду карт? Мы воплотим вашу идею в жизнь – от стильного бюджетного варианта до премиального исполнения с кашированной упаковкой!
+- group "10 / 10":
+  - link "Больше, чем просто стикеры Просто хотим напомнить, что у нас вы можете заказать печать 3D стикеров для вашего проекта.":
+    - /url: https://t.me/MDMprint/1535
+    - paragraph: Больше, чем просто стикеры Просто хотим напомнить, что у нас вы можете заказать печать 3D стикеров для вашего проекта.
+- button "Previous slide" [disabled]:
+  - img
+- button "Next slide":
+  - img
+- heading "Наши клиенты" [level=2]
+- group "1 / 22":
+  - img "клиент mdmprint - 1"
+- group "2 / 22":
+  - img "клиент mdmprint - 2"
+- group "3 / 22":
+  - img "клиент mdmprint - 3"
+- group "4 / 22":
+  - img "клиент mdmprint - 4"
+- group "5 / 22":
+  - img "клиент mdmprint - 5"
+- group "6 / 22":
+  - img "клиент mdmprint - 6"
+- group "7 / 22":
+  - img "клиент mdmprint - 7"
+- group "8 / 22":
+  - img "клиент mdmprint - 8"
+- group "9 / 22":
+  - img "клиент mdmprint - 9"
+- group "10 / 22":
+  - img "клиент mdmprint - 10"
+- group "11 / 22":
+  - img "клиент mdmprint - 11"
+- group "12 / 22":
+  - img "клиент mdmprint - 12"
+- group "13 / 22":
+  - img "клиент mdmprint - 13"
+- group "14 / 22":
+  - img "клиент mdmprint - 14"
+- group "15 / 22":
+  - img "клиент mdmprint - 15"
+- group "16 / 22":
+  - img "клиент mdmprint - 16"
+- group "17 / 22":
+  - img "клиент mdmprint - 17"
+- group "18 / 22":
+  - img "клиент mdmprint - 18"
+- group "19 / 22":
+  - img "клиент mdmprint - 19"
+- group "20 / 22":
+  - img "клиент mdmprint - 20"
+- group "21 / 22":
+  - img "клиент mdmprint - 21"
+- group "22 / 22":
+  - img "клиент mdmprint - 22"
+- button "Previous slide" [disabled]:
+  - img
+- button "Next slide":
+  - img
+- contentinfo:
+  - text: Продукция
+  - link "Визитки":
+    - /url: https://mdmprint.ru/pechat-vizitok
+  - link "Открытки":
+    - /url: https://mdmprint.ru/pechat-otkrytok
+  - link "Плакаты и постеры":
+    - /url: https://mdmprint.ru/pechat-plakatov-i-posterov
+  - link "Блокноты":
+    - /url: https://mdmprint.ru/pechat-bloknotov
+  - link "Стикерпаки":
+    - /url: https://mdmprint.ru/pechat-stikerpakov
+  - link "Календари":
+    - /url: https://mdmprint.ru/pechat-kalendarey
+  - link "Сувениры с логотипом":
+    - /url: https://mdmprint.ru/suveniry-s-logotipom
+  - link "POS-материалы":
+    - /url: https://mdmprint.ru/izgotovlenie-pos-materialov
+  - text: Дополнительно
+  - link "Контакты":
+    - /url: https://mdmprint.ru/contacts
+  - link "Блог":
+    - /url: https://mdmprint.ru/blog
+  - link "Новости":
+    - /url: https://mdmprint.ru/news
+  - text: Информация
+  - link "Доставка":
+    - /url: https://mdmprint.ru/dostavka
+  - link "Оплата":
+    - /url: https://mdmprint.ru/oplata
+  - link "Требования к макетам":
+    - /url: https://mdmprint.ru/trebovaniya-k-maketam
+  - text: Правила и условия
+  - link "Публичная оферта":
+    - /url: https://mdmprint.ru/publichnaya-oferta
+  - link "Пользовательское соглашение":
+    - /url: https://mdmprint.ru/terms
+  - paragraph: Контакты
+  - link "Telegram":
+    - /url: https://t.me/MDMprint_bot?start=CAazpU7lLmW
+    - img
+    - text: Telegram
+  - text: +7 (495) 256-10-00
+  - img
+  - text: zakaz@mdmprint.ru
+  - img
+  - paragraph: г. Москва, ул. Орджоникидзе, 11с1А, подъезд 29
+  - paragraph: "Офис • Пн - Вс: 09:00 - 22:00"
+  - paragraph
+  - link:
+    - /url: https://t.me/mdmprint
+    - img
+  - link:
+    - /url: https://vk.com/print2me
+    - img
+  - link:
+    - /url: https://www.instagram.com/mdmprint.ru/
+    - img
+  - link:
+    - /url: https://www.youtube.com/print2me
+    - img
+  - link:
+    - /url: https://rutube.ru/channel/42463860/
+    - img
+  - link:
+    - /url: https://zen.yandex.ru/mdmprint
+    - img
+  - link:
+    - /url: https://ru.pinterest.com/mdmprint/
+    - img
+  - link:
+    - /url: https://www.tiktok.com/@mdmprint
+    - img
+  - link:
+    - /url: https://ok.ru/group/54334602412229
+    - img
+  - link:
+    - /url: https://tenchat.ru/mdmprint
+    - img
+  - link:
+    - /url: https://www.threads.net/@mdmprint.ru
+    - img
+  - paragraph: ООО «‎МДМПринт»
+  - paragraph: ИНН 7704815108
+  - paragraph: © 2012–2025
+  - link "Дизайн и разработка сайта":
+    - /url: https://vea.ru/
+    - text: Дизайн и разработка сайта
+    - img
+- paragraph: Свяжемся и проконсультируем
+- button:
+  - img
+- status
+- list
+- form "Contact form":
+  - textbox
+  - text: Имя *
+  - textbox
+  - text: Номер телефона *
+  - textbox
+  - text: example@mail.com * Способ связи Телефон
+  - img
+  - text: Telegram WhatsApp Телефон Email
+  - textbox
+  - text: Комментарий
+  - button "Выберите файлы":
+    - img
+    - text: Выберите файлы
+  - checkbox "Я согласен получать новости, специальные предложения и информацию об акциях." [checked]
+  - text: Я согласен получать новости, специальные предложения и информацию об акциях.
+  - button "Отправить"
+  - text: Нажимая на кнопку «Отправить», вы даёте согласие на обработку персональных данных в соответствии с ФЗ № 152 «О персональных данных» и соглашаетесь с
+  - link "Политикой конфиденциальности":
+    - /url: /publichnaya-oferta
+  - text: .
+- img
+- paragraph: Заявка принята
+- button:
+  - img
+- paragraph:
+  - text: C вами свяжутся
+  - strong: в ближайшее время
+  - text: по указанному способу.
+- paragraph: Пока ожидаете, познакомьтесь с нами поближе через наши страницы в соцсетях или посмотрите наши работы.
+- link:
+  - /url: https://t.me/mdmprint
+  - img
+- link:
+  - /url: https://vk.com/print2me
+  - img
+- link:
+  - /url: https://www.instagram.com/mdmprint.ru/
+  - img
+- link:
+  - /url: https://www.youtube.com/print2me
+  - img
+- link:
+  - /url: https://rutube.ru/channel/42463860/
+  - img
+- text: Готово
+- paragraph: Оформление заказа
+- button:
+  - img
+- status
+- list
+- form "Contact form":
+  - paragraph
+  - paragraph
+  - paragraph: "Итого: р."
+  - textbox
+  - text: Имя *
+  - textbox
+  - text: Номер телефона *
+  - textbox
+  - text: example@mail.com * Способ связи Телефон
+  - img
+  - text: Telegram WhatsApp Телефон Email
+  - paragraph: Уведомления о статусе заказа будут поступать на электронную почту.
+  - textbox
+  - text: Комментарий
+  - button "Выберите файлы":
+    - img
+    - text: Выберите файлы
+  - checkbox "Я согласен получать новости, специальные предложения и информацию об акциях." [checked]
+  - text: Я согласен получать новости, специальные предложения и информацию об акциях.
+  - button "Отправить"
+  - text: Нажимая на кнопку «Отправить», вы даёте согласие на обработку персональных данных в соответствии с ФЗ № 152 «О персональных данных» и соглашаетесь с
+  - link "Политикой конфиденциальности":
+    - /url: /publichnaya-oferta
+  - text: .
+- img
+- paragraph: Заказ принят
+- button:
+  - img
+- button:
+  - img
+- paragraph
+- paragraph
+- paragraph: "Итого: р."
+- paragraph:
+  - text: C вами свяжутся
+  - strong: в ближайшее время
+  - text: по указанному способу.
+- paragraph: Пока ожидаете, познакомьтесь с нами поближе через наши страницы в соцсетях или посмотрите наши работы.
+- link:
+  - /url: https://t.me/mdmprint
+  - img
+- link:
+  - /url: https://vk.com/print2me
+  - img
+- link:
+  - /url: https://www.instagram.com/mdmprint.ru/
+  - img
+- link:
+  - /url: https://www.youtube.com/print2me
+  - img
+- link:
+  - /url: https://rutube.ru/channel/42463860/
+  - img
+- text: Готово
+- img
+- paragraph: Не удалось оформить заказ
+- button:
+  - img
+- paragraph
+- paragraph
+- paragraph: "Итого: р."
+- paragraph: Произошла ошибка. Попробуйте ещё раз или напишите нам, если нужна помощь.
+- link:
+  - /url: https://t.me/mdmprint
+  - img
+- link:
+  - /url: https://vk.com/print2me
+  - img
+- link:
+  - /url: https://www.instagram.com/mdmprint.ru/
+  - img
+- link:
+  - /url: https://www.youtube.com/print2me
+  - img
+- link:
+  - /url: https://rutube.ru/channel/42463860/
+  - img
+- button "Попробовать снова":
+  - img
+  - text: Попробовать снова
+- paragraph
+- button:
+  - img
+- paragraph: Авторизация
+- button:
+  - img
+- text: Электронная почта или номер телефона
+- textbox "Электронная почта или номер телефона"
+- text: Пароль
+- textbox "Пароль"
+- button:
+  - img
+- button "Войти"
+- button "Не помню пароль"
+- button "Регистрация"
+- paragraph: Регистрация
+- button:
+  - img
+- text: Электронная почта *
+- textbox "Электронная почта *"
+- text: Номер телефона *
+- textbox "Номер телефона *"
+- text: Пароль *
+- textbox "Пароль *"
+- button:
+  - img
+- text: Имя *
+- textbox "Имя *"
+- text: Фамилия
+- textbox "Фамилия"
+- button "Зарегистрироваться"
+- paragraph: Обратная связь
+- button:
+  - img
+- status
+- list
+- form "Contact form":
+  - textbox
+  - text: Имя *
+  - textbox
+  - text: Номер телефона *
+  - textbox
+  - text: Электронная почта * Способ связи Телефон
+  - img
+  - text: Telegram WhatsApp Телефон Email
+  - textbox
+  - text: Комментарий
+  - checkbox "Я согласен получать новости, специальные предложения и информацию об акциях." [checked]
+  - text: Я согласен получать новости, специальные предложения и информацию об акциях.
+  - button "Отправить"
+  - text: Нажимая на кнопку «Отправить», вы даёте согласие на обработку персональных данных в соответствии с ФЗ № 152 «О персональных данных» и соглашаетесь с
+  - link "Политикой конфиденциальности":
+    - /url: /publichnaya-oferta
+  - text: .
+- paragraph: Оставьте отзыв на сайте
+- button:
+  - img
+- status
+- list
+- form "Contact form":
+  - img
+  - img
+  - img
+  - img
+  - img
+  - textbox
+  - text: Ваше имя *
+  - textbox
+  - text: Ваш e-mail *
+  - textbox
+  - text: Напишите ваш отзыв *
+  - button "Загрузить макеты / файлы":
+    - img
+    - text: Загрузить макеты / файлы
+  - checkbox "Я согласен получать новости, специальные предложения и информацию об акциях." [checked]
+  - text: Я согласен получать новости, специальные предложения и информацию об акциях.
+  - button "Отправить"
+  - text: Нажимая на кнопку «Отправить», вы даёте согласие на обработку персональных данных в соответствии с ФЗ № 152 «О персональных данных» и соглашаетесь с
+  - link "Политикой конфиденциальности":
+    - /url: /terms
+  - text: .
+- paragraph:
+  - img
+  - text: Отзыв отправлен
+- button:
+  - img
+- text: Спасибо! Ваш отзыв отправлен и скоро появится на сайте!
+- button "Понятно"
+- status
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect } from '@playwright/test';
+   2 |
+   3 | import { BasePage } from './BasePage';
+   4 |
+   5 | export class MdmprintMainPage extends BasePage {
+   6 |     pageUrl = 'https://mdmprint.ru';
+   7 |
+   8 |     constructor(page) {
+   9 |         super(page);
+   10 |
+   11 |         // Хедер
+   12 |         this.header = page.locator('div.header-content_desktop');
+   13 |         // Кнопка "Каталог"
+   14 |         this.catalogButton = this.header.locator('div.header-catalog__btn');
+   15 |         // Кнопка "Быстрый заказ"
+   16 |         this.quickOrderButton = this.header.locator('button[data-popup="quick-order"]');
+   17 |         // Поле поиска
+   18 |         // Само поле
+   19 |         this.searchField = this.header.locator('form[role="search"]');
+   20 |         // Поле для ввода текста
+   21 |         this.searchInput = this.searchField.locator('input[name="s"]');
+   22 |         // Кнопка поиска
+   23 |         this.searchButton = this.searchField.locator('button[type="submit"]');
+   24 |         // Выпадающий список с результатами поиска
+   25 |         this.searchResultDropdown = this.header.locator('span.search-results__list');
+   26 |         // Сами результаты поиска
+   27 |         this.searchResultItems = this.searchResultDropdown.locator('a');
+   28 |
+   29 |         // Поп-апы
+   30 |         // Быстрый заказ
+   31 |         // Сам поп-ап
+   32 |         this.quickOrderPopup = page.locator('div.popup--quick-order.popup--active');
+   33 |         // Кнопка скрытия
+   34 |         this.quickOrderPopupCloseButton = this.quickOrderPopup.locator('button.popup-close');
+   35 |
+   36 |         // Каталог
+   37 |         // Сам каталог (список категорий)
+   38 |         this.catalogLeftSide = this.header.locator('div.header-catalog__content');
+   39 |         // Категории
+   40 |         this.categoriesItems = this.header.locator('button.header-catalog__category');
+   41 |         // Раскрытая правая часть меню каталога
+   42 |         this.catalogActiveArea = page.locator('div.header-catalog__page.tab-item--active');
+   43 |         // Ссылки на категории в раскрытой части меню
+   44 |         this.randomCategoryLinkInActiveArea = this.catalogActiveArea.locator('a.header-catalog__page-header');
+   45 |         // Ссылки на подкатегории в раскрытой части меню
+   46 |         this.randomSubcategoryLinkInActiveArea = this.catalogActiveArea.locator('a.header-catalog__group-header');
+   47 |     }
+   48 |
+   49 |     async catalogChecking() {
+   50 |         await test.step('Открытие меню каталога', async () => {
+   51 |             await this.catalogButton.click();
+   52 |             await this.catalogLeftSide.waitFor('visible');
+   53 |         });
+   54 |
+   55 |         await test.step('Раскрытие случайной категории в меню каталога', async () => {
+   56 |             // Получаем все элементы категорий
+   57 |             const categories = await this.categoriesItems.all();
+   58 |
+   59 |             // Выбираем случайный индекс
+   60 |             let randomIndex = Math.floor(Math.random() * categories.length);
+   61 |             const randomCategory = categories[randomIndex];
+   62 |
+   63 |             // Кликаем на случайную категорию
+>  64 |             await randomCategory.click();
+      |                                  ^ Error: locator.click: Test timeout of 30000ms exceeded.
+   65 |         });
+   66 |
+   67 |         await this.takeAScreenshotForReport('Каталог');
+   68 |     }
+   69 |
+   70 |     async checkingQuickOrderPopup() {
+   71 |         await test.step('Открытие поп-апа "Быстрый заказ"', async () => {
+   72 |             await this.quickOrderButton.click();
+   73 |             await this.quickOrderPopup.waitFor('visible');
+   74 |             await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
+   75 |         });
+   76 |
+   77 |         await this.takeAScreenshotForReport('Поп-ап "Быстрый заказ"');
+   78 |
+   79 |         await test.step('Скрытие поп-апа "Быстрый заказ"', async () => {
+   80 |             await this.quickOrderPopupCloseButton.click();
+   81 |             await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor('hidden');
+   82 |         });
+   83 |     }
+   84 |
+   85 |     async checkingSearch() {
+   86 |         await test.step('Ввод текста в поле поиска', async () => {
+   87 |             await this.searchInput.fill('Визитки');
+   88 |             await expect(this.searchInput).toHaveValue('Визитки');
+   89 |         });
+   90 |
+   91 |         await test.step('Проверка выпадающего списка результатов поиска', async () => {
+   92 |             // Проверка дропдауна с результатми поиска
+   93 |             await this.searchResultDropdown.waitFor('visible');
+   94 |             expect(await this.searchResultItems.count()).toBeGreaterThan(0);
+   95 |
+   96 |             // Наведение на случайный аункт в дропдауне
+   97 |             // Получаем все элементы результатов поиска
+   98 |             const resultItems = await this.searchResultItems.all();
+   99 |
+  100 |             // Выбираем случайный индекс
+  101 |             let randomIndex = Math.floor(Math.random() * resultItems.length);
+  102 |             const randomResultItem = resultItems[randomIndex];
+  103 |
+  104 |             // Наведение курсора на случайный пункт
+  105 |             await randomResultItem.hover();
+  106 |
+  107 |             // Скриншот
+  108 |             await this.takeAScreenshotForReport('Дропдаун результатов поиска');
+  109 |         });
+  110 |
+  111 |         await test.step('Проверка страницы результатов поиска', async () => {
+  112 |             // Клик по кнопке поиска и ожидание перехода на страницу результатов
+  113 |             const [response] = await Promise.all([
+  114 |                 this.page.waitForNavigation({ waitUntil: 'load' }),
+  115 |                 this.searchButton.click(),
+  116 |             ]);
+  117 |
+  118 |             // Проверяем URL и статус
+  119 |             expect(this.page.url()).toContain('mdmprint.ru/?s=');
+  120 |             expect(response.status()).toBe(200);
+  121 |
+  122 |             // Скролл и скриншот
+  123 |             await this.scrollToEndOfThePage();
+  124 |             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
+  125 |         });
+  126 |     }
+  127 | }
+  128 |
+```
