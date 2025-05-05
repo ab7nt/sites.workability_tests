@@ -50,7 +50,7 @@ jobs:
                   npm install -D allure-playwright @playwright/test allure-commandline
 
             - name: Capture job start time
-              run: echo "job_started_at=$(TZ=Europe/Moscow date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
+              run: echo "job_started_at=$(TZ="Europe/Moscow" date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
 
             - name: Create Allure results directory
               run: mkdir -p allure-results
