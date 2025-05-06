@@ -57,6 +57,6 @@ export class LiteraMainPage extends BasePage {
             await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
         });
 
-        await this.takeAScreenshotForReport('Поп-ап ""Оставить заявку""');
+        await this.takeAScreenshotForReport('Поп-ап "Оставить заявку"');
     }
 }
