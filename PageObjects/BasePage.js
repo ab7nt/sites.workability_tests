@@ -146,14 +146,20 @@ export class BasePage {
     async scrollToEndOfThePage() {
         await test.step('Скролл страницы для нормализации загрузки', async () => {
             await this.page.evaluate(() => {
+                if (!document.body) {
+                    throw new Error('document.body is not available on this page.');
+                }
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             });
-            await this.page.waitForTimeout(2000);
+            await this.page.waitForTimeout(2000); // Ожидание завершения скролла
 
             await this.page.evaluate(() => {
+                if (!document.body) {
+                    throw new Error('document.body is not available on this page.');
+                }
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
-            await this.page.waitForTimeout(2000);
+            await this.page.waitForTimeout(2000); // Ожидание завершения скролла
         });
     }
 
@@ -183,6 +189,21 @@ export class BasePage {
             } catch (error) {
                 console.error('Ошибка при снятии скриншота:', error);
             }
+        });
+    }
+
+    // Проверка страницы результатов поиска
+    async checkSearchResultsPage() {
+        await test.step('Проверка страницы результатов поиска', async () => {
+            // Клик по кнопке поиска и ожидание загрузки страницы
+            await Promise.all([
+                this.page.waitForLoadState('load'), // Ожидание полной загрузки страницы
+                this.searchButton.click(),
+            ]);
+
+            // Скролл и скриншот
+            await this.scrollToEndOfThePage();
+            await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
         });
     }
 }

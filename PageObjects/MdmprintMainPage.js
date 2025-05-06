@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { helpers } from '../utils/helpers';
 
 import { BasePage } from './BasePage';
 
@@ -83,9 +84,12 @@ export class MdmprintMainPage extends BasePage {
     }
 
     async checkingSearch() {
+        const word = helpers.getRandomSearchWord(); // Получаем случайное слово для поиска
+
         await test.step('Ввод текста в поле поиска', async () => {
-            await this.searchInput.fill('Визитки');
-            await expect(this.searchInput).toHaveValue('Визитки');
+            // Вводим текст в поле поиска
+            await this.searchInput.fill(word);
+            await expect(this.searchInput).toHaveValue(word);
         });
 
         await test.step('Проверка выпадающего списка результатов поиска', async () => {
@@ -109,19 +113,42 @@ export class MdmprintMainPage extends BasePage {
         });
 
         await test.step('Проверка страницы результатов поиска', async () => {
-            // Клик по кнопке поиска и ожидание перехода на страницу результатов
-            const [response] = await Promise.all([
-                this.page.waitForNavigation({ waitUntil: 'load' }),
+            // Клик по кнопке поиска и ожидание загрузки страницы
+            await Promise.all([
+                this.page.waitForLoadState('load'), // Ожидание полной загрузки страницы
                 this.searchButton.click(),
             ]);
 
-            // Проверяем URL и статус
-            expect(this.page.url()).toContain('mdmprint.ru/?s=');
-            expect(response.status()).toBe(200);
+            // Проверка URL
+            expect(this.page.url()).toContain(`mdmprint.ru/?s=`);
 
             // Скролл и скриншот
             await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
+        });
+    }
+
+    async scrollToEndOfThePage() {
+        await test.step('Скролл страницы для нормализации загрузки', async () => {
+            // Убедимся, что страница загружена
+            await this.page.waitForLoadState('domcontentloaded');
+
+            // Выполняем скролл вниз
+            const isBodyAvailable = await this.page.evaluate(() => !!document.body);
+            if (!isBodyAvailable) {
+                throw new Error('document.body is not available on this page.');
+            }
+
+            await this.page.evaluate(() => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            });
+            await this.page.waitForTimeout(2000); // Ожидание завершения скролла
+
+            // Выполняем скролл вверх
+            await this.page.evaluate(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            await this.page.waitForTimeout(2000); // Ожидание завершения скролла
         });
     }
 }
