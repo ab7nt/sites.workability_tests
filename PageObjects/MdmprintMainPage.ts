@@ -1,12 +1,26 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page, Locator } from '@playwright/test';
 import { helpers } from '../utils/helpers';
-
 import { BasePage } from './BasePage';
 
 export class MdmprintMainPage extends BasePage {
-    pageUrl = 'https://mdmprint.ru';
+    pageUrl: string = 'https://mdmprint.ru';
+    header: Locator;
+    catalogButton: Locator;
+    quickOrderButton: Locator;
+    searchField: Locator;
+    searchInput: Locator;
+    searchButton: Locator;
+    searchResultDropdown: Locator;
+    searchResultItems: Locator;
+    quickOrderPopup: Locator;
+    quickOrderPopupCloseButton: Locator;
+    catalogLeftSide: Locator;
+    categoriesItems: Locator;
+    catalogActiveArea: Locator;
+    randomCategoryLinkInActiveArea: Locator;
+    randomSubcategoryLinkInActiveArea: Locator;
 
-    constructor(page) {
+    constructor(page: Page) {
         super(page);
 
         // Хедер
@@ -16,124 +30,88 @@ export class MdmprintMainPage extends BasePage {
         // Кнопка "Быстрый заказ"
         this.quickOrderButton = this.header.locator('button[data-popup="quick-order"]');
         // Поле поиска
-        // Само поле
         this.searchField = this.header.locator('form[role="search"]');
-        // Поле для ввода текста
         this.searchInput = this.searchField.locator('input[name="s"]');
-        // Кнопка поиска
         this.searchButton = this.searchField.locator('button[type="submit"]');
-        // Выпадающий список с результатами поиска
         this.searchResultDropdown = this.header.locator('span.search-results__list');
-        // Сами результаты поиска
         this.searchResultItems = this.searchResultDropdown.locator('a');
 
         // Поп-апы
-        // Быстрый заказ
-        // Сам поп-ап
         this.quickOrderPopup = page.locator('div.popup--quick-order.popup--active');
-        // Кнопка скрытия
         this.quickOrderPopupCloseButton = this.quickOrderPopup.locator('button.popup-close');
 
         // Каталог
-        // Сам каталог (список категорий)
         this.catalogLeftSide = this.header.locator('div.header-catalog__content');
-        // Категории
         this.categoriesItems = this.header.locator('button.header-catalog__category');
-        // Раскрытая правая часть меню каталога
         this.catalogActiveArea = page.locator('div.header-catalog__page.tab-item--active');
-        // Ссылки на категории в раскрытой части меню
         this.randomCategoryLinkInActiveArea = this.catalogActiveArea.locator('a.header-catalog__page-header');
-        // Ссылки на подкатегории в раскрытой части меню
         this.randomSubcategoryLinkInActiveArea = this.catalogActiveArea.locator('a.header-catalog__group-header');
     }
 
-    async catalogChecking() {
+    async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
             await this.catalogButton.click();
-            await this.catalogLeftSide.waitFor('visible');
+            await this.catalogLeftSide.waitFor({ state: 'visible' });
         });
 
         await test.step('Раскрытие случайной категории в меню каталога', async () => {
-            // Получаем все элементы категорий
             const categories = await this.categoriesItems.all();
-
-            // Выбираем случайный индекс
             let randomIndex = Math.floor(Math.random() * categories.length);
             const randomCategory = categories[randomIndex];
-
-            // Кликаем на случайную категорию
             await randomCategory.click();
         });
 
         await this.takeAScreenshotForReport('Каталог');
     }
 
-    async checkingQuickOrderPopup() {
+    async checkingQuickOrderPopup(): Promise<void> {
         await test.step('Открытие поп-апа "Быстрый заказ"', async () => {
             await this.quickOrderButton.click();
-            await this.quickOrderPopup.waitFor('visible');
-            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
+            await this.quickOrderPopup.waitFor({ state: 'visible' });
+            await this.page.waitForTimeout(1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Поп-ап "Быстрый заказ"');
 
         await test.step('Скрытие поп-апа "Быстрый заказ"', async () => {
             await this.quickOrderPopupCloseButton.click();
-            await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor('hidden');
+            await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor({ state: 'hidden' });
         });
     }
 
-    async checkingSearch() {
+    async checkingSearch(): Promise<void> {
         const word = helpers.getRandomSearchWord(); // Получаем случайное слово для поиска
 
         await test.step('Ввод текста в поле поиска', async () => {
-            // Вводим текст в поле поиска
             await this.searchInput.fill(word);
             await expect(this.searchInput).toHaveValue(word);
         });
 
         await test.step('Проверка выпадающего списка результатов поиска', async () => {
-            // Проверка дропдауна с результатми поиска
-            await this.searchResultDropdown.waitFor('visible');
+            await this.searchResultDropdown.waitFor({ state: 'visible' });
             expect(await this.searchResultItems.count()).toBeGreaterThan(0);
 
-            // Наведение на случайный аункт в дропдауне
-            // Получаем все элементы результатов поиска
             const resultItems = await this.searchResultItems.all();
-
-            // Выбираем случайный индекс
             let randomIndex = Math.floor(Math.random() * resultItems.length);
             const randomResultItem = resultItems[randomIndex];
-
-            // Наведение курсора на случайный пункт
             await randomResultItem.hover();
 
-            // Скриншот
             await this.takeAScreenshotForReport('Дропдаун результатов поиска');
         });
 
         await test.step('Проверка страницы результатов поиска', async () => {
-            // Клик по кнопке поиска и ожидание загрузки страницы
-            await Promise.all([
-                this.page.waitForLoadState('load'), // Ожидание полной загрузки страницы
-                this.searchButton.click(),
-            ]);
+            await Promise.all([this.page.waitForLoadState('load'), this.searchButton.click()]);
 
-            // Проверка URL
             expect(this.page.url()).toContain(`mdmprint.ru/?s=`);
 
-            // Скролл и скриншот
             await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
         });
     }
 
-    async scrollToEndOfThePage() {
+    async scrollToEndOfThePage(): Promise<void> {
         await test.step('Скролл страницы для нормализации загрузки', async () => {
-            // Убедимся, что страница загружена
             await this.page.waitForLoadState('domcontentloaded');
-
-            // Выполняем скролл вниз
             const isBodyAvailable = await this.page.evaluate(() => !!document.body);
             if (!isBodyAvailable) {
                 throw new Error('document.body is not available on this page.');
@@ -142,13 +120,12 @@ export class MdmprintMainPage extends BasePage {
             await this.page.evaluate(() => {
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             });
-            await this.page.waitForTimeout(2000); // Ожидание завершения скролла
+            await this.page.waitForTimeout(2000);
 
-            // Выполняем скролл вверх
             await this.page.evaluate(() => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
-            await this.page.waitForTimeout(2000); // Ожидание завершения скролла
+            await this.page.waitForTimeout(2000);
         });
     }
 }

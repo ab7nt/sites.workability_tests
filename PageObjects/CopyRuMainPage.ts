@@ -1,10 +1,18 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class CopyRuMainPage extends BasePage {
-    pageUrl = 'https://copy.ru';
+    pageUrl: string = 'https://copy.ru';
+    header: Locator;
+    catalogButton: Locator;
+    quickOrderButton: Locator;
+    quickOrderPopup: Locator;
+    catalog: Locator;
+    catalogLeftSide: Locator;
+    categoriesItems: Locator;
+    catalogRightSide: Locator;
 
-    constructor(page) {
+    constructor(page: Page) {
         super(page);
 
         // Хедер
@@ -30,10 +38,10 @@ export class CopyRuMainPage extends BasePage {
         this.catalogRightSide = this.catalog.locator('ul#menu-katalog1-1');
     }
 
-    async catalogChecking() {
+    async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
             await this.catalogButton.click();
-            await this.catalogLeftSide.waitFor('visible');
+            await this.catalogLeftSide.waitFor({ state: 'visible' });
         });
 
         await test.step('Раскрытие случайной категории в меню каталога', async () => {
@@ -51,11 +59,11 @@ export class CopyRuMainPage extends BasePage {
         await this.takeAScreenshotForReport('Каталог');
     }
 
-    async checkingQuickOrderPopup() {
+    async checkingQuickOrderPopup(): Promise<void> {
         await test.step('Открытие поп-апа "Быстрый заказ"', async () => {
             await this.quickOrderButton.click();
-            await this.quickOrderPopup.waitFor('visible');
-            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
+            await this.quickOrderPopup.waitFor({ state: 'visible' });
+            await this.page.waitForTimeout(1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Поп-ап "Быстрый заказ"');

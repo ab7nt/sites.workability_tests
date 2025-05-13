@@ -1,18 +1,7 @@
-import { test, describe } from 'playwright/test';
+import { test } from '../fixtures';
 
-import '../fixtures.js';
-
-import { VeaMainPage } from '../PageObjects/VeaMainPage';
-import { MdmprintMainPage } from '../PageObjects/MdmprintMainPage';
-import { CopyRuMainPage } from '../PageObjects/CopyRuMainPage';
-import { OneTmMainPage } from '../PageObjects/OneTmMainPage';
-import { LiteraMainPage } from '../PageObjects/LiteraMainPage';
-import { SequoiaMainPage } from '../PageObjects/SequoiaMainPage';
-
-describe('Проверка работоспособности сайтов', () => {
-    test('Проверка работоспособности сайта mdmprint.ru', async ({ page }) => {
-        const mdmprintMainPage = new MdmprintMainPage(page);
-
+test.describe('Проверка работоспособности сайтов', () => {
+    test('Проверка работоспособности сайта mdmprint.ru', async ({ mdmprintMainPage }) => {
         await test.step('Проверка главной страницы', async () => {
             await mdmprintMainPage.generalWorkabilityChecking();
         });
@@ -30,9 +19,7 @@ describe('Проверка работоспособности сайтов', () 
         });
     });
 
-    test('Проверка работоспособности сайта copy.ru', async ({ page }) => {
-        const copyRuMainPage = new CopyRuMainPage(page);
-
+    test('Проверка работоспособности сайта copy.ru', async ({ copyRuMainPage }) => {
         await test.step('Проверка главной страницы', async () => {
             await copyRuMainPage.generalWorkabilityChecking();
         });
@@ -46,9 +33,7 @@ describe('Проверка работоспособности сайтов', () 
         });
     });
 
-    test('Проверка работоспособности сайта 1tm.ru', async ({ page }) => {
-        const oneTmMainPage = new OneTmMainPage(page);
-
+    test('Проверка работоспособности сайта 1tm.ru', async ({ oneTmMainPage }) => {
         await test.step('Проверка главной страницы', async () => {
             await oneTmMainPage.generalWorkabilityChecking();
         });
@@ -62,9 +47,7 @@ describe('Проверка работоспособности сайтов', () 
         });
     });
 
-    test('Проверка работоспособности сайта litera.studio', async ({ page }) => {
-        const literaMainPage = new LiteraMainPage(page);
-
+    test('Проверка работоспособности сайта litera.studio', async ({ literaMainPage }) => {
         await test.step('Проверка главной страницы', async () => {
             await literaMainPage.generalWorkabilityChecking();
         });
@@ -78,9 +61,7 @@ describe('Проверка работоспособности сайтов', () 
         });
     });
 
-    test('Проверка работоспособности сайта vea.ru', async ({ page }) => {
-        const veaMainPage = new VeaMainPage(page);
-
+    test('Проверка работоспособности сайта vea.ru', async ({ veaMainPage }) => {
         await test.step('Проверка главной страницы', async () => {
             await veaMainPage.generalWorkabilityChecking();
         });
@@ -94,9 +75,7 @@ describe('Проверка работоспособности сайтов', () 
         });
     });
 
-    test('Проверка работоспособности сайта sequoiapay.io', async ({ page }) => {
-        const sequoiaMainPage = new SequoiaMainPage(page);
-
+    test('Проверка работоспособности сайта sequoiapay.io', async ({ sequoiaMainPage }) => {
         await test.step('Проверка главной страницы', async () => {
             await sequoiaMainPage.generalWorkabilityChecking();
         });

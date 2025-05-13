@@ -1,10 +1,16 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LiteraMainPage extends BasePage {
-    pageUrl = 'https://litera.studio';
+    pageUrl: string = 'https://litera.studio';
+    header: Locator;
+    requestButton: Locator;
+    burgerMenuButton: Locator;
+    burgerMenu: Locator;
+    categoriesItems: Locator;
+    submitRequestPopup: Locator;
 
-    constructor(page) {
+    constructor(page: Page) {
         super(page);
 
         // Хедер
@@ -24,10 +30,10 @@ export class LiteraMainPage extends BasePage {
         this.submitRequestPopup = page.locator('div.popup--order.popup--active');
     }
 
-    async burgerMenuChecking() {
+    async burgerMenuChecking(): Promise<void> {
         await test.step('Открытие бургер-меню', async () => {
             await this.burgerMenuButton.click();
-            await this.burgerMenu.waitFor('visible');
+            await this.burgerMenu.waitFor({ state: 'visible' });
         });
 
         await test.step('Наведение на случайный пункт в меню услуг', async () => {
@@ -40,7 +46,7 @@ export class LiteraMainPage extends BasePage {
 
             // Наведение курсора на случайную категорию
             await randomCategories.hover();
-            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
+            await this.page.waitForTimeout(1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Бургер-меню');
@@ -50,11 +56,11 @@ export class LiteraMainPage extends BasePage {
         });
     }
 
-    async checkingSubmitRequestPopup() {
+    async checkingSubmitRequestPopup(): Promise<void> {
         await test.step('Открытие поп-апа "Оставить заявку"', async () => {
             await this.requestButton.click();
-            await this.submitRequestPopup.waitFor('visible');
-            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
+            await this.submitRequestPopup.waitFor({ state: 'visible' });
+            await this.page.waitForTimeout(1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Поп-ап "Оставить заявку"');

@@ -1,10 +1,16 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class VeaMainPage extends BasePage {
-    pageUrl = 'https://vea.ru';
+    pageUrl: string = 'https://vea.ru';
+    header: Locator;
+    requestButtonInHeader: Locator;
+    servicesDropdownButton: Locator;
+    servicesDropdown: Locator;
+    servicesNavItemLink: Locator;
+    submitRequestPopup: Locator;
 
-    constructor(page) {
+    constructor(page: Page) {
         super(page);
 
         // Хедер
@@ -24,7 +30,7 @@ export class VeaMainPage extends BasePage {
         this.submitRequestPopup = page.locator('div.popup--order.popup--active');
     }
 
-    async navMenuChecking() {
+    async navMenuChecking(): Promise<void> {
         await test.step('Открытие меню услуг', async () => {
             await this.servicesDropdownButton.hover();
             // await this.servicesDropdown.waitFor('visible');
@@ -40,17 +46,17 @@ export class VeaMainPage extends BasePage {
 
             // Наведение курсора на случайную услугу
             await randomNavItemLink.hover();
-            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
+            await this.page.waitForTimeout(1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Меню услуг');
     }
 
-    async checkingSubmitRequestPopup() {
+    async checkingSubmitRequestPopup(): Promise<void> {
         await test.step('Открытие поп-апа "Оставить заявку"', async () => {
             await this.requestButtonInHeader.click();
-            await this.submitRequestPopup.waitFor('visible');
-            await this.page.waitForTimeout(1 * 1000); // Пропуск анимации
+            await this.submitRequestPopup.waitFor({ state: 'visible' });
+            await this.page.waitForTimeout(1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Поп-ап "Оставить заявку"');

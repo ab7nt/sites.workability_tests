@@ -4,9 +4,10 @@
     "description": "Автотесты для проверки работоспособности сайта",
     "main": "index.js",
     "scripts": {
-        "test": "playwright test",
-        "test:headed": "playwright test --headed",
-        "test:debug": "playwright test --debug"
+        "test": "npx playwright test",
+        "test:headed": "npx playwright test --headed",
+        "test:debug": "npx playwright test --debug",
+        "build": "tsc"
     },
     "keywords": [],
     "author": "",
@@ -15,7 +16,9 @@
         "@playwright/test": "^1.52.0"
     },
     "devDependencies": {
-        "allure-playwright": "^2.0.0"
+        "@types/node": "^22.15.17",
+        "allure-playwright": "^2.0.0",
+        "typescript": "^5.4.0"
     },
     "engines": {
         "node": ">=16.0.0"
