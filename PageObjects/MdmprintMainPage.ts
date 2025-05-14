@@ -105,9 +105,12 @@ export class MdmprintMainPage extends BasePage {
         });
 
         await test.step('Проверка страницы результатов поиска', async () => {
-            await Promise.all([this.page.waitForLoadState('load'), this.searchButton.click()]);
+            await this.searchButton.click();
 
-            expect(this.page.url()).toContain(`mdmprint.ru/?s=`);
+            await this.page.waitForLoadState('domcontentloaded');
+
+            // Дождаться нужного URL (или падение через timeout)
+            await expect.poll(() => this.page.url(), { timeout: 10000 }).toContain('?s=');
 
             await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });

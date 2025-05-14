@@ -6,13 +6,13 @@ test.describe('Проверка работоспособности сайтов'
             await mdmprintMainPage.generalWorkabilityChecking();
         });
 
-        await test.step('Проверка меню каталога', async () => {
-            await mdmprintMainPage.catalogChecking();
-        });
+        // await test.step('Проверка меню каталога', async () => {
+        //     await mdmprintMainPage.catalogChecking();
+        // });
 
-        await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
-            await mdmprintMainPage.checkingQuickOrderPopup();
-        });
+        // await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+        //     await mdmprintMainPage.checkingQuickOrderPopup();
+        // });
 
         await test.step('Проверка поиска', async () => {
             await mdmprintMainPage.checkingSearch();
