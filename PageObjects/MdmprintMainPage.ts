@@ -2,6 +2,7 @@ import { test, expect, Page, Locator } from '@playwright/test';
 import { helpers } from '../utils/helpers';
 import { BasePage } from './BasePage';
 
+// Класс для главной страницы mdmprint.ru
 export class MdmprintMainPage extends BasePage {
     pageUrl: string = 'https://mdmprint.ru';
     header: Locator;
@@ -23,6 +24,7 @@ export class MdmprintMainPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
+        // Инициализация локаторов
         // Хедер
         this.header = page.locator('div.header-content_desktop');
         // Кнопка "Каталог"
@@ -48,6 +50,7 @@ export class MdmprintMainPage extends BasePage {
         this.randomSubcategoryLinkInActiveArea = this.catalogActiveArea.locator('a.header-catalog__group-header');
     }
 
+    // Метод для проверки меню каталога
     async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
             await this.catalogButton.click();
@@ -64,6 +67,7 @@ export class MdmprintMainPage extends BasePage {
         await this.takeAScreenshotForReport('Каталог');
     }
 
+    // Метод для проверки поп-апа "Быстрый заказ"
     async checkingQuickOrderPopup(): Promise<void> {
         await test.step('Открытие поп-апа "Быстрый заказ"', async () => {
             await this.quickOrderButton.click();
@@ -79,6 +83,7 @@ export class MdmprintMainPage extends BasePage {
         });
     }
 
+    // Метод для проверки поиска
     async checkingSearch(): Promise<void> {
         const word = helpers.getRandomSearchWord(); // Получаем случайное слово для поиска
 
@@ -106,26 +111,6 @@ export class MdmprintMainPage extends BasePage {
 
             await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
-        });
-    }
-
-    async scrollToEndOfThePage(): Promise<void> {
-        await test.step('Скролл страницы для нормализации загрузки', async () => {
-            await this.page.waitForLoadState('domcontentloaded');
-            const isBodyAvailable = await this.page.evaluate(() => !!document.body);
-            if (!isBodyAvailable) {
-                throw new Error('document.body is not available on this page.');
-            }
-
-            await this.page.evaluate(() => {
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            });
-            await this.page.waitForTimeout(2000);
-
-            await this.page.evaluate(() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            await this.page.waitForTimeout(2000);
         });
     }
 }

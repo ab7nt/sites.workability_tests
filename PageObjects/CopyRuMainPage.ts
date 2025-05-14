@@ -1,6 +1,7 @@
 import { test, expect, Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
+// Класс для главной страницы Copy.ru
 export class CopyRuMainPage extends BasePage {
     pageUrl: string = 'https://copy.ru';
     header: Locator;
@@ -15,6 +16,7 @@ export class CopyRuMainPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
+        // Инициализация локаторов
         // Хедер
         this.header = page.locator('header.header--pc');
         // Кнопка "Каталог"
@@ -38,6 +40,7 @@ export class CopyRuMainPage extends BasePage {
         this.catalogRightSide = this.catalog.locator('ul#menu-katalog1-1');
     }
 
+    // Метод для проверки меню каталога
     async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
             await this.catalogButton.click();
@@ -59,6 +62,7 @@ export class CopyRuMainPage extends BasePage {
         await this.takeAScreenshotForReport('Каталог');
     }
 
+    // Метод для проверки поп-апа "Быстрый заказ"
     async checkingQuickOrderPopup(): Promise<void> {
         await test.step('Открытие поп-апа "Быстрый заказ"', async () => {
             await this.quickOrderButton.click();

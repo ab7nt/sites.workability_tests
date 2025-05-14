@@ -1,6 +1,7 @@
 import { test, expect, Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
+// Класс для главной страницы litera.studio
 export class LiteraMainPage extends BasePage {
     pageUrl: string = 'https://litera.studio';
     header: Locator;
@@ -13,6 +14,7 @@ export class LiteraMainPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
+        // Инициализация локаторов
         // Хедер
         this.header = page.locator('header');
         // Кнопка "Оставить заявку"
@@ -30,6 +32,7 @@ export class LiteraMainPage extends BasePage {
         this.submitRequestPopup = page.locator('div.popup--order.popup--active');
     }
 
+    // Метод для проверки бургер-меню
     async burgerMenuChecking(): Promise<void> {
         await test.step('Открытие бургер-меню', async () => {
             await this.burgerMenuButton.click();
@@ -56,6 +59,7 @@ export class LiteraMainPage extends BasePage {
         });
     }
 
+    // Метод для проверки поп-апа "Оставить заявку"
     async checkingSubmitRequestPopup(): Promise<void> {
         await test.step('Открытие поп-апа "Оставить заявку"', async () => {
             await this.requestButton.click();

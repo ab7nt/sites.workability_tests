@@ -1,7 +1,7 @@
 import { expect, test, Page, Request, Locator } from '@playwright/test';
-// import { Page, Request } from 'playwright';
 import { finalScreenshots } from '../data/finalScreenshots';
 
+// Интерфейс для медленных запросов
 interface SlowRequest {
     url: string;
     duration: string;
@@ -9,6 +9,7 @@ interface SlowRequest {
     resourceType: string;
 }
 
+// Базовый класс для страниц
 export class BasePage {
     protected page: Page;
     protected pageUrl: string | null = null;
@@ -18,10 +19,12 @@ export class BasePage {
     constructor(page: Page) {
         this.page = page;
 
+        // Инициализация локаторов
         this.headerTitle = page.locator('h1');
         this.searchButton = page.locator('[data-testid="search-button"], button[type="submit"]');
     }
 
+    // Сбор и прикрепление медленных запросов к отчёту
     async logSlowRequests(threshold: number = 5000, timeout: number = 10000): Promise<SlowRequest[]> {
         const slowRequests: SlowRequest[] = [];
         let timeoutReached = false;
@@ -73,6 +76,7 @@ export class BasePage {
         return slowRequests;
     }
 
+    // Открытие страницы
     async open(): Promise<void> {
         await test.step('Открытие главной страницы сайта', async () => {
             await this.logSlowRequests();
@@ -81,12 +85,14 @@ export class BasePage {
         });
     }
 
+    // Проверка отображения элементов
     async checkingTheVisibilityOfElements(): Promise<void> {
         await test.step('Проверка отображения заголовка H1', async () => {
             await expect(this.headerTitle).toBeVisible();
         });
     }
 
+    // Скриншот страницы
     async takeAScreenshot(): Promise<void> {
         await test.step('Снятие скриншота страницы и сохранение в файл', async () => {
             const name = this.pageUrl?.split('//')[1] ?? 'screenshot';
@@ -94,6 +100,7 @@ export class BasePage {
         });
     }
 
+    // Скриншот страницы с прикреплением к отчёту
     async takeAScreenshotForReport(screenshotName = 'Скриншот', options: { fullPage?: boolean } = {}): Promise<void> {
         await test.step('Снятие скриншота страницы и прикрепление к отчёту', async () => {
             const screenshot = await this.page.screenshot({
@@ -121,6 +128,7 @@ export class BasePage {
         });
     }
 
+    // Скролл страницы для нормализации загрузки
     async scrollToEndOfThePage(): Promise<void> {
         await test.step('Скролл страницы для нормализации загрузки', async () => {
             await this.page.evaluate(() => {
@@ -137,6 +145,7 @@ export class BasePage {
         });
     }
 
+    // Основная функция для проверки работоспособности страницы
     async generalWorkabilityChecking(): Promise<void> {
         await test.step('Общие проверки', async () => {
             try {
@@ -150,6 +159,7 @@ export class BasePage {
         });
     }
 
+    // Проверка страницы результатов поиска
     async checkSearchResultsPage(): Promise<void> {
         await test.step('Проверка страницы результатов поиска', async () => {
             await Promise.all([this.page.waitForLoadState('load'), this.searchButton.click()]);

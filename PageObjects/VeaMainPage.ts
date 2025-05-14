@@ -1,6 +1,7 @@
 import { test, expect, Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
+// Класс для главной страницы vea.ru
 export class VeaMainPage extends BasePage {
     pageUrl: string = 'https://vea.ru';
     header: Locator;
@@ -13,6 +14,7 @@ export class VeaMainPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
+        // Инициализация локаторов
         // Хедер
         this.header = page.locator('header');
         // Кнопка "Оставить заявку"
@@ -30,6 +32,7 @@ export class VeaMainPage extends BasePage {
         this.submitRequestPopup = page.locator('div.popup--order.popup--active');
     }
 
+    // Метод для проверки меню услуг
     async navMenuChecking(): Promise<void> {
         await test.step('Открытие меню услуг', async () => {
             await this.servicesDropdownButton.hover();
@@ -52,6 +55,7 @@ export class VeaMainPage extends BasePage {
         await this.takeAScreenshotForReport('Меню услуг');
     }
 
+    // Метод для проверки поп-апа "Оставить заявку"
     async checkingSubmitRequestPopup(): Promise<void> {
         await test.step('Открытие поп-апа "Оставить заявку"', async () => {
             await this.requestButtonInHeader.click();

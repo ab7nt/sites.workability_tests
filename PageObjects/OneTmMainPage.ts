@@ -1,6 +1,7 @@
 import { test, expect, Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
+// Класс для главной страницы 1-tm.ru
 export class OneTmMainPage extends BasePage {
     pageUrl: string = 'https://1-tm.ru';
     header: Locator;
@@ -13,6 +14,7 @@ export class OneTmMainPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
+        // Инициализация локаторов
         // Хедер
         this.header = page.locator('header');
         // Кнопка "Оставить заявку"
@@ -28,6 +30,7 @@ export class OneTmMainPage extends BasePage {
         this.onlineConsultationPopup = page.locator('div.popup--consult.popup--active');
     }
 
+    // Метод для проверки бургер-меню
     async burgerMenuChecking(): Promise<void> {
         await test.step('Открытие бургер-меню', async () => {
             await this.burgerMenuButton.click();
@@ -50,6 +53,7 @@ export class OneTmMainPage extends BasePage {
         await this.takeAScreenshotForReport('Бургер меню');
     }
 
+    // Метод для проверки поп-апа "Онлайн-консультация"
     async checkingOnlineConsultationPopup(): Promise<void> {
         await test.step('Открытие поп-апа "Онлайн-консультация"', async () => {
             await this.onlineConsultationButtonInHeader.click();

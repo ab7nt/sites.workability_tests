@@ -1,6 +1,7 @@
 import { test, expect, Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
+// Класс для главной страницы sequoiapay.io
 export class SequoiaMainPage extends BasePage {
     pageUrl: string = 'https://sequoiapay.io';
     header: Locator;
@@ -13,6 +14,7 @@ export class SequoiaMainPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
+        // Инициализация локаторов
         /// Хедер
         this.header = page.locator('header#header');
         // Смена языка
@@ -27,6 +29,7 @@ export class SequoiaMainPage extends BasePage {
         this.topSectionTitle = this.topSection.locator('h1');
     }
 
+    // Метод для проверки смены языка
     async changeSiteLanguage(): Promise<void> {
         await test.step('Проверка английского текста в заголовке', async () => {
             // Проверка английского текста в заголовке (с заменёнными неразрывными пробелами)
