@@ -1,0 +1,53 @@
+Ошибка при выполнении общих проверок: page.goto: Test timeout of 30000ms exceeded.
+Call log:
+  - navigating to "https://1-tm.ru/", waiting until "load"
+
+    at /__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:83:46
+    at OneTmMainPage.open (/__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:81:9)
+    at /__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:152:17
+    at OneTmMainPage.generalWorkabilityChecking (/__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:150:9)
+    at /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:38:13
+    at /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:37:9 {
+  [Symbol(step)]: {
+    stepId: 'pw:api@10',
+    location: {
+      file: '/__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts',
+      line: 83,
+      column: 46
+    },
+    category: 'pw:api',
+    title: 'page.goto(https://1-tm.ru)',
+    apiName: 'page.goto',
+    params: {
+      url: 'https://1-tm.ru',
+      referer: 'workability-checking',
+      waitUntil: 'load'
+    },
+    boxedStack: undefined,
+    steps: [],
+    attachmentIndices: [],
+    info: TestStepInfoImpl {
+      annotations: [],
+      _testInfo: [TestInfoImpl],
+      _stepId: 'pw:api@10'
+    },
+    complete: [Function: complete],
+    endWallTime: 1747213409967,
+    error: {
+      message: 'Error: page.goto: Test timeout of 30000ms exceeded.\n' +
+        'Call log:\n' +
+        '\x1B[2m  - navigating to "https://1-tm.ru/", waiting until "load"\x1B[22m\n',
+      stack: 'Error: page.goto: Test timeout of 30000ms exceeded.\n' +
+        'Call log:\n' +
+        '\x1B[2m  - navigating to "https://1-tm.ru/", waiting until "load"\x1B[22m\n' +
+        '\n' +
+        '    at /__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:83:46\n' +
+        '    at OneTmMainPage.open (/__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:81:9)\n' +
+        '    at /__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:152:17\n' +
+        '    at OneTmMainPage.generalWorkabilityChecking (/__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:150:9)\n' +
+        '    at /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:38:13\n' +
+        '    at /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:37:9',
+      cause: undefined
+    }
+  }
+}
