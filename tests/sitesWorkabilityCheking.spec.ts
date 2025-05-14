@@ -6,13 +6,13 @@ test.describe('Проверка работоспособности сайтов'
             await mdmprintMainPage.generalWorkabilityChecking();
         });
 
-        // await test.step('Проверка меню каталога', async () => {
-        //     await mdmprintMainPage.catalogChecking();
-        // });
+        await test.step('Проверка меню каталога', async () => {
+            await mdmprintMainPage.catalogChecking();
+        });
 
-        // await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
-        //     await mdmprintMainPage.checkingQuickOrderPopup();
-        // });
+        await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+            await mdmprintMainPage.checkingQuickOrderPopup();
+        });
 
         await test.step('Проверка поиска', async () => {
             await mdmprintMainPage.checkingSearch();
@@ -31,19 +31,23 @@ test.describe('Проверка работоспособности сайтов'
         await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
             await copyRuMainPage.checkingQuickOrderPopup();
         });
+
+        await test.step('Проверка поиска', async () => {
+            await copyRuMainPage.checkingSearch();
+        });
     });
 
-    test('Проверка работоспособности сайта 1tm.ru', async ({ oneTmMainPage }) => {
+    test('Проверка работоспособности сайта 1-tm.ru', async ({ oneTmMainPage }) => {
         await test.step('Проверка главной страницы', async () => {
             await oneTmMainPage.generalWorkabilityChecking();
         });
 
         await test.step('Проверка бургер-меню', async () => {
-            await oneTmMainPage.burgerMenuChecking();
+            await oneTmMainPage.catalogChecking();
         });
 
         await test.step('Проверка поп-апа "Онлайн-консультация"', async () => {
-            await oneTmMainPage.checkingOnlineConsultationPopup();
+            await oneTmMainPage.checkingQuickOrderPopup();
         });
     });
 
@@ -53,11 +57,11 @@ test.describe('Проверка работоспособности сайтов'
         });
 
         await test.step('Проверка бургер-меню', async () => {
-            await literaMainPage.burgerMenuChecking();
+            await literaMainPage.catalogChecking();
         });
 
         await test.step('Проверка поп-апа "Оставьте заявку"', async () => {
-            await literaMainPage.checkingSubmitRequestPopup();
+            await literaMainPage.checkingQuickOrderPopup();
         });
     });
 
@@ -67,11 +71,11 @@ test.describe('Проверка работоспособности сайтов'
         });
 
         await test.step('Проверка меню услуг', async () => {
-            await veaMainPage.navMenuChecking();
+            await veaMainPage.catalogChecking();
         });
 
         await test.step('Проверка поп-апа "Оставьте заявку"', async () => {
-            await veaMainPage.checkingSubmitRequestPopup();
+            await veaMainPage.checkingQuickOrderPopup();
         });
     });
 

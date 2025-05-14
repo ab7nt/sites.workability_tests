@@ -4,7 +4,7 @@ import { BasePage } from './BasePage';
 // Класс для главной страницы sequoiapay.io
 export class SequoiaMainPage extends BasePage {
     pageUrl: string = 'https://sequoiapay.io';
-    header: Locator;
+    // header: Locator;
     changeLanguageDropdownButton: Locator;
     changeLanguageDropdown: Locator;
     changeLanguageItemLink: Locator;
@@ -16,11 +16,11 @@ export class SequoiaMainPage extends BasePage {
 
         // Инициализация локаторов
         /// Хедер
-        this.header = page.locator('header#header');
+        // this.header = page.locator('header#header');
         // Смена языка
-        this.changeLanguageDropdownButton = this.header.locator('div.dropdown');
+        this.changeLanguageDropdownButton = this.header.sequoia.locator('div.dropdown');
         // Сам дропдаун
-        this.changeLanguageDropdown = this.header.locator('div.dropdown__list');
+        this.changeLanguageDropdown = this.header.sequoia.locator('div.dropdown__list');
         // Услуги
         this.changeLanguageItemLink = this.changeLanguageDropdown.locator('a');
         // Блок с заголовком
