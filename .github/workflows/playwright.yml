@@ -20,6 +20,7 @@ jobs:
                   echo "job_emoji=✅" >> $GITHUB_ENV
                   echo "tests_exit_code=0" >> $GITHUB_ENV
                   echo "job_exit_code=0" >> $GITHUB_ENV
+                  echo "REPORT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
             - name: Checkout code and gh-pages
               uses: actions/checkout@v3
@@ -34,9 +35,7 @@ jobs:
                   if git show-ref --verify refs/remotes/origin/gh-pages; then
                     git worktree add --force gh-pages origin/gh-pages
                     mkdir -p allure-results/history
-                    cp -r gh-pages/history/* allure-results/history/ || echo "No history found - first run?"
-                    echo "Содержимое allure-results/history:"
-                    ls -la allure-results/history || echo "Папка истории пуста"
+                    cp -r gh-pages/${{ env.REPORT_DATE }}/history/* allure-results/history/ || echo "No history found - first run?"
                   else
                     echo "No gh-pages branch found - first run?"
                   fi
@@ -57,7 +56,6 @@ jobs:
 
             - name: Set Allure environment and executor info
               run: |
-                  # Environment (в формате JSON для удобства)
                   echo '{
                     "Project": "Мониторинг сайтов",
                     "Environment": "Production",
@@ -66,12 +64,10 @@ jobs:
                     "OS": "${{ runner.os }}",
                     "Node.js": "$(node --version)",
                     "Playwright": "$(npx playwright --version)",
-                    "Browser": "Chromium $(npx playwright install --dry-run | grep chromium | cut -d" " -f2)",
                     "Run ID": "${{ github.run_id }}",
                     "Commit": "${{ github.sha }}"
                   }' > allure-results/environment.json
 
-                  # Executor (CI информация)
                   echo '{
                     "name": "GitHub Actions",
                     "type": "github",
@@ -79,7 +75,7 @@ jobs:
                     "buildOrder": "${{ github.run_id }}",
                     "buildName": "${{ github.workflow }} #${{ github.run_number }}",
                     "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                    "reportUrl": "https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/",
+                    "reportUrl": "https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/${{ env.REPORT_DATE }}/",
                     "reportName": "Allure Report"
                   }' > allure-results/executor.json
 
@@ -97,7 +93,7 @@ jobs:
             - name: Generate Allure report with history
               if: always()
               run: |
-                  REPORT_URL="https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/"
+                  REPORT_URL="https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/${{ env.REPORT_DATE }}/"
                   echo "REPORT_URL=${REPORT_URL}" >> $GITHUB_ENV
                   npx allure generate allure-results --clean -o allure-report \
                     --title "Отчёт мониторинга сайтов" \
@@ -118,20 +114,30 @@ jobs:
                     echo "job_status=С ошибками" >> $GITHUB_ENV
                     echo "job_emoji=❌" >> $GITHUB_ENV
                     echo "job_exit_code=1" >> $GITHUB_ENV
-                    ls -la
                   fi
 
-            - name: Deploy to GitHub Pages
+            - name: Deploy dated report to GitHub Pages
               if: always()
               uses: peaceiris/actions-gh-pages@v3
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./allure-report
                   publish_branch: gh-pages
+                  destination_dir: ${{ env.REPORT_DATE }}
                   force_orphan: false
                   keep_files: true
                   user_name: 'GitHub Actions'
                   user_email: 'actions@github.com'
+
+            - name: Collect last 7 report links
+              if: always()
+              run: |
+                  cd gh-pages
+                  echo "past_reports_list<<EOF" >> $GITHUB_ENV
+                  for d in $(ls -d 20*/ | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
+                    echo "- https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/$d" >> $GITHUB_ENV
+                  done
+                  echo "EOF" >> $GITHUB_ENV
 
             - name: Update job status
               if: always()
@@ -153,6 +159,9 @@ jobs:
                   echo "${{ env.job_emoji }} Результат проверки работоспособности сайтов: ${{ env.job_status }}" >> $GITHUB_ENV
                   echo "Время запуска: ${{ env.job_started_at }}" >> $GITHUB_ENV
                   echo "Ссылка на отчёт: ${{ env.REPORT_URL }}" >> $GITHUB_ENV
+                  echo "" >> $GITHUB_ENV
+                  echo "📂 Предыдущие отчёты за 7 дней (если есть):" >> $GITHUB_ENV
+                  echo "${{ env.past_reports_list }}" >> $GITHUB_ENV
                   if [ ${{ env.tests_exit_code }} -ne 0 ]; then
                     echo "Тесты завершились с ошибками (код: ${{ env.tests_exit_code }})" >> $GITHUB_ENV
                   fi
