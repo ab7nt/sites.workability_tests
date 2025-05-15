@@ -1,0 +1,136 @@
+# Test info
+
+- Name: Проверка работоспособности сайтов >> Проверка работоспособности сайта vea.ru >> Проверка поп-апа "Оставьте заявку"
+- Location: /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:81:13
+
+# Error details
+
+```
+Error: locator.click: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('header').locator('div.header__request button.popup-open')
+
+    at /__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:402:52
+    at VeaMainPage.checkingQuickOrderPopup (/__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:401:20)
+    at /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:82:31
+```
+
+# Test source
+
+```ts
+  302 |     // Основная функция для проверки работоспособности страницы
+  303 |     async generalWorkabilityChecking(): Promise<void> {
+  304 |         await test.step('Общие проверки', async () => {
+  305 |             try {
+  306 |                 await this.open();
+  307 |                 await this.checkingTheVisibilityOfElements();
+  308 |                 await this.scrollToEndOfThePage();
+  309 |                 await this.takeAScreenshotForReport('Главная страница', { fullPage: true });
+  310 |             } catch (error) {
+  311 |                 console.error('Ошибка при выполнении общих проверок:', error);
+  312 |             }
+  313 |         });
+  314 |     }
+  315 |
+  316 |     // Проверка страницы результатов поиска
+  317 |     async checkSearchResultsPage(): Promise<void> {
+  318 |         await test.step('Проверка страницы результатов поиска', async () => {
+  319 |             await Promise.all([this.page.waitForLoadState('load'), this.searchButton[this.site].click()]);
+  320 |
+  321 |             await this.scrollToEndOfThePage();
+  322 |             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
+  323 |         });
+  324 |     }
+  325 |
+  326 |     // Метод для проверки поиска
+  327 |     async checkingSearch(): Promise<void> {
+  328 |         const word = helpers.getRandomSearchWord(this.site); // Случайное слово для поиска
+  329 |
+  330 |         await test.step('Ввод текста в поле поиска', async () => {
+  331 |             // Открытие поля поиска (если требуется)
+  332 |             const sitesRequiringClick = new Set(['litera', 'onetm']);
+  333 |             if (sitesRequiringClick.has(this.site)) {
+  334 |                 await this.headerSearchButton[this.site].click();
+  335 |             }
+  336 |
+  337 |             // Ввод текста в поле поиска
+  338 |             await this.searchInput[this.site].fill(word);
+  339 |             await expect(this.searchInput[this.site]).toHaveValue(word);
+  340 |         });
+  341 |
+  342 |         await test.step('Проверка выпадающего списка результатов поиска', async () => {
+  343 |             await this.searchResultDropdown[this.site].waitFor({ state: 'visible' });
+  344 |             expect(await this.searchResultItems[this.site].count()).toBeGreaterThan(0);
+  345 |
+  346 |             const resultItems = await this.searchResultItems[this.site].all();
+  347 |             let randomIndex = Math.floor(Math.random() * resultItems.length);
+  348 |             const randomResultItem = resultItems[randomIndex];
+  349 |             await randomResultItem.hover();
+  350 |
+  351 |             await this.takeAScreenshotForReport('Дропдаун результатов поиска');
+  352 |         });
+  353 |
+  354 |         await test.step('Проверка страницы результатов поиска', async () => {
+  355 |             await this.searchButton[this.site].click();
+  356 |
+  357 |             await this.page.waitForLoadState('domcontentloaded');
+  358 |
+  359 |             // Дождаться нужного URL (или падение через timeout)
+  360 |             await expect.poll(() => this.page.url(), { timeout: 10000 }).toContain('?s=');
+  361 |
+  362 |             await this.scrollToEndOfThePage();
+  363 |             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
+  364 |         });
+  365 |     }
+  366 |
+  367 |     // Метод для проверки меню каталога
+  368 |     async catalogChecking(): Promise<void> {
+  369 |         await test.step('Открытие меню каталога', async () => {
+  370 |             // Навести или кликнуть, в зависимости от сайта
+  371 |             if (this.site === 'litera') {
+  372 |                 await this.catalogButton[this.site].hover();
+  373 |             } else {
+  374 |                 await this.catalogButton[this.site].click();
+  375 |             }
+  376 |
+  377 |             // Дождаться загрузки каталога
+  378 |             await this.catalogLeftSide[this.site].waitFor({ state: 'visible' });
+  379 |         });
+  380 |
+  381 |         await test.step('Раскрытие случайной категории в меню каталога', async () => {
+  382 |             const categories = await this.categoriesItems[this.site].all();
+  383 |             let randomIndex = Math.floor(Math.random() * categories.length);
+  384 |             const randomCategory = categories[randomIndex];
+  385 |
+  386 |             // Навести или кликнуть, в зависимости от сайта
+  387 |             if (this.site === 'mdmprint') {
+  388 |                 await randomCategory.click();
+  389 |             } else {
+  390 |                 await randomCategory.hover();
+  391 |             }
+  392 |
+  393 |             await this.page.waitForTimeout(2000); // Пропуск анимации
+  394 |         });
+  395 |
+  396 |         await this.takeAScreenshotForReport('Каталог');
+  397 |     }
+  398 |
+  399 |     // Метод для проверки поп-апа "Быстрый заказ", ""Оставить заявку" и т.д.
+  400 |     async checkingQuickOrderPopup(): Promise<void> {
+  401 |         await test.step('Открытие поп-апа', async () => {
+> 402 |             await this.quickOrderButton[this.site].click();
+      |                                                    ^ Error: locator.click: Target page, context or browser has been closed
+  403 |             await this.quickOrderPopup[this.site].waitFor({ state: 'visible' });
+  404 |             await this.page.waitForTimeout(1000); // Пропуск анимации
+  405 |         });
+  406 |
+  407 |         await this.takeAScreenshotForReport('Поп-ап заявки');
+  408 |
+  409 |         await test.step('Скрытие поп-апа "Быстрый заказ"', async () => {
+  410 |             await this.quickOrderPopupCloseButton[this.site].click();
+  411 |             await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor({ state: 'hidden' });
+  412 |         });
+  413 |     }
+  414 | }
+  415 |
+```

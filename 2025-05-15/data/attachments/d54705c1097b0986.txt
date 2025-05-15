@@ -1,0 +1,79 @@
+# Test info
+
+- Name: Проверка работоспособности сайтов >> Проверка работоспособности сайта sequoiapay.io >> Проверка смены языка
+- Location: /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:91:13
+
+# Error details
+
+```
+Error: locator.innerText: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('section#top-section').locator('h1')
+
+    at /__w/sites.workability_tests/sites.workability_tests/PageObjects/SequoiaMainPage.ts:36:64
+    at SequoiaMainPage.changeSiteLanguage (/__w/sites.workability_tests/sites.workability_tests/PageObjects/SequoiaMainPage.ts:34:20)
+    at /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:92:35
+```
+
+# Test source
+
+```ts
+   1 | import { test, expect, Page, Locator } from '@playwright/test';
+   2 | import { BasePage } from './BasePage';
+   3 |
+   4 | // Класс для главной страницы sequoiapay.io
+   5 | export class SequoiaMainPage extends BasePage {
+   6 |     pageUrl: string = 'https://sequoiapay.io';
+   7 |     // header: Locator;
+   8 |     changeLanguageDropdownButton: Locator;
+   9 |     changeLanguageDropdown: Locator;
+  10 |     changeLanguageItemLink: Locator;
+  11 |     topSection: Locator;
+  12 |     topSectionTitle: Locator;
+  13 |
+  14 |     constructor(page: Page) {
+  15 |         super(page);
+  16 |
+  17 |         // Инициализация локаторов
+  18 |         /// Хедер
+  19 |         // this.header = page.locator('header#header');
+  20 |         // Смена языка
+  21 |         this.changeLanguageDropdownButton = this.header.sequoia.locator('div.dropdown');
+  22 |         // Сам дропдаун
+  23 |         this.changeLanguageDropdown = this.header.sequoia.locator('div.dropdown__list');
+  24 |         // Услуги
+  25 |         this.changeLanguageItemLink = this.changeLanguageDropdown.locator('a');
+  26 |         // Блок с заголовком
+  27 |         this.topSection = page.locator('section#top-section');
+  28 |         // Заголовок
+  29 |         this.topSectionTitle = this.topSection.locator('h1');
+  30 |     }
+  31 |
+  32 |     // Метод для проверки смены языка
+  33 |     async changeSiteLanguage(): Promise<void> {
+  34 |         await test.step('Проверка английского текста в заголовке', async () => {
+  35 |             // Проверка английского текста в заголовке (с заменёнными неразрывными пробелами)
+> 36 |             const headerTitleText = await this.topSectionTitle.innerText();
+     |                                                                ^ Error: locator.innerText: Target page, context or browser has been closed
+  37 |             expect(headerTitleText.replace(/\s/g, ' ')).toEqual('Processing payments for various Business Segments');
+  38 |         });
+  39 |
+  40 |         await test.step('Выбор языка в меню хедера', async () => {
+  41 |             // Выбор языка в дропдауне
+  42 |             await this.changeLanguageDropdownButton.hover();
+  43 |             await this.changeLanguageItemLink.click();
+  44 |             await this.page.waitForLoadState('networkidle');
+  45 |         });
+  46 |
+  47 |         await test.step('Проверка русского текста в заголовке', async () => {
+  48 |             // Проверка русского текста в заголовке (с заменёнными неразрывными пробелами)
+  49 |             const headerTitleText = await this.topSectionTitle.innerText();
+  50 |             expect(headerTitleText.replace(/\s/g, ' ')).toEqual('Приём платежей для бизнеса различных сегментов');
+  51 |         });
+  52 |
+  53 |         // Скриншот для отчёта
+  54 |         await this.takeAScreenshotForReport('Главная страница на русском языке', { fullPage: true });
+  55 |     }
+  56 | }
+  57 |
+```

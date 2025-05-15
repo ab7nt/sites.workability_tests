@@ -1,0 +1,200 @@
+# Test info
+
+- Name: Проверка работоспособности сайтов >> mdmprint.ru - Проверка работоспособности сайта >> mdmprint.ru - Проверка поиска
+- Location: /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:17:13
+
+# Error details
+
+```
+Error: locator.fill: Target page, context or browser has been closed
+Call log:
+  - waiting for locator('div.header-content_desktop').locator('form[role="search"]').locator('input[name="s"]')
+
+    at /__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:338:47
+    at MdmprintMainPage.checkingSearch (/__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:330:20)
+    at /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:18:36
+```
+
+# Test source
+
+```ts
+  238 |             expect(response?.status()).toBe(200);
+  239 |         });
+  240 |     }
+  241 |
+  242 |     // Проверка отображения элементов
+  243 |     async checkingTheVisibilityOfElements(): Promise<void> {
+  244 |         await test.step('Проверка отображения заголовка H1', async () => {
+  245 |             await expect(this.headerTitle).toBeVisible();
+  246 |         });
+  247 |     }
+  248 |
+  249 |     // Скриншот страницы
+  250 |     async takeAScreenshot(): Promise<void> {
+  251 |         await test.step('Снятие скриншота страницы и сохранение в файл', async () => {
+  252 |             const name = this.pageUrl?.split('//')[1] ?? 'screenshot';
+  253 |             await this.page.screenshot({ path: `test-results/screenshots/${name}.png`, fullPage: true });
+  254 |         });
+  255 |     }
+  256 |
+  257 |     // Скриншот страницы с прикреплением к отчёту
+  258 |     async takeAScreenshotForReport(screenshotName = 'Скриншот', options: { fullPage?: boolean } = {}): Promise<void> {
+  259 |         await test.step('Снятие скриншота страницы и прикрепление к отчёту', async () => {
+  260 |             const screenshot = await this.page.screenshot({
+  261 |                 fullPage: options.fullPage ?? false,
+  262 |             });
+  263 |
+  264 |             await test.info().attach(screenshotName, {
+  265 |                 body: screenshot,
+  266 |                 contentType: 'image/png',
+  267 |             });
+  268 |
+  269 |             finalScreenshots.push({
+  270 |                 name: screenshotName,
+  271 |                 content: screenshot,
+  272 |                 timestamp: new Date(Date.now() + 3 * 3600 * 1000).toLocaleString('ru-RU', {
+  273 |                     day: '2-digit',
+  274 |                     month: '2-digit',
+  275 |                     year: 'numeric',
+  276 |                     hour: '2-digit',
+  277 |                     minute: '2-digit',
+  278 |                     second: '2-digit',
+  279 |                     hour12: false,
+  280 |                 }),
+  281 |             });
+  282 |         });
+  283 |     }
+  284 |
+  285 |     // Скролл страницы для нормализации загрузки
+  286 |     async scrollToEndOfThePage(): Promise<void> {
+  287 |         await test.step('Скролл страницы для нормализации загрузки', async () => {
+  288 |             await this.page.evaluate(() => {
+  289 |                 if (!document.body) throw new Error('document.body is not available on this page.');
+  290 |                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  291 |             });
+  292 |             await this.page.waitForTimeout(2000);
+  293 |
+  294 |             await this.page.evaluate(() => {
+  295 |                 if (!document.body) throw new Error('document.body is not available on this page.');
+  296 |                 window.scrollTo({ top: 0, behavior: 'smooth' });
+  297 |             });
+  298 |             await this.page.waitForTimeout(2000);
+  299 |         });
+  300 |     }
+  301 |
+  302 |     // Основная функция для проверки работоспособности страницы
+  303 |     async generalWorkabilityChecking(): Promise<void> {
+  304 |         await test.step('Общие проверки', async () => {
+  305 |             try {
+  306 |                 await this.open();
+  307 |                 await this.checkingTheVisibilityOfElements();
+  308 |                 await this.scrollToEndOfThePage();
+  309 |                 await this.takeAScreenshotForReport('Главная страница', { fullPage: true });
+  310 |             } catch (error) {
+  311 |                 console.error('Ошибка при выполнении общих проверок:', error);
+  312 |             }
+  313 |         });
+  314 |     }
+  315 |
+  316 |     // Проверка страницы результатов поиска
+  317 |     async checkSearchResultsPage(): Promise<void> {
+  318 |         await test.step('Проверка страницы результатов поиска', async () => {
+  319 |             await Promise.all([this.page.waitForLoadState('load'), this.searchButton[this.site].click()]);
+  320 |
+  321 |             await this.scrollToEndOfThePage();
+  322 |             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
+  323 |         });
+  324 |     }
+  325 |
+  326 |     // Метод для проверки поиска
+  327 |     async checkingSearch(): Promise<void> {
+  328 |         const word = helpers.getRandomSearchWord(this.site); // Случайное слово для поиска
+  329 |
+  330 |         await test.step('Ввод текста в поле поиска', async () => {
+  331 |             // Открытие поля поиска (если требуется)
+  332 |             const sitesRequiringClick = new Set(['litera', 'onetm']);
+  333 |             if (sitesRequiringClick.has(this.site)) {
+  334 |                 await this.headerSearchButton[this.site].click();
+  335 |             }
+  336 |
+  337 |             // Ввод текста в поле поиска
+> 338 |             await this.searchInput[this.site].fill(word);
+      |                                               ^ Error: locator.fill: Target page, context or browser has been closed
+  339 |             await expect(this.searchInput[this.site]).toHaveValue(word);
+  340 |         });
+  341 |
+  342 |         await test.step('Проверка выпадающего списка результатов поиска', async () => {
+  343 |             await this.searchResultDropdown[this.site].waitFor({ state: 'visible' });
+  344 |             expect(await this.searchResultItems[this.site].count()).toBeGreaterThan(0);
+  345 |
+  346 |             const resultItems = await this.searchResultItems[this.site].all();
+  347 |             let randomIndex = Math.floor(Math.random() * resultItems.length);
+  348 |             const randomResultItem = resultItems[randomIndex];
+  349 |             await randomResultItem.hover();
+  350 |
+  351 |             await this.takeAScreenshotForReport('Дропдаун результатов поиска');
+  352 |         });
+  353 |
+  354 |         await test.step('Проверка страницы результатов поиска', async () => {
+  355 |             await this.searchButton[this.site].click();
+  356 |
+  357 |             await this.page.waitForLoadState('domcontentloaded');
+  358 |
+  359 |             // Дождаться нужного URL (или падение через timeout)
+  360 |             await expect.poll(() => this.page.url(), { timeout: 10000 }).toContain('?s=');
+  361 |
+  362 |             await this.scrollToEndOfThePage();
+  363 |             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
+  364 |         });
+  365 |     }
+  366 |
+  367 |     // Метод для проверки меню каталога
+  368 |     async catalogChecking(): Promise<void> {
+  369 |         await test.step('Открытие меню каталога', async () => {
+  370 |             // Навести или кликнуть, в зависимости от сайта
+  371 |             if (this.site === 'litera') {
+  372 |                 await this.catalogButton[this.site].hover();
+  373 |             } else {
+  374 |                 await this.catalogButton[this.site].click();
+  375 |             }
+  376 |
+  377 |             // Дождаться загрузки каталога
+  378 |             await this.catalogLeftSide[this.site].waitFor({ state: 'visible' });
+  379 |         });
+  380 |
+  381 |         await test.step('Раскрытие случайной категории в меню каталога', async () => {
+  382 |             const categories = await this.categoriesItems[this.site].all();
+  383 |             let randomIndex = Math.floor(Math.random() * categories.length);
+  384 |             const randomCategory = categories[randomIndex];
+  385 |
+  386 |             // Навести или кликнуть, в зависимости от сайта
+  387 |             if (this.site === 'mdmprint') {
+  388 |                 await randomCategory.click();
+  389 |             } else {
+  390 |                 await randomCategory.hover();
+  391 |             }
+  392 |
+  393 |             await this.page.waitForTimeout(2000); // Пропуск анимации
+  394 |         });
+  395 |
+  396 |         await this.takeAScreenshotForReport('Каталог');
+  397 |     }
+  398 |
+  399 |     // Метод для проверки поп-апа "Быстрый заказ", ""Оставить заявку" и т.д.
+  400 |     async checkingQuickOrderPopup(): Promise<void> {
+  401 |         await test.step('Открытие поп-апа', async () => {
+  402 |             await this.quickOrderButton[this.site].click();
+  403 |             await this.quickOrderPopup[this.site].waitFor({ state: 'visible' });
+  404 |             await this.page.waitForTimeout(1000); // Пропуск анимации
+  405 |         });
+  406 |
+  407 |         await this.takeAScreenshotForReport('Поп-ап заявки');
+  408 |
+  409 |         await test.step('Скрытие поп-апа "Быстрый заказ"', async () => {
+  410 |             await this.quickOrderPopupCloseButton[this.site].click();
+  411 |             await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor({ state: 'hidden' });
+  412 |         });
+  413 |     }
+  414 | }
+  415 |
+```
