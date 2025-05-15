@@ -133,10 +133,16 @@ jobs:
               if: always()
               run: |
                   if [ -d gh-pages ]; then
-                    cd gh-pages
-                    echo "past_reports_list<<EOF" >> $GITHUB_ENV
-                    for d in $(ls -d 20*/ | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
-                      echo "- https://${{ github.repository_owner }}._
+                    {
+                      echo "past_reports_list<<EOF"
+                      for d in $(ls -d gh-pages/20*/ | sed 's|gh-pages/||' | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
+                        echo "- https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/$d"
+                      done
+                      echo "EOF"
+                    } >> $GITHUB_ENV
+                  else
+                    echo "::warning::No gh-pages directory found"
+                    echo "job_exit_code=1" >> $GITHUB_ENV
 
             - name: Update job status
               if: always()
