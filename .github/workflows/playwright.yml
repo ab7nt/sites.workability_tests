@@ -141,8 +141,8 @@ jobs:
                       echo "EOF"
                     } >> $GITHUB_ENV
                   else
-                    echo "::warning::No gh-pages directory found"
-                    echo "job_exit_code=1" >> $GITHUB_ENV
+                    echo "::warning::gh-pages directory not found, skipping past reports"
+                  fi
 
             - name: Update job status
               if: always()
