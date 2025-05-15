@@ -1,94 +1,94 @@
 import { test } from '../fixtures';
 
 test.describe('Проверка работоспособности сайтов', () => {
-    test('Проверка работоспособности сайта mdmprint.ru', async ({ mdmprintMainPage }) => {
-        await test.step('Проверка главной страницы', async () => {
+    test.describe('mdmprint.ru - Проверка работоспособности сайта', () => {
+        test('mdmprint.ru - Проверка главной страницы', async ({ mdmprintMainPage }) => {
             await mdmprintMainPage.generalWorkabilityChecking();
         });
 
-        await test.step('Проверка меню каталога', async () => {
+        test('mdmprint.ru - Проверка меню каталога', async ({ mdmprintMainPage }) => {
             await mdmprintMainPage.catalogChecking();
         });
 
-        await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+        test('mdmprint.ru - Проверка поп-апа "Быстрый заказ"', async ({ mdmprintMainPage }) => {
             await mdmprintMainPage.checkingQuickOrderPopup();
         });
 
-        await test.step('Проверка поиска', async () => {
+        test('mdmprint.ru - Проверка поиска', async ({ mdmprintMainPage }) => {
             await mdmprintMainPage.checkingSearch();
         });
     });
 
-    test('Проверка работоспособности сайта copy.ru', async ({ copyRuMainPage }) => {
-        await test.step('Проверка главной страницы', async () => {
+    test.describe('Проверка работоспособности сайта copy.ru', () => {
+        test('Проверка главной страницы', async ({ copyRuMainPage }) => {
             await copyRuMainPage.generalWorkabilityChecking();
         });
 
-        await test.step('Проверка меню каталога', async () => {
+        test('Проверка меню каталога', async ({ copyRuMainPage }) => {
             await copyRuMainPage.catalogChecking();
         });
 
-        await test.step('Проверка поп-апа "Быстрый заказ"', async () => {
+        test('Проверка поп-апа "Быстрый заказ"', async ({ copyRuMainPage }) => {
             await copyRuMainPage.checkingQuickOrderPopup();
         });
 
-        await test.step('Проверка поиска', async () => {
+        test('Проверка поиска', async ({ copyRuMainPage }) => {
             await copyRuMainPage.checkingSearch();
         });
     });
 
-    test('Проверка работоспособности сайта 1-tm.ru', async ({ oneTmMainPage }) => {
-        await test.step('Проверка главной страницы', async () => {
+    test.describe('Проверка работоспособности сайта 1-tm.ru', () => {
+        test('Проверка главной страницы', async ({ oneTmMainPage }) => {
             await oneTmMainPage.generalWorkabilityChecking();
         });
 
-        await test.step('Проверка бургер-меню', async () => {
+        test('Проверка бургер-меню', async ({ oneTmMainPage }) => {
             await oneTmMainPage.catalogChecking();
         });
 
-        await test.step('Проверка поп-апа "Онлайн-консультация"', async () => {
+        test('Проверка поп-апа "Онлайн-консультация"', async ({ oneTmMainPage }) => {
             await oneTmMainPage.checkingQuickOrderPopup();
         });
 
-        await test.step('Проверка поиска', async () => {
+        test('Проверка поиска', async ({ oneTmMainPage }) => {
             await oneTmMainPage.checkingSearch();
         });
     });
 
-    test('Проверка работоспособности сайта litera.studio', async ({ literaMainPage }) => {
-        await test.step('Проверка главной страницы', async () => {
+    test.describe('Проверка работоспособности сайта litera.studio', () => {
+        test('Проверка главной страницы', async ({ literaMainPage }) => {
             await literaMainPage.generalWorkabilityChecking();
         });
 
-        await test.step('Проверка бургер-меню', async () => {
+        test('Проверка бургер-меню', async ({ literaMainPage }) => {
             await literaMainPage.catalogChecking();
         });
 
-        await test.step('Проверка поп-апа "Оставьте заявку"', async () => {
+        test('Проверка поп-апа "Оставьте заявку"', async ({ literaMainPage }) => {
             await literaMainPage.checkingQuickOrderPopup();
         });
     });
 
-    test('Проверка работоспособности сайта vea.ru', async ({ veaMainPage }) => {
-        await test.step('Проверка главной страницы', async () => {
+    test.describe('Проверка работоспособности сайта vea.ru', () => {
+        test('Проверка главной страницы', async ({ veaMainPage }) => {
             await veaMainPage.generalWorkabilityChecking();
         });
 
-        await test.step('Проверка меню услуг', async () => {
+        test('Проверка меню услуг', async ({ veaMainPage }) => {
             await veaMainPage.catalogChecking();
         });
 
-        await test.step('Проверка поп-апа "Оставьте заявку"', async () => {
+        test('Проверка поп-апа "Оставьте заявку"', async ({ veaMainPage }) => {
             await veaMainPage.checkingQuickOrderPopup();
         });
     });
 
-    test('Проверка работоспособности сайта sequoiapay.io', async ({ sequoiaMainPage }) => {
-        await test.step('Проверка главной страницы', async () => {
+    test.describe('Проверка работоспособности сайта sequoiapay.io', () => {
+        test('Проверка главной страницы', async ({ sequoiaMainPage }) => {
             await sequoiaMainPage.generalWorkabilityChecking();
         });
 
-        await test.step('Проверка смены языка', async () => {
+        test('Проверка смены языка', async ({ sequoiaMainPage }) => {
             await sequoiaMainPage.changeSiteLanguage();
         });
     });
