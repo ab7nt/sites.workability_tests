@@ -18,27 +18,39 @@ type Fixtures = {
 
 export const test = base.extend<Fixtures>({
     veaMainPage: async ({ page }, use) => {
-        await use(new VeaMainPage(page));
+        const vea = new VeaMainPage(page);
+        await vea.open();
+        await use(vea);
     },
     mdmprintMainPage: async ({ page }, use) => {
-        await use(new MdmprintMainPage(page));
+        const mdm = new MdmprintMainPage(page);
+        await mdm.open();
+        await use(mdm);
     },
     copyRuMainPage: async ({ page }, use) => {
-        await use(new CopyRuMainPage(page));
+        const copy = new CopyRuMainPage(page);
+        await copy.open();
+        await use(copy);
     },
     oneTmMainPage: async ({ page }, use) => {
-        await use(new OneTmMainPage(page));
+        const oneTm = new OneTmMainPage(page);
+        await oneTm.open();
+        await use(oneTm);
     },
     literaMainPage: async ({ page }, use) => {
-        await use(new LiteraMainPage(page));
+        const litera = new LiteraMainPage(page);
+        await litera.open();
+        await use(litera);
     },
     sequoiaMainPage: async ({ page }, use) => {
-        await use(new SequoiaMainPage(page));
+        const sequoia = new SequoiaMainPage(page);
+        await sequoia.open();
+        await use(sequoia);
     },
 });
-
-export { expect } from '@playwright/test';
 
 test.afterEach(async ({ page }) => {
     await page.close();
 });
+
+export { expect } from '@playwright/test';
