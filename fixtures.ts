@@ -1,4 +1,5 @@
 import { test as base, Page } from '@playwright/test';
+import { allure } from 'allure-playwright';
 
 import { VeaMainPage } from './PageObjects/VeaMainPage';
 import { MdmprintMainPage } from './PageObjects/MdmprintMainPage';
@@ -8,6 +9,7 @@ import { LiteraMainPage } from './PageObjects/LiteraMainPage';
 import { SequoiaMainPage } from './PageObjects/SequoiaMainPage';
 
 type Fixtures = {
+    suiteName?: string; // для allurе.suite()
     veaMainPage: VeaMainPage;
     mdmprintMainPage: MdmprintMainPage;
     copyRuMainPage: CopyRuMainPage;
@@ -47,6 +49,14 @@ export const test = base.extend<Fixtures>({
         await sequoia.open();
         await use(sequoia);
     },
+
+    suiteName: [undefined, { option: true }],
+});
+
+test.beforeEach(async ({ suiteName }) => {
+    if (suiteName) {
+        allure.suite(suiteName);
+    }
 });
 
 test.afterEach(async ({ page }) => {

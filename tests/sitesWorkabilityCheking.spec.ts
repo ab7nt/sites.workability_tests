@@ -1,7 +1,8 @@
 import { test } from '../fixtures';
+import { testSuite } from '../utils/testSuite';
 
 test.describe('Проверка работоспособности сайтов', () => {
-    test.describe('mdmprint.ru - Проверка работоспособности сайта', () => {
+    testSuite('mdmprint.ru - Проверка работоспособности сайта', () => {
         test('mdmprint.ru - Проверка главной страницы', async ({ mdmprintMainPage }) => {
             await mdmprintMainPage.generalWorkabilityChecking();
         });
@@ -19,7 +20,7 @@ test.describe('Проверка работоспособности сайтов'
         });
     });
 
-    test.describe('copy.ru - Проверка работоспособности сайта', () => {
+    testSuite('copy.ru - Проверка работоспособности сайта', () => {
         test('copy.ru - Проверка главной страницы', async ({ copyRuMainPage }) => {
             await copyRuMainPage.generalWorkabilityChecking();
         });
@@ -37,7 +38,7 @@ test.describe('Проверка работоспособности сайтов'
         });
     });
 
-    test.describe('1-tm.ru - Проверка работоспособности сайта 1-tm.ru', () => {
+    testSuite('1-tm.ru - Проверка работоспособности сайта 1-tm.ru', () => {
         test('1-tm.ru - Проверка главной страницы', async ({ oneTmMainPage }) => {
             await oneTmMainPage.generalWorkabilityChecking();
         });
@@ -55,7 +56,7 @@ test.describe('Проверка работоспособности сайтов'
         });
     });
 
-    test.describe('litera.studio - Проверка работоспособности сайта', () => {
+    testSuite('litera.studio - Проверка работоспособности сайта', () => {
         test('litera.studio - Проверка главной страницы', async ({ literaMainPage }) => {
             await literaMainPage.generalWorkabilityChecking();
         });
@@ -69,7 +70,7 @@ test.describe('Проверка работоспособности сайтов'
         });
     });
 
-    test.describe('vea.ru - Проверка работоспособности сайта', () => {
+    testSuite('vea.ru - Проверка работоспособности сайта', () => {
         test('vea.ru - Проверка главной страницы', async ({ veaMainPage }) => {
             await veaMainPage.generalWorkabilityChecking();
         });
@@ -83,7 +84,7 @@ test.describe('Проверка работоспособности сайтов'
         });
     });
 
-    test.describe('Проверка работоспособности сайта', () => {
+    testSuite('sequoiapay.io - Проверка работоспособности сайта', () => {
         test('sequoiapay.io - Проверка главной страницы', async ({ sequoiaMainPage }) => {
             await sequoiaMainPage.generalWorkabilityChecking();
         });
