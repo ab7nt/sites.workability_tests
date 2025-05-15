@@ -161,7 +161,7 @@ jobs:
               if: always()
               run: |
                   echo "email_body<<EOF" >> $GITHUB_ENV
-                  echo "${{ env.job_emoji }} Результат проверки работоспособности сайтов: ${{ env.job_status }}" >> $GITHUB_ENV
+                  echo " Результат проверки работоспособности сайтов:${{ env.job_emoji }} ${{ env.job_status }}" >> $GITHUB_ENV
                   echo "Время запуска: ${{ env.job_started_at }}" >> $GITHUB_ENV
                   echo "Ссылка на отчёт: ${{ env.REPORT_URL }}" >> $GITHUB_ENV
                   echo "" >> $GITHUB_ENV
@@ -186,7 +186,7 @@ jobs:
                   server_port: 587
                   username: ${{ secrets.EMAIL_USERNAME }}
                   password: ${{ secrets.EMAIL_PASSWORD }}
-                  subject: 'Результат проверки работоспособности сайтов - ${{ env.job_emoji }} ${{ env.job_status }} (run_id:${{ github.run_id }})'
+                  subject: '${{ env.job_emoji }} Результат проверки работоспособности сайтов (run_id:${{ github.run_id }})'
                   body: ${{ env.email_body }}
                   to: ${{ secrets.EMAIL_RECIPIENTS }}
                   from: 'Автоматическое тестирование работоспособности сайтов'
