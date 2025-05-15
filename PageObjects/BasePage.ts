@@ -329,7 +329,8 @@ export class BasePage {
 
         await test.step('Ввод текста в поле поиска', async () => {
             // Открытие поля поиска (если требуется)
-            if (this.site === 'litera' || 'onetm') {
+            const sitesRequiringClick = new Set(['litera', 'onetm']);
+            if (sitesRequiringClick.has(this.site)) {
                 await this.headerSearchButton[this.site].click();
             }
 
@@ -366,12 +367,14 @@ export class BasePage {
     // Метод для проверки меню каталога
     async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
+            // Навести или кликнуть, в зависимости от сайта
             if (this.site === 'litera') {
                 await this.catalogButton[this.site].hover();
             } else {
                 await this.catalogButton[this.site].click();
             }
 
+            // Дождаться загрузки каталога
             await this.catalogLeftSide[this.site].waitFor({ state: 'visible' });
         });
 
@@ -380,6 +383,7 @@ export class BasePage {
             let randomIndex = Math.floor(Math.random() * categories.length);
             const randomCategory = categories[randomIndex];
 
+            // Навести или кликнуть, в зависимости от сайта
             if (this.site === 'mdmprint') {
                 await randomCategory.click();
             } else {
