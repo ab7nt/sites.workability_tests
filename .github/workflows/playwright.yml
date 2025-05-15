@@ -132,12 +132,11 @@ jobs:
             - name: Collect last 7 report links
               if: always()
               run: |
-                  cd gh-pages
-                  echo "past_reports_list<<EOF" >> $GITHUB_ENV
-                  for d in $(ls -d 20*/ | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
-                    echo "- https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/$d" >> $GITHUB_ENV
-                  done
-                  echo "EOF" >> $GITHUB_ENV
+                  if [ -d gh-pages ]; then
+                    cd gh-pages
+                    echo "past_reports_list<<EOF" >> $GITHUB_ENV
+                    for d in $(ls -d 20*/ | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
+                      echo "- https://${{ github.repository_owner }}._
 
             - name: Update job status
               if: always()
