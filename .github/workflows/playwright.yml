@@ -129,6 +129,12 @@ jobs:
                   user_name: 'GitHub Actions'
                   user_email: 'actions@github.com'
 
+            - name: Wait for GitHub Pages to update
+              if: always()
+              run: |
+                  echo "Ожидание обновления GitHub Pages..."
+                  sleep 120
+
             - name: Collect last 7 report links
               if: always()
               run: |
