@@ -369,7 +369,7 @@ export class BasePage {
                 await randomCategory.hover();
             }
 
-            await this.page.waitForTimeout(1000); // Пропуск анимации
+            await this.page.waitForTimeout(2000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Каталог');
