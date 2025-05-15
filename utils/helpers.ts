@@ -1,6 +1,43 @@
 export const helpers = {
-    getRandomSearchWord(): string {
-        const words: string[] = [
+    getRandomSearchWord(site: string): string {
+        // Словарь для Литеры
+        const designWords: string[] = [
+            'Графический дизайн',
+            'Дизайн визиток',
+            'Фирменный стиль',
+            'Логотип',
+            'Дизайн упаковки',
+            'Брендбук',
+            'Макет полиграфии',
+            'Айдентика',
+            'Дизайн баннера',
+            'Дизайн постера',
+            'Дизайн буклета',
+            'Дизайн листовки',
+        ];
+
+        // Словарь для 1-тм
+        const patentWords: string[] = [
+            'Патент',
+            'Товарный знак',
+            'Изобретение',
+            'Лицензирование',
+            'Авторское право',
+            'Ноу-хау',
+            'Регистрация бренда',
+            'Защита прав',
+            'Экспертиза',
+            'Международная регистрация',
+            'Патентообладатель',
+            'Патентование',
+            'Фирменное наименование',
+            'Коммерческая тайна',
+            'Знак обслуживания',
+            'Договор',
+        ];
+
+        // Словарь для печатной продукции
+        const printWords: string[] = [
             'Визитки',
             'Буклеты',
             'Листовки',
@@ -30,6 +67,13 @@ export const helpers = {
             'Блокноты',
             'Купоны',
         ];
+
+        const siteWordMap: Record<string, string[]> = {
+            litera: designWords,
+            onetm: patentWords,
+        };
+
+        const words = siteWordMap[site] || printWords;
         return words[Math.floor(Math.random() * words.length)];
     },
 };

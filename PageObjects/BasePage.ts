@@ -38,6 +38,7 @@ export class BasePage {
     protected linksInActiveArea: { [key: string]: Locator };
     protected randomSubcategoryLinkInActiveArea: { [key: string]: Locator };
     protected catalog: { [key: string]: Locator };
+    protected headerSearchButton: { [key: string]: Locator };
 
     constructor(page: Page) {
         this.page = page;
@@ -70,32 +71,42 @@ export class BasePage {
             onetm: this.header.onetm.locator('button[data-popup="consult"]'),
             vea: this.header.vea.locator('div.header__request button.popup-open'),
         };
+        // Кнопка поиска в хедере
+        this.headerSearchButton = {
+            litera: this.header.litera.locator('header-search__toggler'),
+            onetm: this.header.onetm.locator('button[data-toggle="search"]'),
+        };
 
         // Поиск
         // Форма поиска
         this.searchForm = {
             mdmprint: this.header.mdmprint.locator('form[role="search"]'),
             copy: this.header.copy.locator('form.mobile-hide'),
+            onetm: this.header.onetm.locator('div[data-toggle-id="search"] form'),
         };
-        // Поле ввода поиска
+        // Поле ввода поиска в хедере
         this.searchInput = {
             mdmprint: this.searchForm.mdmprint.locator('input[name="s"]'),
             copy: this.searchForm.copy.locator('input[name="s"]'),
+            onetm: this.searchForm.onetm.locator('input[name="s"]'),
         };
         // Кнопка поиска
         this.searchButton = {
             mdmprint: this.searchForm.mdmprint.locator('button[type="submit"]'),
             copy: this.searchForm.copy.locator('button[type="submit"]'),
+            onetm: this.searchForm.onetm.locator('button:has(use[*|href="#search"])'),
         };
         // Выпадающий список результатов поиска
         this.searchResultDropdown = {
             mdmprint: this.header.mdmprint.locator('span.search-results__list'),
             copy: this.header.copy.locator('span.search-results__list'),
+            onetm: this.searchForm.onetm.locator('div.search-results__list'),
         };
         // Элементы результатов поиска
         this.searchResultItems = {
             mdmprint: this.searchResultDropdown.mdmprint.locator('a'),
             copy: this.searchResultDropdown.copy.locator('a'),
+            onetm: this.searchResultDropdown.onetm.locator('a'),
         };
 
         // Поп-апы
@@ -314,9 +325,15 @@ export class BasePage {
 
     // Метод для проверки поиска
     async checkingSearch(): Promise<void> {
-        const word = helpers.getRandomSearchWord(); // Случайное слово для поиска
+        const word = helpers.getRandomSearchWord(this.site); // Случайное слово для поиска
 
         await test.step('Ввод текста в поле поиска', async () => {
+            // Открытие поля поиска (если требуется)
+            if (this.site === 'litera' || 'onetm') {
+                await this.headerSearchButton[this.site].click();
+            }
+
+            // Ввод текста в поле поиска
             await this.searchInput[this.site].fill(word);
             await expect(this.searchInput[this.site]).toHaveValue(word);
         });

@@ -49,6 +49,10 @@ test.describe('Проверка работоспособности сайтов'
         await test.step('Проверка поп-апа "Онлайн-консультация"', async () => {
             await oneTmMainPage.checkingQuickOrderPopup();
         });
+
+        await test.step('Проверка поиска', async () => {
+            await oneTmMainPage.checkingSearch();
+        });
     });
 
     test('Проверка работоспособности сайта litera.studio', async ({ literaMainPage }) => {
