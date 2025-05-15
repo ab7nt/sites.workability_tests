@@ -178,64 +178,27 @@ export class BasePage {
         return siteName.startsWith('1-') ? siteName.replace('1-', 'one') : siteName;
     }
 
-    // Сбор и прикрепление медленных запросов к отчёту
-    async logSlowRequests(threshold: number = 5000, timeout: number = 10000): Promise<SlowRequest[]> {
-        const slowRequests: SlowRequest[] = [];
-        let timeoutReached = false;
-
-        const timeoutPromise = new Promise<never>((_, reject) =>
-            setTimeout(() => {
-                timeoutReached = true;
-                reject(new Error('Timeout reached'));
-            }, timeout)
-        );
-
-        const trackRequestsPromise = new Promise<void>((resolve) => {
-            this.page.on('requestfinished', async (request: Request) => {
-                const timing = request.timing();
-                if (!timing || timeoutReached) return;
-
-                const duration = timing.responseEnd - timing.startTime;
-                if (duration > threshold) {
-                    slowRequests.push({
-                        url: request.url(),
-                        duration: `${(duration / 1000).toFixed(2)}s`,
-                        method: request.method(),
-                        resourceType: request.resourceType(),
-                    });
-                }
-            });
-
-            resolve();
-        });
-
-        try {
-            await Promise.race([timeoutPromise, trackRequestsPromise]);
-        } catch (error: any) {
-            if (error.message !== 'Timeout reached') throw error;
-        }
-
-        if (slowRequests.length > 0) {
-            console.log('⏱ Медленные запросы (более 5 сек):');
-            slowRequests.forEach((r) => {
-                console.log(`- ${r.method} ${r.url} [${r.duration}] (${r.resourceType})`);
-            });
-
-            await test.info().attach('Медленные запросы', {
-                body: Buffer.from(JSON.stringify(slowRequests, null, 2), 'utf-8'),
-                contentType: 'application/json',
-            });
-        }
-
-        return slowRequests;
-    }
-
     // Открытие страницы
     async open(): Promise<void> {
-        await test.step('Открытие главной страницы сайта', async () => {
-            await this.logSlowRequests();
-            const response = await this.page.goto(this.pageUrl ?? '', { referer: 'workability-checking' });
-            expect(response?.status()).toBe(200);
+        const currentUrl = this.page.url();
+
+        if (currentUrl.startsWith(this.pageUrl)) {
+            return; // Страница уже открыта — повторно не переходим
+        }
+
+        await test.step(`Открытие страницы: ${this.pageUrl}`, async () => {
+            const response = await this.page.goto(this.pageUrl, {
+                referer: 'workability-checking',
+            });
+
+            expect(response, 'Не удалось перейти по URL').not.toBeNull();
+            expect(response?.status(), `Неверный статус: ${response?.status()}`).toBe(200);
+
+            // Ждём, пока завершатся все сетевые запросы
+            await this.page.waitForLoadState('load');
+
+            // Дополнительно (опционально) — ожидание main.js
+            // await this.page.waitForResponse((resp) => resp.url().includes('main.js') && resp.status() === 200);
         });
     }
 
@@ -334,8 +297,14 @@ export class BasePage {
                 await this.headerSearchButton[this.site].click();
             }
 
+            if (this.site !== 'onetm') {
+                await this.page.waitForResponse((resp) => resp.url().includes('main') && resp.status() === 200);
+                // await this.page.waitForTimeout(2000);
+            }
+
             // Ввод текста в поле поиска
-            await this.searchInput[this.site].fill(word);
+            // await this.searchInput[this.site].fill(word);
+            await this.searchInput[this.site].pressSequentially(word, { delay: 100 });
             await expect(this.searchInput[this.site]).toHaveValue(word);
         });
 
@@ -406,9 +375,9 @@ export class BasePage {
 
         await this.takeAScreenshotForReport('Поп-ап заявки');
 
-        await test.step('Скрытие поп-апа "Быстрый заказ"', async () => {
-            await this.quickOrderPopupCloseButton[this.site].click();
-            await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor({ state: 'hidden' });
-        });
+        // await test.step('Скрытие поп-апа "Быстрый заказ"', async () => {
+        //     await this.quickOrderPopupCloseButton[this.site].click();
+        //     await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor({ state: 'hidden' });
+        // });
     }
 }
