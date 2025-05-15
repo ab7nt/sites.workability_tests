@@ -15,6 +15,11 @@ export class BasePage {
     protected page: Page;
     protected pageUrl: string | null = null;
 
+    protected get site(): string {
+        if (!this.pageUrl) throw new Error('pageUrl not set');
+        return this.getSiteNameFromURL();
+    }
+
     // Локаторы
     protected headerTitle: Locator;
     protected searchButton: { [key: string]: Locator };
@@ -299,10 +304,8 @@ export class BasePage {
 
     // Проверка страницы результатов поиска
     async checkSearchResultsPage(): Promise<void> {
-        const site = this.getSiteNameFromURL();
-
         await test.step('Проверка страницы результатов поиска', async () => {
-            await Promise.all([this.page.waitForLoadState('load'), this.searchButton[site].click()]);
+            await Promise.all([this.page.waitForLoadState('load'), this.searchButton[this.site].click()]);
 
             await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
@@ -311,19 +314,18 @@ export class BasePage {
 
     // Метод для проверки поиска
     async checkingSearch(): Promise<void> {
-        const site = this.getSiteNameFromURL();
         const word = helpers.getRandomSearchWord(); // Случайное слово для поиска
 
         await test.step('Ввод текста в поле поиска', async () => {
-            await this.searchInput[site].fill(word);
-            await expect(this.searchInput[site]).toHaveValue(word);
+            await this.searchInput[this.site].fill(word);
+            await expect(this.searchInput[this.site]).toHaveValue(word);
         });
 
         await test.step('Проверка выпадающего списка результатов поиска', async () => {
-            await this.searchResultDropdown[site].waitFor({ state: 'visible' });
-            expect(await this.searchResultItems[site].count()).toBeGreaterThan(0);
+            await this.searchResultDropdown[this.site].waitFor({ state: 'visible' });
+            expect(await this.searchResultItems[this.site].count()).toBeGreaterThan(0);
 
-            const resultItems = await this.searchResultItems[site].all();
+            const resultItems = await this.searchResultItems[this.site].all();
             let randomIndex = Math.floor(Math.random() * resultItems.length);
             const randomResultItem = resultItems[randomIndex];
             await randomResultItem.hover();
@@ -332,7 +334,7 @@ export class BasePage {
         });
 
         await test.step('Проверка страницы результатов поиска', async () => {
-            await this.searchButton[site].click();
+            await this.searchButton[this.site].click();
 
             await this.page.waitForLoadState('domcontentloaded');
 
@@ -346,28 +348,28 @@ export class BasePage {
 
     // Метод для проверки меню каталога
     async catalogChecking(): Promise<void> {
-        const site = this.getSiteNameFromURL();
-
         await test.step('Открытие меню каталога', async () => {
-            if (site === 'litera') {
-                await this.catalogButton[site].hover();
+            if (this.site === 'litera') {
+                await this.catalogButton[this.site].hover();
             } else {
-                await this.catalogButton[site].click();
+                await this.catalogButton[this.site].click();
             }
 
-            await this.catalogLeftSide[site].waitFor({ state: 'visible' });
+            await this.catalogLeftSide[this.site].waitFor({ state: 'visible' });
         });
 
         await test.step('Раскрытие случайной категории в меню каталога', async () => {
-            const categories = await this.categoriesItems[site].all();
+            const categories = await this.categoriesItems[this.site].all();
             let randomIndex = Math.floor(Math.random() * categories.length);
             const randomCategory = categories[randomIndex];
 
-            if (site === 'mdmprint') {
+            if (this.site === 'mdmprint') {
                 await randomCategory.click();
             } else {
                 await randomCategory.hover();
             }
+
+            await this.page.waitForTimeout(1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Каталог');
@@ -375,18 +377,16 @@ export class BasePage {
 
     // Метод для проверки поп-апа "Быстрый заказ", ""Оставить заявку" и т.д.
     async checkingQuickOrderPopup(): Promise<void> {
-        const site = this.getSiteNameFromURL();
-
         await test.step('Открытие поп-апа', async () => {
-            await this.quickOrderButton[site].click();
-            await this.quickOrderPopup[site].waitFor({ state: 'visible' });
+            await this.quickOrderButton[this.site].click();
+            await this.quickOrderPopup[this.site].waitFor({ state: 'visible' });
             await this.page.waitForTimeout(1000); // Пропуск анимации
         });
 
         await this.takeAScreenshotForReport('Поп-ап заявки');
 
         await test.step('Скрытие поп-апа "Быстрый заказ"', async () => {
-            await this.quickOrderPopupCloseButton[site].click();
+            await this.quickOrderPopupCloseButton[this.site].click();
             await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor({ state: 'hidden' });
         });
     }
