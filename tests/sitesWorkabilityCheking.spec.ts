@@ -19,76 +19,76 @@ test.describe('Проверка работоспособности сайтов'
         });
     });
 
-    test.describe('Проверка работоспособности сайта copy.ru', () => {
-        test('Проверка главной страницы', async ({ copyRuMainPage }) => {
+    test.describe('copy.ru - Проверка работоспособности сайта', () => {
+        test('copy.ru - Проверка главной страницы', async ({ copyRuMainPage }) => {
             await copyRuMainPage.generalWorkabilityChecking();
         });
 
-        test('Проверка меню каталога', async ({ copyRuMainPage }) => {
+        test('copy.ru - Проверка меню каталога', async ({ copyRuMainPage }) => {
             await copyRuMainPage.catalogChecking();
         });
 
-        test('Проверка поп-апа "Быстрый заказ"', async ({ copyRuMainPage }) => {
+        test('copy.ru - Проверка поп-апа "Быстрый заказ"', async ({ copyRuMainPage }) => {
             await copyRuMainPage.checkingQuickOrderPopup();
         });
 
-        test('Проверка поиска', async ({ copyRuMainPage }) => {
+        test('copy.ru - Проверка поиска', async ({ copyRuMainPage }) => {
             await copyRuMainPage.checkingSearch();
         });
     });
 
-    test.describe('Проверка работоспособности сайта 1-tm.ru', () => {
-        test('Проверка главной страницы', async ({ oneTmMainPage }) => {
+    test.describe('1-tm.ru - Проверка работоспособности сайта 1-tm.ru', () => {
+        test('1-tm.ru - Проверка главной страницы', async ({ oneTmMainPage }) => {
             await oneTmMainPage.generalWorkabilityChecking();
         });
 
-        test('Проверка бургер-меню', async ({ oneTmMainPage }) => {
+        test('1-tm.ru - Проверка бургер-меню', async ({ oneTmMainPage }) => {
             await oneTmMainPage.catalogChecking();
         });
 
-        test('Проверка поп-апа "Онлайн-консультация"', async ({ oneTmMainPage }) => {
+        test('1-tm.ru - Проверка поп-апа "Онлайн-консультация"', async ({ oneTmMainPage }) => {
             await oneTmMainPage.checkingQuickOrderPopup();
         });
 
-        test('Проверка поиска', async ({ oneTmMainPage }) => {
+        test('1-tm.ru - Проверка поиска', async ({ oneTmMainPage }) => {
             await oneTmMainPage.checkingSearch();
         });
     });
 
-    test.describe('Проверка работоспособности сайта litera.studio', () => {
-        test('Проверка главной страницы', async ({ literaMainPage }) => {
+    test.describe('litera.studio - Проверка работоспособности сайта', () => {
+        test('litera.studio - Проверка главной страницы', async ({ literaMainPage }) => {
             await literaMainPage.generalWorkabilityChecking();
         });
 
-        test('Проверка бургер-меню', async ({ literaMainPage }) => {
+        test('litera.studio - Проверка бургер-меню', async ({ literaMainPage }) => {
             await literaMainPage.catalogChecking();
         });
 
-        test('Проверка поп-апа "Оставьте заявку"', async ({ literaMainPage }) => {
+        test('litera.studio - Проверка поп-апа "Оставьте заявку"', async ({ literaMainPage }) => {
             await literaMainPage.checkingQuickOrderPopup();
         });
     });
 
-    test.describe('Проверка работоспособности сайта vea.ru', () => {
-        test('Проверка главной страницы', async ({ veaMainPage }) => {
+    test.describe('vea.ru - Проверка работоспособности сайта', () => {
+        test('vea.ru - Проверка главной страницы', async ({ veaMainPage }) => {
             await veaMainPage.generalWorkabilityChecking();
         });
 
-        test('Проверка меню услуг', async ({ veaMainPage }) => {
+        test('vea.ru - Проверка меню услуг', async ({ veaMainPage }) => {
             await veaMainPage.catalogChecking();
         });
 
-        test('Проверка поп-апа "Оставьте заявку"', async ({ veaMainPage }) => {
+        test('vea.ru - Проверка поп-апа "Оставьте заявку"', async ({ veaMainPage }) => {
             await veaMainPage.checkingQuickOrderPopup();
         });
     });
 
-    test.describe('Проверка работоспособности сайта sequoiapay.io', () => {
-        test('Проверка главной страницы', async ({ sequoiaMainPage }) => {
+    test.describe('Проверка работоспособности сайта', () => {
+        test('sequoiapay.io - Проверка главной страницы', async ({ sequoiaMainPage }) => {
             await sequoiaMainPage.generalWorkabilityChecking();
         });
 
-        test('Проверка смены языка', async ({ sequoiaMainPage }) => {
+        test('sequoiapay.io - Проверка смены языка', async ({ sequoiaMainPage }) => {
             await sequoiaMainPage.changeSiteLanguage();
         });
     });

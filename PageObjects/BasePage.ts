@@ -189,16 +189,17 @@ export class BasePage {
         await test.step(`Открытие страницы: ${this.pageUrl}`, async () => {
             const response = await this.page.goto(this.pageUrl, {
                 referer: 'workability-checking',
+                waitUntil: 'load',
             });
 
             expect(response, 'Не удалось перейти по URL').not.toBeNull();
             expect(response?.status(), `Неверный статус: ${response?.status()}`).toBe(200);
 
-            // Ждём, пока завершатся все сетевые запросы
-            await this.page.waitForLoadState('load');
-
-            // Дополнительно (опционально) — ожидание main.js
-            // await this.page.waitForResponse((resp) => resp.url().includes('main.js') && resp.status() === 200);
+            if (this.site === 'copy') {
+                await this.page.locator('div.promo').waitFor({ state: 'visible' });
+            } else {
+                await this.page.waitForLoadState('load');
+            }
         });
     }
 
@@ -297,13 +298,12 @@ export class BasePage {
                 await this.headerSearchButton[this.site].click();
             }
 
-            if (this.site !== 'onetm') {
-                await this.page.waitForResponse((resp) => resp.url().includes('main') && resp.status() === 200);
-                // await this.page.waitForTimeout(2000);
+            if (this.site === 'mdmprint') {
+                await this.page.waitForResponse((resp) => resp.url().includes('main.js') && resp.status() === 200);
+                // await this.page.waitForTimeout(1000);
             }
 
             // Ввод текста в поле поиска
-            // await this.searchInput[this.site].fill(word);
             await this.searchInput[this.site].pressSequentially(word, { delay: 100 });
             await expect(this.searchInput[this.site]).toHaveValue(word);
         });
