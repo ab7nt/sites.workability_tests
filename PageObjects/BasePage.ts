@@ -210,13 +210,13 @@ export class BasePage {
         });
     }
 
-    // Скриншот страницы
-    async takeAScreenshot(): Promise<void> {
-        await test.step('Снятие скриншота страницы и сохранение в файл', async () => {
-            const name = this.pageUrl?.split('//')[1] ?? 'screenshot';
-            await this.page.screenshot({ path: `test-results/screenshots/${name}.png`, fullPage: true });
-        });
-    }
+    // // Скриншот страницы
+    // async takeAScreenshot(): Promise<void> {
+    //     await test.step('Снятие скриншота страницы и сохранение в файл', async () => {
+    //         const name = this.pageUrl?.split('//')[1] ?? 'screenshot';
+    //         await this.page.screenshot({ path: `test-results/screenshots/${name}.png`, fullPage: true });
+    //     });
+    // }
 
     // Скриншот страницы с прикреплением к отчёту
     async takeAScreenshotForReport(screenshotName = 'Скриншот', options: { fullPage?: boolean } = {}): Promise<void> {
