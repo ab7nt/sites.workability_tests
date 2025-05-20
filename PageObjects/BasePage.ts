@@ -35,7 +35,7 @@ export class BasePage {
     protected catalogLeftSide: { [key: string]: Locator };
     protected categoriesItems: { [key: string]: Locator };
     protected catalogRightSide: { [key: string]: Locator };
-    protected linksInActiveArea: { [key: string]: Locator };
+    protected linksInCatalogRightSide: { [key: string]: Locator };
     protected randomSubcategoryLinkInActiveArea: { [key: string]: Locator };
     protected catalog: { [key: string]: Locator };
     protected headerSearchButton: { [key: string]: Locator };
@@ -162,7 +162,7 @@ export class BasePage {
             copy: this.catalog.copy.locator('div.header-catalog__page.tab-item--active'),
         };
         // Сами подкатегории и услуги
-        this.linksInActiveArea = {
+        this.linksInCatalogRightSide = {
             mdmprint: this.catalogRightSide.mdmprint.locator('a'),
             copy: this.catalogRightSide.copy.locator('a'),
         };
