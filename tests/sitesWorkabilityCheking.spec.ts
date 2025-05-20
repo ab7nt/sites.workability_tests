@@ -55,19 +55,23 @@ test.describe('Проверка работоспособности сайтов'
     //     });
     // });
 
-    // test.describe('litera.studio - Проверка сайта', () => {
-    //     test('litera.studio - Проверка главной страницы', async ({ literaMainPage }) => {
-    //         await literaMainPage.generalWorkabilityChecking();
-    //     });
+    test.describe('litera.studio - Проверка сайта', () => {
+        test('litera.studio - Проверка главной страницы', async ({ literaMainPage }) => {
+            await literaMainPage.generalWorkabilityChecking();
+        });
 
-    //     test('litera.studio - Проверка бургер-меню', async ({ literaMainPage }) => {
-    //         await literaMainPage.catalogChecking();
-    //     });
+        test('litera.studio - Проверка бургер-меню', async ({ literaMainPage }) => {
+            await literaMainPage.catalogChecking();
+        });
 
-    //     test('litera.studio - Проверка поп-апа "Оставьте заявку"', async ({ literaMainPage }) => {
-    //         await literaMainPage.checkingQuickOrderPopup();
-    //     });
-    // });
+        test('litera.studio - Проверка поп-апа "Оставьте заявку"', async ({ literaMainPage }) => {
+            await literaMainPage.checkingQuickOrderPopup();
+        });
+
+        test('litera.studio - Проверка поиска', async ({ literaMainPage }) => {
+            await literaMainPage.checkingSearch();
+        });
+    });
 
     // test.describe('vea.ru - Проверка сайта', () => {
     //     test('vea.ru - Проверка главной страницы', async ({ veaMainPage }) => {

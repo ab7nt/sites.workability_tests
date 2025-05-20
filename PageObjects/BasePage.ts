@@ -22,7 +22,7 @@ export class BasePage {
 
     // Локаторы
     protected headerTitle: Locator;
-    protected searchButton: { [key: string]: Locator };
+    protected searchInputButton: { [key: string]: Locator };
     protected searchResultItems: { [key: string]: Locator };
     protected searchResultDropdown: { [key: string]: Locator };
     protected searchInput: { [key: string]: Locator };
@@ -73,8 +73,8 @@ export class BasePage {
         };
         // Кнопка поиска в хедере
         this.headerSearchButton = {
-            litera: this.header.litera.locator('header-search__toggler'),
             onetm: this.header.onetm.locator('button[data-toggle="search"]'),
+            litera: this.header.litera.locator('div.header-top__nav div.header-search__toggler'),
         };
 
         // Поиск
@@ -83,30 +83,35 @@ export class BasePage {
             mdmprint: this.header.mdmprint.locator('form[role="search"]'),
             copy: this.header.copy.locator('form.mobile-hide'),
             onetm: this.header.onetm.locator('div[data-toggle-id="search"] form'),
+            litera: this.header.litera.locator('form[role="search"]'),
         };
         // Поле ввода поиска в хедере
         this.searchInput = {
             mdmprint: this.searchForm.mdmprint.locator('input[name="s"]'),
             copy: this.searchForm.copy.locator('input[name="s"]'),
             onetm: this.searchForm.onetm.locator('input[name="s"]'),
+            litera: this.searchForm.litera.locator('input[name="s"]'),
         };
-        // Кнопка поиска
-        this.searchButton = {
+        // Кнопка поиска в поле ввода
+        this.searchInputButton = {
             mdmprint: this.searchForm.mdmprint.locator('button[type="submit"]'),
             copy: this.searchForm.copy.locator('button[type="submit"]'),
             onetm: this.searchForm.onetm.locator('button:has(use[*|href="#search"])'),
+            litera: this.searchForm.litera.locator('button[type="submit"]'),
         };
         // Выпадающий список результатов поиска
         this.searchResultDropdown = {
             mdmprint: this.header.mdmprint.locator('span.search-results__list'),
             copy: this.header.copy.locator('span.search-results__list'),
             onetm: this.searchForm.onetm.locator('div.search-results__list'),
+            litera: this.header.litera.locator('div.search-results__list'),
         };
         // Элементы результатов поиска
         this.searchResultItems = {
             mdmprint: this.searchResultDropdown.mdmprint.locator('a'),
             copy: this.searchResultDropdown.copy.locator('a'),
             onetm: this.searchResultDropdown.onetm.locator('a'),
+            litera: this.searchResultDropdown.litera.locator('a'),
         };
 
         // Поп-апы
@@ -280,7 +285,7 @@ export class BasePage {
     // Проверка страницы результатов поиска
     async checkSearchResultsPage(): Promise<void> {
         await test.step('Проверка страницы результатов поиска', async () => {
-            await Promise.all([this.page.waitForLoadState('load'), this.searchButton[this.site].click()]);
+            await Promise.all([this.page.waitForLoadState('load'), this.searchInputButton[this.site].click()]);
 
             await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
@@ -321,7 +326,7 @@ export class BasePage {
         });
 
         await test.step('Проверка страницы результатов поиска', async () => {
-            await this.searchButton[this.site].click();
+            await this.searchInputButton[this.site].click();
 
             await this.page.waitForLoadState('domcontentloaded');
 
