@@ -137,7 +137,7 @@ jobs:
                     {
                       echo "past_reports_list<<EOF"
                       for d in $(ls -d gh-pages/20*/ | sed 's|gh-pages/||' | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
-                        echo "- https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/$d"
+                        echo "https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/$d"
                       done
                       echo "EOF"
                     } >> $GITHUB_ENV
@@ -167,9 +167,10 @@ jobs:
                     echo "email_body<<EOF"
                     echo " Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }}"
                     echo "Время запуска: ${{ env.job_started_at }}"
-                    echo "Ссылка на отчёт: ${{ env.REPORT_URL }}"
+                    echo "Ссылка на отчёт:"
+                    echo "${{ env.REPORT_URL }}"
                     echo ""
-                    echo "📂 Предыдущие отчёты за 7 дней (если есть):"
+                    echo "📂 Предыдущие отчёты за 7 дней:"
                     echo "${{ env.past_reports_list }}"
                     if [ ${{ env.tests_exit_code }} -ne 0 ]; then
                       echo "Тесты завершились с ошибками (код: ${{ env.tests_exit_code }})"
