@@ -166,23 +166,30 @@ jobs:
             - name: Prepare notification
               if: always()
               run: |
-                  echo "email_body<<EOF" >> $GITHUB_ENV
-                  echo "Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }}" >> $GITHUB_ENV
-                  echo "Время запуска: ${{ env.job_started_at }}" >> $GITHUB_ENV
-                  echo "Ссылка на отчёт: ${{ env.REPORT_URL }}" >> $GITHUB_ENV
-                  echo "" >> $GITHUB_ENV
-                  cat past_reports.txt >> $GITHUB_ENV
-                  echo "" >> $GITHUB_ENV
-                  if [ ${{ env.tests_exit_code }} -ne 0 ]; then
-                    echo "Тесты завершились с ошибками (код: ${{ env.tests_exit_code }})" >> $GITHUB_ENV
-                  fi
-                  if [ ${{ env.job_exit_code }} -ne 0 ]; then
-                    echo "Job завершился с ошибками (код: ${{ env.job_exit_code }})" >> $GITHUB_ENV
-                  fi
-                  if [[ "${{ job.status }}" == "cancelled" ]]; then
-                    echo "Job был отменен вручную или системой" >> $GITHUB_ENV
-                  fi
-                  echo "EOF" >> $GITHUB_ENV
+                  {
+                    echo "email_body<<EOF"
+                    echo "Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }}"
+                    echo "Время запуска: ${{ env.job_started_at }}"
+                    echo "Ссылка на отчёт: ${{ env.REPORT_URL }}"
+                    echo ""
+                    echo "📂 Предыдущие отчёты за 7 дней (если есть):"
+                    if [ -f past_reports.txt ]; then
+                      cat past_reports.txt
+                    else
+                      echo "не найдены"
+                    fi
+                    if [ "${{ env.tests_exit_code }}" != "0" ]; then
+                      echo ""
+                      echo "⚠️ Тесты завершились с ошибками (код: ${{ env.tests_exit_code }})"
+                    fi
+                    if [ "${{ env.job_exit_code }}" != "0" ]; then
+                      echo "❌ Job завершился с ошибками (код: ${{ env.job_exit_code }})"
+                    fi
+                    if [ "${{ job.status }}" = "cancelled" ]; then
+                      echo "🚫 Job был отменен вручную или системой"
+                    fi
+                    echo "EOF"
+                  } >> $GITHUB_ENV
 
             - name: Send email notification
               if: always()
