@@ -1,5 +1,4 @@
 import { test } from '../fixtures';
-// import { testSuite } from '../utils/testSuite';
 
 test.describe('Проверка работоспособности сайтов', () => {
     test.describe('mdmprint.ru - Проверка сайта', () => {
