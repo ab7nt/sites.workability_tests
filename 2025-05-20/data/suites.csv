@@ -1,2 +1,2 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","6455","sequoiapay.io - Проверка главной страницы","chromium","Tue May 20 07:39:27 UTC 2025","passed","Tue May 20 07:39:33 UTC 2025","Проверка работоспособности сайтов > sequoiapay.io - Проверка сайта","sitesWorkabilityCheking.spec.ts","",""
+"","6525","sequoiapay.io - Проверка главной страницы","chromium","Tue May 20 07:52:58 UTC 2025","passed","Tue May 20 07:53:04 UTC 2025","Проверка работоспособности сайтов > sequoiapay.io - Проверка сайта","sitesWorkabilityCheking.spec.ts","",""
