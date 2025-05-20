@@ -20,7 +20,7 @@ jobs:
                   echo "job_exit_code=0" >> $GITHUB_ENV
                   echo "REPORT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
-            - name: Checkout code and gh-pages
+            - name: Checkout main branch
               uses: actions/checkout@v3
               with:
                   fetch-depth: 0
@@ -131,17 +131,16 @@ jobs:
               if: always()
               run: |
                   git fetch origin gh-pages
-                  git clone --depth=1 --branch=gh-pages https://github.com/${{ github.repository }} gh-pages-clone
+                  git clone --depth=1 --branch=gh-pages https://github.com/${{ github.repository }} gh-pages-clone || exit 0
 
                   if [ -d gh-pages-clone ]; then
                     {
-                      echo "📂 Предыдущие отчёты за 7 дней (если есть):"
                       for d in $(ls -d gh-pages-clone/20*/ | sed 's|gh-pages-clone/||' | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
                         echo "- https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/$d"
                       done
                     } > past_reports.txt
                   else
-                    echo "📂 Предыдущие отчёты: не найдены (gh-pages не существует)" > past_reports.txt
+                    echo "не найдены" > past_reports.txt
                   fi
 
             - name: Update job status
