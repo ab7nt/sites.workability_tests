@@ -1,14 +1,9 @@
-import { expect, test, Page, Request, Locator } from '@playwright/test';
+import { expect, test, Page, Locator } from '@playwright/test';
 import { finalScreenshots } from '../data/finalScreenshots';
 import { helpers } from '../utils/helpers';
 
-// Интерфейс для медленных запросов
-interface SlowRequest {
-    url: string;
-    duration: string;
-    method: string;
-    resourceType: string;
-}
+// Общий тип для всех словарей локаторов
+type LocatorMap = { [key: string]: Locator };
 
 // Базовый класс для страниц
 export class BasePage {
@@ -21,29 +16,37 @@ export class BasePage {
     }
 
     // Локаторы
+    protected isMobile: boolean = false;
     protected headerTitle: Locator;
-    protected searchInputButton: { [key: string]: Locator };
-    protected searchResultItems: { [key: string]: Locator };
-    protected searchResultDropdown: { [key: string]: Locator };
-    protected searchInput: { [key: string]: Locator };
-    protected header: { [key: string]: Locator };
-    protected catalogButton: { [key: string]: Locator };
-    protected quickOrderButton: { [key: string]: Locator };
-    protected searchForm: { [key: string]: Locator };
-    protected quickOrderPopup: { [key: string]: Locator };
-    protected quickOrderPopupCloseButton: { [key: string]: Locator };
-    protected catalogLeftSide: { [key: string]: Locator };
-    protected categoriesItems: { [key: string]: Locator };
-    protected catalogRightSide: { [key: string]: Locator };
-    protected linksInCatalogRightSide: { [key: string]: Locator };
-    protected randomSubcategoryLinkInActiveArea: { [key: string]: Locator };
-    protected catalog: { [key: string]: Locator };
-    protected headerSearchButton: { [key: string]: Locator };
+
+    protected searchInputButton: LocatorMap;
+    protected searchResultItems: LocatorMap;
+    protected searchResultDropdown: LocatorMap;
+    protected searchInput: LocatorMap;
+    protected header: LocatorMap;
+    protected catalogButton: LocatorMap;
+    protected quickOrderButton: LocatorMap;
+    protected searchForm: LocatorMap;
+    protected quickOrderPopup: LocatorMap;
+    protected quickOrderPopupCloseButton: LocatorMap;
+    protected catalogLeftSide: LocatorMap;
+    protected categoriesItems: LocatorMap;
+    protected catalogRightSide: LocatorMap;
+    protected linksInCatalogRightSide: LocatorMap;
+    protected randomSubcategoryLinkInActiveArea: LocatorMap;
+    protected catalog: LocatorMap;
+    protected headerSearchButton: LocatorMap;
+    protected burgerMenuButton: LocatorMap;
+    protected headerMobile: LocatorMap;
+    protected catalogButtonMobile: LocatorMap;
+    protected catalogMobile: LocatorMap;
+    protected categoriesItemsMobile: LocatorMap;
 
     constructor(page: Page) {
         this.page = page;
 
         // Инициализация локаторов
+        // Десктопная версия
         // Заголовок страницы
         this.headerTitle = page.locator('h1');
         // Хедер
@@ -135,14 +138,14 @@ export class BasePage {
         // Каталог или бургер-меню
         // Сам каталог или бургер-меню
         this.catalog = {
-            mdmprint: this.header.mdmprint.locator('div.header-catalog__content'),
+            mdmprint: this.header.mdmprint.locator('div.header-catalog__content, div.--js-mobile-menu'),
             copy: this.header.copy.locator('div.header-catalog.__active'),
             litera: this.header.litera.locator('div.header-menu.__active'),
             onetm: this.header.onetm.locator('div.__active[data-toggle-id="menu"]'),
         };
         // Левая часть (категории)
         this.catalogLeftSide = {
-            mdmprint: this.catalog.mdmprint.locator('div.header-catalog__aside'),
+            mdmprint: this.catalog.mdmprint.locator('div.header-catalog__aside, div.--js-mobile-menu-catalog'),
             copy: this.catalog.copy.locator('ul#menu-katalog1'),
             litera: this.catalog.litera.locator('div.header-menu__level0'),
             onetm: this.catalog.onetm.locator('div.header-menu__col.header-menu__col-categories'),
@@ -170,6 +173,42 @@ export class BasePage {
         //     mdmprint: this.catalogRightSide.mdmprint.locator('a.header-catalog__group-header'),
         //     copy: this.catalogRightSide.copy.locator('a.header-catalog__group-header'),
         // };
+
+        // Мобильная версия
+        // Хедер (адаптив)
+        this.headerMobile = {
+            mdmprint: this.page.locator('div.header-menu__mobile'),
+        };
+
+        // Бургер-меню (адаптив)
+        this.burgerMenuButton = {
+            mdmprint: this.headerMobile.mdmprint.locator('div.header-toggler_mobile'),
+            // copy: this.header.copy.locator('button.header-burger'),
+            // litera: this.header.litera.locator('div.header-menu__toggler'),
+            // onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
+            // vea: this.header.vea.locator('div.header__burger'),
+        };
+
+        // Каталог (адаптив)
+        // Сама кнопка каталога
+        this.catalogButtonMobile = {
+            mdmprint: this.headerMobile.mdmprint.locator('button[data-mobile-menu="menu-catalog"]'),
+        };
+        // Сам каталог
+        this.catalogMobile = {
+            mdmprint: this.headerMobile.mdmprint.locator('div.--js-mobile-menu-catalog'),
+            // copy: this.header.copy.locator('div.header-catalog.__active'),
+            // litera: this.header.litera.locator('div.header-menu.__active'),
+            // onetm: this.header.onetm.locator('div.__active[data-toggle-id="menu"]'),
+        };
+        // Категории (адаптив)
+        this.categoriesItemsMobile = {
+            mdmprint: this.catalogMobile.mdmprint.locator('span[data-mobile-menu*="menu-catalog"]'),
+            // copy: this.catalogLeftSide.copy.locator('a.header-catalog__category'),
+            // litera: this.catalogLeftSide.litera.locator('a'),
+            // onetm: this.catalogLeftSide.onetm.locator('a.header-menu__category'),
+            // vea: this.catalogLeftSide.vea.locator('a.dropdown__list-item'),
+        };
     }
 
     // Метод для получения имени сайта из URL
@@ -206,6 +245,12 @@ export class BasePage {
                 await this.page.waitForLoadState('load');
             }
         });
+    }
+
+    // Проверка версии сайта (мобильная или десктопная)
+    async init(): Promise<void> {
+        const viewport = this.page.viewportSize();
+        this.isMobile = viewport ? viewport.width <= 768 : false;
     }
 
     // Проверка отображения элементов
@@ -341,24 +386,37 @@ export class BasePage {
     // Метод для проверки меню каталога
     async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
-            // Навести или кликнуть, в зависимости от сайта
-            if (this.site === 'litera') {
-                await this.catalogButton[this.site].hover();
+            if (this.isMobile) {
+                // Открытие бургер-меню и затем каталога (адаптив)
+                await this.burgerMenuButton[this.site].click();
+                await this.catalogButtonMobile[this.site].click();
             } else {
-                await this.catalogButton[this.site].click();
+                // Наведение или клик, в зависимости от сайта
+                if (this.site === 'litera') {
+                    await this.catalogButton[this.site].hover();
+                } else {
+                    await this.catalogButton[this.site].click();
+                }
             }
 
-            // Дождаться загрузки каталога
-            await this.catalogLeftSide[this.site].waitFor({ state: 'visible' });
+            // Ждём отображения каталога
+            const catalogSelector: Locator = this.isMobile
+                ? this.catalogMobile[this.site]
+                : this.catalogLeftSide[this.site];
+            await catalogSelector.waitFor({ state: 'visible' });
         });
 
         await test.step('Раскрытие случайной категории в меню каталога', async () => {
-            const categories = await this.categoriesItems[this.site].all();
-            let randomIndex = Math.floor(Math.random() * categories.length);
+            const categories = await (this.isMobile
+                ? this.categoriesItemsMobile[this.site]
+                : this.categoriesItems[this.site]
+            ).all();
+
+            const randomIndex = Math.floor(Math.random() * categories.length);
             const randomCategory = categories[randomIndex];
 
-            // Навести или кликнуть, в зависимости от сайта
-            if (this.site === 'mdmprint') {
+            // На мобильном — всегда клик
+            if (this.isMobile || this.site === 'mdmprint') {
                 await randomCategory.click();
             } else {
                 await randomCategory.hover();
@@ -367,7 +425,7 @@ export class BasePage {
             await this.page.waitForTimeout(2000); // Пропуск анимации
         });
 
-        await this.takeAScreenshotForReport('Каталог');
+        await this.takeAScreenshotForReport(this.isMobile ? 'Каталог (моб)' : 'Каталог');
     }
 
     // Метод для проверки поп-апа "Быстрый заказ", ""Оставить заявку" и т.д.
