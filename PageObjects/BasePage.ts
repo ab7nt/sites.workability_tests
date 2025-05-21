@@ -3,7 +3,7 @@ import { finalScreenshots } from '../data/finalScreenshots';
 import { helpers } from '../utils/helpers';
 
 // Общий тип для всех словарей локаторов
-type LocatorMap = { [key: string]: Locator };
+export type LocatorMap = { [key: string]: Locator };
 
 // Базовый класс для страниц
 export class BasePage {
@@ -17,8 +17,8 @@ export class BasePage {
 
     // Локаторы
     protected isMobile: boolean = false;
-    protected headerTitle: Locator;
 
+    protected headerTitle: Locator;
     protected searchInputButton: LocatorMap;
     protected searchResultItems: LocatorMap;
     protected searchResultDropdown: LocatorMap;
@@ -45,6 +45,10 @@ export class BasePage {
     protected searchInputMobile: LocatorMap;
     protected searchResultDropdownMobile: LocatorMap;
     protected searchResultItemsMobile: LocatorMap;
+    protected searchButtonMobile: LocatorMap;
+    protected bottomTabMenu: Locator;
+    protected bottomTabMenuMainTab: LocatorMap;
+    protected bottomTabMenuCatalogTab: LocatorMap;
 
     constructor(page: Page) {
         this.page = page;
@@ -185,10 +189,10 @@ export class BasePage {
             copy: this.page.locator('header.header_mobile'),
         };
 
-        // Кнопка "Быстрый заказ", "Оставить заявку и т.д."
+        // Кнопка "Быстрый заказ", "Оставить заявку и т.д." (адаптив)
         this.quickOrderButtonMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('button[data-popup="quick-order"]'),
-            // copy: this.headerMobile.copy.locator('button[data-popup="fast-order"]'),
+            copy: page.locator('button.fastorder-trigger_mobile'),
             // litera: this.page.locator('footer button[data-popup="order"]'),
             // onetm: this.header.onetm.locator('button[data-popup="consult"]'),
             // vea: this.header.vea.locator('div.header__request button.popup-open'),
@@ -197,32 +201,54 @@ export class BasePage {
         // Кнопка бургер-меню (адаптив)
         this.burgerMenuButton = {
             mdmprint: this.headerMobile.mdmprint.locator('div.header-toggler_mobile'),
-            copy: this.headerMobile.copy.locator('button.[data-mobile-menu="menu"]'),
+            copy: this.headerMobile.copy.locator('button[data-mobile-menu="menu"]'),
             litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
             // onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
             // vea: this.header.vea.locator('div.header__burger'),
         };
 
         // Поиск (адаптив)
+        // Кнопка поиска в хедере (адаптив)
+        this.searchButtonMobile = {
+            mdmprint: this.headerMobile.mdmprint.locator('input[name="s"]').first(), // Клик по инпуту поиска
+            copy: this.headerMobile.copy.locator('button[data-mobile-menu="search"]'),
+            // litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
+            // onetm: this.header.onetm.locator('button[data-toggle="search"]'),
+        };
+        // Поле ввода поиска в хедере (адаптив)
         this.searchInputMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('input[name="s"]').first(),
-            // copy: this.headerMobile.copy.locator('button[data-mobile-menu="menu-search"]'),
+            copy: this.headerMobile.copy.locator('input[name="s"]'),
             // litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
             // onetm: this.header.onetm.locator('button[data-toggle="search"]'),
         };
         // Выпадающий список результатов поиска (адаптив)
         this.searchResultDropdownMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('span.search-results__list').first(),
-            // copy: this.headerMobile.copy.locator('span.search-results__list'),
+            copy: this.headerMobile.copy.locator('span.search-results__list'),
             // onetm: this.searchForm.onetm.locator('div.search-results__list'),
             // litera: this.header.litera.locator('div.search-results__list'),
         };
         // Элементы результатов поиска (адаптив)
         this.searchResultItemsMobile = {
             mdmprint: this.searchResultDropdownMobile.mdmprint.locator('a'),
-            // copy: this.searchResultDropdownMobile.copy.locator('a'),
+            copy: this.searchResultDropdownMobile.copy.locator('a'),
             // onetm: this.searchResultDropdownMobile.onetm.locator('a'),
             // litera: this.searchResultDropdownMobile.litera.locator('a'),
+        };
+
+        // Нижнее тап-меню для ccopy.ru (адаптив)
+        // Само меню (адаптив)
+        this.bottomTabMenu = page.locator('div.header-control.stick-nav');
+        // Кнопка "Главная" (адаптив)
+        this.bottomTabMenuMainTab = {
+            active: this.bottomTabMenu.locator('span.header-control__button--active'),
+            inactive: this.bottomTabMenu.locator('span.header-control__button'),
+        };
+        // Кнопка "Каталог" (адаптив)
+        this.bottomTabMenuCatalogTab = {
+            active: this.bottomTabMenu.locator('button.header-control__button--catalog.header-control__button--active'),
+            inactive: this.bottomTabMenu.locator('button.header-control__button--catalog'),
         };
 
         // Каталог (адаптив)
@@ -233,14 +259,14 @@ export class BasePage {
         // Сам каталог (адаптив)
         this.catalogMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('div.--js-mobile-menu-catalog'),
-            // copy: this.header.copy.locator('div.header-catalog.__active'),
+            copy: page.locator('div.tab-bar.popup--catalog'),
             // litera: this.header.litera.locator('div.header-menu.__active'),
             // onetm: this.header.onetm.locator('div.__active[data-toggle-id="menu"]'),
         };
         // Категории (адаптив)
         this.categoriesItemsMobile = {
             mdmprint: this.catalogMobile.mdmprint.locator('span[data-mobile-menu*="menu-catalog"]'),
-            // copy: this.catalogLeftSide.copy.locator('a.header-catalog__category'),
+            copy: this.catalogMobile.copy.locator('button.state-category__list-item'),
             // litera: this.catalogLeftSide.litera.locator('a'),
             // onetm: this.catalogLeftSide.onetm.locator('a.header-menu__category'),
             // vea: this.catalogLeftSide.vea.locator('a.dropdown__list-item'),
@@ -394,8 +420,8 @@ export class BasePage {
 
             // Открытие поля поиска (если требуется)
             if (this.isMobile) {
-                if (this.site === 'mdmprint') {
-                    await this.searchInputMobile[this.site].click();
+                if (this.site !== 'onetm') {
+                    await this.searchButtonMobile[this.site].click();
                 }
             } else {
                 const sitesRequiringClick = new Set(['litera', 'onetm']);
@@ -418,6 +444,7 @@ export class BasePage {
             // Проверка наличия выпадающего списка результатов поиска
             if (this.isMobile) {
                 await this.searchResultDropdownMobile[this.site].waitFor({ state: 'visible' });
+                await this.page.waitForTimeout(1000); // Пропуск анимации
                 expect(await this.searchResultItemsMobile[this.site].count()).toBeGreaterThan(0);
             } else {
                 await this.searchResultDropdown[this.site].waitFor({ state: 'visible' });
@@ -440,7 +467,7 @@ export class BasePage {
         await test.step('Проверка страницы результатов поиска', async () => {
             // Нажатие на кнопку "Поиск" или "Enter"
             if (this.isMobile) {
-                if (this.site === 'mdmprint') {
+                if (this.site === 'mdmprint' || this.site === 'copy') {
                     await this.searchInputMobile[this.site].press('Enter');
                 }
             } else {
@@ -452,7 +479,7 @@ export class BasePage {
             // Дождаться нужного URL (или падение через timeout)
             await expect.poll(() => this.page.url(), { timeout: 10000 }).toContain('?s=');
 
-            await this.scrollToEndOfThePage();
+            // await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
         });
     }
@@ -461,9 +488,14 @@ export class BasePage {
     async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
             if (this.isMobile) {
-                // Открытие бургер-меню и затем каталога (адаптив)
-                await this.burgerMenuButton[this.site].click();
-                await this.catalogButtonMobile[this.site].click();
+                if (this.site === 'copy') {
+                    // Клик по кнопке "Главная" в нижнем тап-меню (адаптив)
+                    await this.bottomTabMenuCatalogTab['inactive'].click();
+                } else {
+                    // Открытие бургер-меню и затем каталога (адаптив)
+                    await this.burgerMenuButton[this.site].click();
+                    await this.catalogButtonMobile[this.site].click();
+                }
             } else {
                 // Наведение или клик, в зависимости от сайта
                 if (this.site === 'litera') {
