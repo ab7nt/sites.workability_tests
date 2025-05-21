@@ -267,7 +267,7 @@ export class BasePage {
         }
 
         await test.step(`Открытие страницы: ${this.pageUrl}`, async () => {
-            // Перехватываем и игнорируем загрузку v2.js (Марквиз)
+            // Перехват и игнор загрузки v2.js (Марквиз)
             const abortJs = '**/v2.js';
             await this.page.route(abortJs, (route) => route.abort());
 
@@ -276,12 +276,13 @@ export class BasePage {
                 waitUntil: 'load',
             });
 
-            // После загрузки убираем перехват, чтобы не повлиять на другие запросы
+            // Отмена перехвата после загрузки страницы
             await this.page.unroute(abortJs);
 
             expect(response, 'Не удалось перейти по URL').not.toBeNull();
             expect(response?.status(), `Неверный статус: ${response?.status()}`).toBe(200);
 
+            // Ожидание отображения баннера над хедером (для copy.ru)
             if (this.site === 'copy') {
                 await this.page.locator('div.promo').waitFor({ state: 'visible' });
             } else {
