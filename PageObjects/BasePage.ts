@@ -38,9 +38,13 @@ export class BasePage {
     protected headerSearchButton: LocatorMap;
     protected burgerMenuButton: LocatorMap;
     protected headerMobile: LocatorMap;
+    protected quickOrderButtonMobile: LocatorMap;
     protected catalogButtonMobile: LocatorMap;
     protected catalogMobile: LocatorMap;
     protected categoriesItemsMobile: LocatorMap;
+    protected searchInputMobile: LocatorMap;
+    protected searchResultDropdownMobile: LocatorMap;
+    protected searchResultItemsMobile: LocatorMap;
 
     constructor(page: Page) {
         this.page = page;
@@ -178,23 +182,55 @@ export class BasePage {
         // Хедер (адаптив)
         this.headerMobile = {
             mdmprint: this.page.locator('div.header-menu__mobile'),
+            copy: this.page.locator('header.header_mobile'),
         };
 
-        // Бургер-меню (адаптив)
+        // Кнопка "Быстрый заказ", "Оставить заявку и т.д."
+        this.quickOrderButtonMobile = {
+            mdmprint: this.headerMobile.mdmprint.locator('button[data-popup="quick-order"]'),
+            // copy: this.headerMobile.copy.locator('button[data-popup="fast-order"]'),
+            // litera: this.page.locator('footer button[data-popup="order"]'),
+            // onetm: this.header.onetm.locator('button[data-popup="consult"]'),
+            // vea: this.header.vea.locator('div.header__request button.popup-open'),
+        };
+
+        // Кнопка бургер-меню (адаптив)
         this.burgerMenuButton = {
             mdmprint: this.headerMobile.mdmprint.locator('div.header-toggler_mobile'),
-            // copy: this.header.copy.locator('button.header-burger'),
-            // litera: this.header.litera.locator('div.header-menu__toggler'),
+            copy: this.headerMobile.copy.locator('button.[data-mobile-menu="menu"]'),
+            litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
             // onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
             // vea: this.header.vea.locator('div.header__burger'),
         };
 
+        // Поиск (адаптив)
+        this.searchInputMobile = {
+            mdmprint: this.headerMobile.mdmprint.locator('input[name="s"]').first(),
+            // copy: this.headerMobile.copy.locator('button[data-mobile-menu="menu-search"]'),
+            // litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
+            // onetm: this.header.onetm.locator('button[data-toggle="search"]'),
+        };
+        // Выпадающий список результатов поиска (адаптив)
+        this.searchResultDropdownMobile = {
+            mdmprint: this.headerMobile.mdmprint.locator('span.search-results__list').first(),
+            // copy: this.headerMobile.copy.locator('span.search-results__list'),
+            // onetm: this.searchForm.onetm.locator('div.search-results__list'),
+            // litera: this.header.litera.locator('div.search-results__list'),
+        };
+        // Элементы результатов поиска (адаптив)
+        this.searchResultItemsMobile = {
+            mdmprint: this.searchResultDropdownMobile.mdmprint.locator('a'),
+            // copy: this.searchResultDropdownMobile.copy.locator('a'),
+            // onetm: this.searchResultDropdownMobile.onetm.locator('a'),
+            // litera: this.searchResultDropdownMobile.litera.locator('a'),
+        };
+
         // Каталог (адаптив)
-        // Сама кнопка каталога
+        // Сама кнопка каталога (адаптив)
         this.catalogButtonMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('button[data-mobile-menu="menu-catalog"]'),
         };
-        // Сам каталог
+        // Сам каталог (адаптив)
         this.catalogMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('div.--js-mobile-menu-catalog'),
             // copy: this.header.copy.locator('div.header-catalog.__active'),
@@ -231,10 +267,17 @@ export class BasePage {
         }
 
         await test.step(`Открытие страницы: ${this.pageUrl}`, async () => {
+            // Перехватываем и игнорируем загрузку v2.js (Марквиз)
+            const abortJs = '**/v2.js';
+            await this.page.route(abortJs, (route) => route.abort());
+
             const response = await this.page.goto(this.pageUrl, {
                 referer: 'workability-checking',
                 waitUntil: 'load',
             });
+
+            // После загрузки убираем перехват, чтобы не повлиять на другие запросы
+            await this.page.unroute(abortJs);
 
             expect(response, 'Не удалось перейти по URL').not.toBeNull();
             expect(response?.status(), `Неверный статус: ${response?.status()}`).toBe(200);
@@ -342,36 +385,66 @@ export class BasePage {
         const word = helpers.getRandomSearchWord(this.site); // Случайное слово для поиска
 
         await test.step('Ввод текста в поле поиска', async () => {
-            // Открытие поля поиска (если требуется)
-            const sitesRequiringClick = new Set(['litera', 'onetm']);
-            if (sitesRequiringClick.has(this.site)) {
-                await this.headerSearchButton[this.site].click();
-            }
-
+            // Ожидание загрузки основного скрипта
             if (this.site === 'mdmprint') {
                 await this.page.waitForResponse((resp) => resp.url().includes('main.js') && resp.status() === 200);
-                // await this.page.waitForTimeout(1000);
+                await this.page.waitForTimeout(1000);
+            }
+
+            // Открытие поля поиска (если требуется)
+            if (this.isMobile) {
+                if (this.site === 'mdmprint') {
+                    await this.searchInputMobile[this.site].click();
+                }
+            } else {
+                const sitesRequiringClick = new Set(['litera', 'onetm']);
+                if (sitesRequiringClick.has(this.site)) {
+                    await this.headerSearchButton[this.site].click();
+                }
             }
 
             // Ввод текста в поле поиска
-            await this.searchInput[this.site].pressSequentially(word, { delay: 100 });
-            await expect(this.searchInput[this.site]).toHaveValue(word);
+            if (this.isMobile) {
+                await this.searchInputMobile[this.site].fill(word);
+                await expect(this.searchInputMobile[this.site]).toHaveValue(word);
+            } else {
+                await this.searchInput[this.site].pressSequentially(word, { delay: 100 });
+                await expect(this.searchInput[this.site]).toHaveValue(word);
+            }
         });
 
         await test.step('Проверка выпадающего списка результатов поиска', async () => {
-            await this.searchResultDropdown[this.site].waitFor({ state: 'visible' });
-            expect(await this.searchResultItems[this.site].count()).toBeGreaterThan(0);
+            // Проверка наличия выпадающего списка результатов поиска
+            if (this.isMobile) {
+                await this.searchResultDropdownMobile[this.site].waitFor({ state: 'visible' });
+                expect(await this.searchResultItemsMobile[this.site].count()).toBeGreaterThan(0);
+            } else {
+                await this.searchResultDropdown[this.site].waitFor({ state: 'visible' });
+                expect(await this.searchResultItems[this.site].count()).toBeGreaterThan(0);
+            }
 
-            const resultItems = await this.searchResultItems[this.site].all();
-            let randomIndex = Math.floor(Math.random() * resultItems.length);
-            const randomResultItem = resultItems[randomIndex];
-            await randomResultItem.hover();
+            // Наведенеие на случайный элемент из выпадающего списка (только для десктопа)
+            if (!this.isMobile) {
+                const resultItems = await this.searchResultItems[this.site].all();
+                let randomIndex = Math.floor(Math.random() * resultItems.length);
+                const randomResultItem = resultItems[randomIndex];
+                await randomResultItem.hover();
+            } else {
+                return;
+            }
 
             await this.takeAScreenshotForReport('Дропдаун результатов поиска');
         });
 
         await test.step('Проверка страницы результатов поиска', async () => {
-            await this.searchInputButton[this.site].click();
+            // Нажатие на кнопку "Поиск" или "Enter"
+            if (this.isMobile) {
+                if (this.site === 'mdmprint') {
+                    await this.searchInputMobile[this.site].press('Enter');
+                }
+            } else {
+                await this.searchInputButton[this.site].click();
+            }
 
             await this.page.waitForLoadState('domcontentloaded');
 
@@ -431,7 +504,11 @@ export class BasePage {
     // Метод для проверки поп-апа "Быстрый заказ", ""Оставить заявку" и т.д.
     async checkingQuickOrderPopup(): Promise<void> {
         await test.step('Открытие поп-апа', async () => {
-            await this.quickOrderButton[this.site].click();
+            if (this.isMobile) {
+                await this.quickOrderButtonMobile[this.site].click();
+            } else {
+                await this.quickOrderButton[this.site].click();
+            }
             await this.quickOrderPopup[this.site].waitFor({ state: 'visible' });
             await this.page.waitForTimeout(1000); // Пропуск анимации
         });
