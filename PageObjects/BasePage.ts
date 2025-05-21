@@ -46,6 +46,7 @@ export class BasePage {
     protected searchResultDropdownMobile: LocatorMap;
     protected searchResultItemsMobile: LocatorMap;
     protected searchButtonMobile: LocatorMap;
+    protected searchInputButtonMobile: LocatorMap;
     protected bottomTabMenu: Locator;
     protected bottomTabMenuMainTab: LocatorMap;
     protected bottomTabMenuCatalogTab: LocatorMap;
@@ -194,7 +195,7 @@ export class BasePage {
             mdmprint: this.headerMobile.mdmprint.locator('button[data-popup="quick-order"]'),
             copy: page.locator('button.fastorder-trigger_mobile'),
             // litera: this.page.locator('footer button[data-popup="order"]'),
-            // onetm: this.header.onetm.locator('button[data-popup="consult"]'),
+            onetm: page.locator('button[data-popup="consult"].footer-consult'),
             // vea: this.header.vea.locator('div.header__request button.popup-open'),
         };
 
@@ -203,7 +204,7 @@ export class BasePage {
             mdmprint: this.headerMobile.mdmprint.locator('div.header-toggler_mobile'),
             copy: this.headerMobile.copy.locator('button[data-mobile-menu="menu"]'),
             litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
-            // onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
+            onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
             // vea: this.header.vea.locator('div.header__burger'),
         };
 
@@ -220,20 +221,26 @@ export class BasePage {
             mdmprint: this.headerMobile.mdmprint.locator('input[name="s"]').first(),
             copy: this.headerMobile.copy.locator('input[name="s"]'),
             // litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
-            // onetm: this.header.onetm.locator('button[data-toggle="search"]'),
+            onetm: this.header.onetm.locator('div[data-toggle-id="menu"] input[name="s"]'),
         };
+        // Кнопка поиска в поле ввода (адаптив)
+        this.searchInputButtonMobile = {
+            // litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
+            onetm: this.header.onetm.locator('div[data-toggle-id="menu"] button.input-button'),
+        };
+
         // Выпадающий список результатов поиска (адаптив)
         this.searchResultDropdownMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('span.search-results__list').first(),
             copy: this.headerMobile.copy.locator('span.search-results__list'),
-            // onetm: this.searchForm.onetm.locator('div.search-results__list'),
+            onetm: page.locator('div.show-mobile div.search-results__list'),
             // litera: this.header.litera.locator('div.search-results__list'),
         };
         // Элементы результатов поиска (адаптив)
         this.searchResultItemsMobile = {
             mdmprint: this.searchResultDropdownMobile.mdmprint.locator('a'),
             copy: this.searchResultDropdownMobile.copy.locator('a'),
-            // onetm: this.searchResultDropdownMobile.onetm.locator('a'),
+            onetm: this.searchResultDropdownMobile.onetm.locator('a'),
             // litera: this.searchResultDropdownMobile.litera.locator('a'),
         };
 
@@ -261,14 +268,14 @@ export class BasePage {
             mdmprint: this.headerMobile.mdmprint.locator('div.--js-mobile-menu-catalog'),
             copy: page.locator('div.tab-bar.popup--catalog'),
             // litera: this.header.litera.locator('div.header-menu.__active'),
-            // onetm: this.header.onetm.locator('div.__active[data-toggle-id="menu"]'),
+            onetm: this.header.onetm.locator('div.header-menu__col-categories'),
         };
         // Категории (адаптив)
         this.categoriesItemsMobile = {
             mdmprint: this.catalogMobile.mdmprint.locator('span[data-mobile-menu*="menu-catalog"]'),
             copy: this.catalogMobile.copy.locator('button.state-category__list-item'),
             // litera: this.catalogLeftSide.litera.locator('a'),
-            // onetm: this.catalogLeftSide.onetm.locator('a.header-menu__category'),
+            onetm: this.catalogMobile.onetm.locator('a.header-menu__category'),
             // vea: this.catalogLeftSide.vea.locator('a.dropdown__list-item'),
         };
     }
@@ -409,7 +416,8 @@ export class BasePage {
 
     // Метод для проверки поиска
     async checkingSearch(): Promise<void> {
-        const word = helpers.getRandomSearchWord(this.site); // Случайное слово для поиска
+        // Случайное слово для поиска
+        const word = helpers.getRandomSearchWord(this.site);
 
         await test.step('Ввод текста в поле поиска', async () => {
             // Ожидание загрузки основного скрипта
@@ -422,6 +430,9 @@ export class BasePage {
             if (this.isMobile) {
                 if (this.site !== 'onetm') {
                     await this.searchButtonMobile[this.site].click();
+                }
+                if (this.site === 'onetm') {
+                    await this.burgerMenuButton[this.site].click();
                 }
             } else {
                 const sitesRequiringClick = new Set(['litera', 'onetm']);
@@ -467,8 +478,12 @@ export class BasePage {
         await test.step('Проверка страницы результатов поиска', async () => {
             // Нажатие на кнопку "Поиск" или "Enter"
             if (this.isMobile) {
+                // Enter в поле поиска
                 if (this.site === 'mdmprint' || this.site === 'copy') {
                     await this.searchInputMobile[this.site].press('Enter');
+                } else {
+                    // Клик по кнопке "Поиск"
+                    await this.searchInputButtonMobile[this.site].click();
                 }
             } else {
                 await this.searchInputButton[this.site].click();
@@ -489,15 +504,18 @@ export class BasePage {
         await test.step('Открытие меню каталога', async () => {
             if (this.isMobile) {
                 if (this.site === 'copy') {
-                    // Клик по кнопке "Главная" в нижнем тап-меню (адаптив)
+                    // Клик по кнопке "Каталог" в нижнем тап-меню (адаптив)
                     await this.bottomTabMenuCatalogTab['inactive'].click();
+                } else if (this.site === 'onetm' || this.site === 'litera') {
+                    // Клик по бургер-меню (адаптив)
+                    await this.burgerMenuButton[this.site].click();
                 } else {
                     // Открытие бургер-меню и затем каталога (адаптив)
                     await this.burgerMenuButton[this.site].click();
                     await this.catalogButtonMobile[this.site].click();
                 }
             } else {
-                // Наведение или клик, в зависимости от сайта
+                // Наведение или клик, в зависимости от сайта (десктоп)
                 if (this.site === 'litera') {
                     await this.catalogButton[this.site].hover();
                 } else {
