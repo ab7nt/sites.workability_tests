@@ -50,7 +50,7 @@ jobs:
                   npm install -D allure-playwright @playwright/test allure-commandline
 
             - name: Capture job start time
-              run: echo "job_started_at=$(TZ="Europe/Moscow" date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
+              run: echo "job_started_at=$(TZ=\"Europe/Moscow\" date '+%d.%m.%Y %H:%M')" >> $GITHUB_ENV
 
             - name: Create Allure results directory
               run: mkdir -p allure-results
@@ -145,14 +145,19 @@ jobs:
                   user_name: 'GitHub Actions'
                   user_email: 'actions@github.com'
 
-            - name: Collect last 7 report links
+            - name: Collect last 7 report links with status
               if: always()
               run: |
                   if [ -d gh-pages ]; then
                     {
                       echo "past_reports_list<<EOF"
                       for d in $(ls -d gh-pages/20*/ | sed 's|gh-pages/||' | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
-                        echo "https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/$d"
+                        emoji="❓"
+                        if [ -f gh-pages/$d/status.txt ]; then
+                          code=$(cat gh-pages/$d/status.txt)
+                          if [ "$code" -eq 0 ]; then emoji="✅"; else emoji="❌"; fi
+                        fi
+                        echo "$emoji https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/$d"
                       done
                       echo "EOF"
                     } >> $GITHUB_ENV
@@ -161,6 +166,12 @@ jobs:
                     echo "не найдены" >> $GITHUB_ENV
                     echo "EOF" >> $GITHUB_ENV
                   fi
+
+            - name: Save status.txt to gh-pages
+              if: always()
+              run: |
+                  echo "${{ env.job_exit_code }}" > status.txt
+                  mv status.txt allure-report/
 
             - name: Update job status
               if: always()
