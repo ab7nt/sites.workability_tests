@@ -1,0 +1,223 @@
+# Test info
+
+- Name: Проверка работоспособности сайтов >> sequoiapay.io - Проверка сайта >> sequoiapay.io - Проверка смены языка
+- Location: /__w/sites.workability_tests/sites.workability_tests/tests/sitesWorkabilityCheking.spec.ts:95:13
+
+# Error details
+
+```
+Error: page.goto: net::ERR_CERT_DATE_INVALID at https://sequoiapay.io/
+Call log:
+  - navigating to "https://sequoiapay.io/", waiting until "load"
+
+    at /__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:234:46
+    at SequoiaMainPage.open (/__w/sites.workability_tests/sites.workability_tests/PageObjects/BasePage.ts:233:20)
+    at Object.sequoiaMainPage (/__w/sites.workability_tests/sites.workability_tests/fixtures.ts:54:23)
+```
+
+# Test source
+
+```ts
+  134 |             onetm: this.quickOrderPopup.onetm.locator('div.popup-close'),
+  135 |             vea: this.quickOrderPopup.vea.locator('button.popup-close'),
+  136 |         };
+  137 |
+  138 |         // Каталог или бургер-меню
+  139 |         // Сам каталог или бургер-меню
+  140 |         this.catalog = {
+  141 |             mdmprint: this.header.mdmprint.locator('div.header-catalog__content, div.--js-mobile-menu'),
+  142 |             copy: this.header.copy.locator('div.header-catalog.__active'),
+  143 |             litera: this.header.litera.locator('div.header-menu.__active'),
+  144 |             onetm: this.header.onetm.locator('div.__active[data-toggle-id="menu"]'),
+  145 |         };
+  146 |         // Левая часть (категории)
+  147 |         this.catalogLeftSide = {
+  148 |             mdmprint: this.catalog.mdmprint.locator('div.header-catalog__aside, div.--js-mobile-menu-catalog'),
+  149 |             copy: this.catalog.copy.locator('ul#menu-katalog1'),
+  150 |             litera: this.catalog.litera.locator('div.header-menu__level0'),
+  151 |             onetm: this.catalog.onetm.locator('div.header-menu__col.header-menu__col-categories'),
+  152 |             vea: this.header.vea.locator('div.header-dropdown__list'),
+  153 |         };
+  154 |         // Сами категории
+  155 |         this.categoriesItems = {
+  156 |             mdmprint: this.catalogLeftSide.mdmprint.locator('button.header-catalog__category'),
+  157 |             copy: this.catalogLeftSide.copy.locator('a.header-catalog__category'),
+  158 |             litera: this.catalogLeftSide.litera.locator('a'),
+  159 |             onetm: this.catalogLeftSide.onetm.locator('a.header-menu__category'),
+  160 |             vea: this.catalogLeftSide.vea.locator('a.dropdown__list-item'),
+  161 |         };
+  162 |         // Правая часть (подкатегории и услуги)
+  163 |         this.catalogRightSide = {
+  164 |             mdmprint: this.catalog.mdmprint.locator('div.header-catalog__page.tab-item--active'),
+  165 |             copy: this.catalog.copy.locator('div.header-catalog__page.tab-item--active'),
+  166 |         };
+  167 |         // Сами подкатегории и услуги
+  168 |         this.linksInCatalogRightSide = {
+  169 |             mdmprint: this.catalogRightSide.mdmprint.locator('a'),
+  170 |             copy: this.catalogRightSide.copy.locator('a'),
+  171 |         };
+  172 |         // this.randomSubcategoryLinkInActiveArea = {
+  173 |         //     mdmprint: this.catalogRightSide.mdmprint.locator('a.header-catalog__group-header'),
+  174 |         //     copy: this.catalogRightSide.copy.locator('a.header-catalog__group-header'),
+  175 |         // };
+  176 |
+  177 |         // Мобильная версия
+  178 |         // Хедер (адаптив)
+  179 |         this.headerMobile = {
+  180 |             mdmprint: this.page.locator('div.header-menu__mobile'),
+  181 |         };
+  182 |
+  183 |         // Бургер-меню (адаптив)
+  184 |         this.burgerMenuButton = {
+  185 |             mdmprint: this.headerMobile.mdmprint.locator('div.header-toggler_mobile'),
+  186 |             // copy: this.header.copy.locator('button.header-burger'),
+  187 |             // litera: this.header.litera.locator('div.header-menu__toggler'),
+  188 |             // onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
+  189 |             // vea: this.header.vea.locator('div.header__burger'),
+  190 |         };
+  191 |
+  192 |         // Каталог (адаптив)
+  193 |         // Сама кнопка каталога
+  194 |         this.catalogButtonMobile = {
+  195 |             mdmprint: this.headerMobile.mdmprint.locator('button[data-mobile-menu="menu-catalog"]'),
+  196 |         };
+  197 |         // Сам каталог
+  198 |         this.catalogMobile = {
+  199 |             mdmprint: this.headerMobile.mdmprint.locator('div.--js-mobile-menu-catalog'),
+  200 |             // copy: this.header.copy.locator('div.header-catalog.__active'),
+  201 |             // litera: this.header.litera.locator('div.header-menu.__active'),
+  202 |             // onetm: this.header.onetm.locator('div.__active[data-toggle-id="menu"]'),
+  203 |         };
+  204 |         // Категории (адаптив)
+  205 |         this.categoriesItemsMobile = {
+  206 |             mdmprint: this.catalogMobile.mdmprint.locator('span[data-mobile-menu*="menu-catalog"]'),
+  207 |             // copy: this.catalogLeftSide.copy.locator('a.header-catalog__category'),
+  208 |             // litera: this.catalogLeftSide.litera.locator('a'),
+  209 |             // onetm: this.catalogLeftSide.onetm.locator('a.header-menu__category'),
+  210 |             // vea: this.catalogLeftSide.vea.locator('a.dropdown__list-item'),
+  211 |         };
+  212 |     }
+  213 |
+  214 |     // Метод для получения имени сайта из URL
+  215 |     // Например, для URL "https://mdmprint.ru" вернёт "mdmprint"
+  216 |     getSiteNameFromURL(): string {
+  217 |         const url = new URL(this.pageUrl);
+  218 |         const hostParts = url.hostname.split('.');
+  219 |         const siteName = hostParts.length > 2 ? hostParts[1] : hostParts[0];
+  220 |
+  221 |         // Приведение '1-tm' к 'onetm'
+  222 |         return siteName.startsWith('1-') ? siteName.replace('1-', 'one') : siteName;
+  223 |     }
+  224 |
+  225 |     // Открытие страницы
+  226 |     async open(): Promise<void> {
+  227 |         const currentUrl = this.page.url();
+  228 |
+  229 |         if (currentUrl.startsWith(this.pageUrl)) {
+  230 |             return; // Страница уже открыта — повторно не переходим
+  231 |         }
+  232 |
+  233 |         await test.step(`Открытие страницы: ${this.pageUrl}`, async () => {
+> 234 |             const response = await this.page.goto(this.pageUrl, {
+      |                                              ^ Error: page.goto: net::ERR_CERT_DATE_INVALID at https://sequoiapay.io/
+  235 |                 referer: 'workability-checking',
+  236 |                 waitUntil: 'load',
+  237 |             });
+  238 |
+  239 |             expect(response, 'Не удалось перейти по URL').not.toBeNull();
+  240 |             expect(response?.status(), `Неверный статус: ${response?.status()}`).toBe(200);
+  241 |
+  242 |             if (this.site === 'copy') {
+  243 |                 await this.page.locator('div.promo').waitFor({ state: 'visible' });
+  244 |             } else {
+  245 |                 await this.page.waitForLoadState('load');
+  246 |             }
+  247 |         });
+  248 |     }
+  249 |
+  250 |     // Проверка версии сайта (мобильная или десктопная)
+  251 |     async init(): Promise<void> {
+  252 |         const viewport = this.page.viewportSize();
+  253 |         this.isMobile = viewport ? viewport.width <= 768 : false;
+  254 |     }
+  255 |
+  256 |     // Проверка отображения элементов
+  257 |     async checkingTheVisibilityOfElements(): Promise<void> {
+  258 |         await test.step('Проверка отображения заголовка H1', async () => {
+  259 |             await expect(this.headerTitle).toBeVisible();
+  260 |         });
+  261 |     }
+  262 |
+  263 |     // Скриншот страницы
+  264 |     async takeAScreenshot(): Promise<void> {
+  265 |         await test.step('Снятие скриншота страницы и сохранение в файл', async () => {
+  266 |             const name = this.pageUrl?.split('//')[1] ?? 'screenshot';
+  267 |             await this.page.screenshot({ path: `test-results/screenshots/${name}.png`, fullPage: true });
+  268 |         });
+  269 |     }
+  270 |
+  271 |     // Скриншот страницы с прикреплением к отчёту
+  272 |     async takeAScreenshotForReport(screenshotName = 'Скриншот', options: { fullPage?: boolean } = {}): Promise<void> {
+  273 |         await test.step('Снятие скриншота страницы и прикрепление к отчёту', async () => {
+  274 |             const screenshot = await this.page.screenshot({
+  275 |                 fullPage: options.fullPage ?? false,
+  276 |             });
+  277 |
+  278 |             await test.info().attach(screenshotName, {
+  279 |                 body: screenshot,
+  280 |                 contentType: 'image/png',
+  281 |             });
+  282 |
+  283 |             finalScreenshots.push({
+  284 |                 name: screenshotName,
+  285 |                 content: screenshot,
+  286 |                 timestamp: new Date(Date.now() + 3 * 3600 * 1000).toLocaleString('ru-RU', {
+  287 |                     day: '2-digit',
+  288 |                     month: '2-digit',
+  289 |                     year: 'numeric',
+  290 |                     hour: '2-digit',
+  291 |                     minute: '2-digit',
+  292 |                     second: '2-digit',
+  293 |                     hour12: false,
+  294 |                 }),
+  295 |             });
+  296 |         });
+  297 |     }
+  298 |
+  299 |     // Скролл страницы для нормализации загрузки
+  300 |     async scrollToEndOfThePage(): Promise<void> {
+  301 |         await test.step('Скролл страницы для нормализации загрузки', async () => {
+  302 |             await this.page.evaluate(() => {
+  303 |                 if (!document.body) throw new Error('document.body is not available on this page.');
+  304 |                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  305 |             });
+  306 |             await this.page.waitForTimeout(2000);
+  307 |
+  308 |             await this.page.evaluate(() => {
+  309 |                 if (!document.body) throw new Error('document.body is not available on this page.');
+  310 |                 window.scrollTo({ top: 0, behavior: 'smooth' });
+  311 |             });
+  312 |             await this.page.waitForTimeout(2000);
+  313 |         });
+  314 |     }
+  315 |
+  316 |     // Основная функция для проверки работоспособности страницы
+  317 |     async generalWorkabilityChecking(): Promise<void> {
+  318 |         await test.step('Общие проверки', async () => {
+  319 |             try {
+  320 |                 await this.open();
+  321 |                 await this.checkingTheVisibilityOfElements();
+  322 |                 await this.scrollToEndOfThePage();
+  323 |                 await this.takeAScreenshotForReport('Главная страница', { fullPage: true });
+  324 |             } catch (error) {
+  325 |                 console.error('Ошибка при выполнении общих проверок:', error);
+  326 |             }
+  327 |         });
+  328 |     }
+  329 |
+  330 |     // Проверка страницы результатов поиска
+  331 |     async checkSearchResultsPage(): Promise<void> {
+  332 |         await test.step('Проверка страницы результатов поиска', async () => {
+  333 |             await Promise.all([this.page.waitForLoadState('load'), this.searchInputButton[this.site].click()]);
+  334 |
+```
