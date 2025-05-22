@@ -178,10 +178,6 @@ export class BasePage {
             mdmprint: this.catalogRightSide.mdmprint.locator('a'),
             copy: this.catalogRightSide.copy.locator('a'),
         };
-        // this.randomSubcategoryLinkInActiveArea = {
-        //     mdmprint: this.catalogRightSide.mdmprint.locator('a.header-catalog__group-header'),
-        //     copy: this.catalogRightSide.copy.locator('a.header-catalog__group-header'),
-        // };
 
         // Мобильная версия
         // Хедер (адаптив)
@@ -196,7 +192,7 @@ export class BasePage {
             copy: page.locator('button.fastorder-trigger_mobile'),
             litera: this.page.locator('footer button[data-popup="order"]'),
             onetm: page.locator('button[data-popup="consult"].footer-consult'),
-            // vea: this.header.vea.locator('div.header__request button.popup-open'),
+            vea: this.page.locator('div.footer-order button[data-popup="order"]'),
         };
 
         // Кнопка бургер-меню (адаптив)
@@ -205,7 +201,7 @@ export class BasePage {
             copy: this.headerMobile.copy.locator('button[data-mobile-menu="menu"]'),
             litera: this.header.litera.locator('div.header-mobile-controls__icon.header-menu__toggler'),
             onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
-            // vea: this.header.vea.locator('div.header__burger'),
+            vea: this.header.vea.locator('div.header-menu__toggler'),
         };
 
         // Поиск (адаптив)
@@ -214,7 +210,6 @@ export class BasePage {
             mdmprint: this.headerMobile.mdmprint.locator('input[name="s"]').first(), // Клик по инпуту поиска
             copy: this.headerMobile.copy.locator('button[data-mobile-menu="search"]'),
             litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
-            // onetm: this.header.onetm.locator('button[data-toggle="search"]'),
         };
         // Поле ввода поиска в хедере (адаптив)
         this.searchInputMobile = {
@@ -269,6 +264,7 @@ export class BasePage {
             copy: page.locator('div.tab-bar.popup--catalog'),
             litera: this.header.litera.locator('div.header-menu__catalog'),
             onetm: this.header.onetm.locator('div.header-menu__col-categories'),
+            vea: this.header.vea.locator('div.header-menu__services'),
         };
         // Категории (адаптив)
         this.categoriesItemsMobile = {
@@ -276,7 +272,6 @@ export class BasePage {
             copy: this.catalogMobile.copy.locator('button.state-category__list-item'),
             litera: this.catalogMobile.litera.locator('a[data-hover-tab*="HeaderMenuMain1"]'),
             onetm: this.catalogMobile.onetm.locator('a.header-menu__category'),
-            // vea: this.catalogLeftSide.vea.locator('a.dropdown__list-item'),
         };
     }
 
@@ -502,14 +497,11 @@ export class BasePage {
     // Метод для проверки меню каталога
     async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
-            // await this.page.waitForResponse((resp) => resp.url().includes('main.js') && resp.status() === 200);
-            // await this.page.waitForTimeout(2000);
-
             if (this.isMobile) {
                 if (this.site === 'copy') {
                     // Клик по кнопке "Каталог" в нижнем тап-меню (адаптив)
                     await this.bottomTabMenuCatalogTab['inactive'].click();
-                } else if (this.site === 'onetm' || this.site === 'litera') {
+                } else if (this.site === 'onetm' || this.site === 'litera' || this.site === 'vea') {
                     // Клик по бургер-меню (адаптив)
                     await this.burgerMenuButton[this.site].click();
                 } else {
@@ -534,6 +526,11 @@ export class BasePage {
         });
 
         await test.step('Раскрытие случайной категории в меню каталога', async () => {
+            if (this.site === 'vea') {
+                await this.takeAScreenshotForReport(this.isMobile ? 'Каталог (моб)' : 'Каталог');
+                return;
+            }
+
             const categories = await (this.isMobile
                 ? this.categoriesItemsMobile[this.site]
                 : this.categoriesItems[this.site]
