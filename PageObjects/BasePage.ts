@@ -375,13 +375,13 @@ export class BasePage {
                 if (!document.body) throw new Error('document.body is not available on this page.');
                 window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             });
-            await this.page.waitForTimeout(2000);
+            await this.page.waitForTimeout(1000);
 
             await this.page.evaluate(() => {
                 if (!document.body) throw new Error('document.body is not available on this page.');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
-            await this.page.waitForTimeout(2000);
+            await this.page.waitForTimeout(1000);
         });
     }
 
@@ -467,6 +467,7 @@ export class BasePage {
                 return;
             }
 
+            await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Дропдаун результатов поиска');
         });
 
@@ -526,8 +527,9 @@ export class BasePage {
         });
 
         await test.step('Раскрытие случайной категории в меню каталога', async () => {
-            if (this.site === 'vea') {
-                await this.takeAScreenshotForReport(this.isMobile ? 'Каталог (моб)' : 'Каталог');
+            if (this.site === 'vea' || this.site === 'litera') {
+                await this.page.waitForTimeout(1000); // Пропуск анимации
+                await this.takeAScreenshotForReport('Каталог');
                 return;
             }
 
@@ -541,9 +543,6 @@ export class BasePage {
 
             // На мобильном — всегда клик
             if (this.isMobile) {
-                if (this.site === 'litera') {
-                    return;
-                }
                 await randomCategory.click();
             } else {
                 if (this.site === 'mdmprint') {
