@@ -57,13 +57,13 @@ export default defineConfig({
 
     /* Configure projects for major browsers */
     projects: [
-        {
-            name: 'chromium',
-            use: {
-                ...devices['Desktop Chrome'],
-                viewport: { width: 1560, height: 850 },
-            },
-        },
+        // {
+        //     name: 'Desktop Chrome',
+        //     use: {
+        //         ...devices['Desktop Chrome'],
+        //         viewport: { width: 1560, height: 850 },
+        //     },
+        // },
 
         // {
         //     name: 'firefox',
@@ -79,13 +79,13 @@ export default defineConfig({
         // },
 
         /* Test against mobile viewports. */
+        {
+            name: 'Mobile Chrome',
+            use: { ...devices['Pixel 7'] },
+        },
         // {
-        //   name: 'Mobile Chrome',
-        //   use: { ...devices['Pixel 5'] },
-        // },
-        // {
-        //   name: 'Mobile Safari',
-        //   use: { ...devices['iPhone 12'] },
+        //     name: 'Mobile Safari',
+        //     use: { ...devices['iPhone 12'] },
         // },
 
         /* Test against branded browsers. */
