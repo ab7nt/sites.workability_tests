@@ -132,6 +132,10 @@ jobs:
                     echo "gh-pages directory not found — nothing to clean"
                   fi
 
+            - name: Save test status to report directory
+              if: always()
+              run: echo "${{ env.tests_exit_code }}" > allure-report/status.txt
+
             - name: Deploy dated report to GitHub Pages
               if: always()
               uses: peaceiris/actions-gh-pages@v3
