@@ -194,7 +194,7 @@ export class BasePage {
         this.quickOrderButtonMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('button[data-popup="quick-order"]'),
             copy: page.locator('button.fastorder-trigger_mobile'),
-            // litera: this.page.locator('footer button[data-popup="order"]'),
+            litera: this.page.locator('footer button[data-popup="order"]'),
             onetm: page.locator('button[data-popup="consult"].footer-consult'),
             // vea: this.header.vea.locator('div.header__request button.popup-open'),
         };
@@ -203,7 +203,7 @@ export class BasePage {
         this.burgerMenuButton = {
             mdmprint: this.headerMobile.mdmprint.locator('div.header-toggler_mobile'),
             copy: this.headerMobile.copy.locator('button[data-mobile-menu="menu"]'),
-            litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
+            litera: this.header.litera.locator('div.header-mobile-controls__icon.header-menu__toggler'),
             onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
             // vea: this.header.vea.locator('div.header__burger'),
         };
@@ -213,19 +213,19 @@ export class BasePage {
         this.searchButtonMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('input[name="s"]').first(), // Клик по инпуту поиска
             copy: this.headerMobile.copy.locator('button[data-mobile-menu="search"]'),
-            // litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
+            litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
             // onetm: this.header.onetm.locator('button[data-toggle="search"]'),
         };
         // Поле ввода поиска в хедере (адаптив)
         this.searchInputMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('input[name="s"]').first(),
             copy: this.headerMobile.copy.locator('input[name="s"]'),
-            // litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
+            litera: this.header.litera.locator('input[name="s"]'),
             onetm: this.header.onetm.locator('div[data-toggle-id="menu"] input[name="s"]'),
         };
         // Кнопка поиска в поле ввода (адаптив)
         this.searchInputButtonMobile = {
-            // litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
+            litera: this.header.litera.locator('button.search-nwp__submit-button'),
             onetm: this.header.onetm.locator('div[data-toggle-id="menu"] button.input-button'),
         };
 
@@ -234,14 +234,14 @@ export class BasePage {
             mdmprint: this.headerMobile.mdmprint.locator('span.search-results__list').first(),
             copy: this.headerMobile.copy.locator('span.search-results__list'),
             onetm: page.locator('div.show-mobile div.search-results__list'),
-            // litera: this.header.litera.locator('div.search-results__list'),
+            litera: this.header.litera.locator('div.search-results__list'),
         };
         // Элементы результатов поиска (адаптив)
         this.searchResultItemsMobile = {
             mdmprint: this.searchResultDropdownMobile.mdmprint.locator('a'),
             copy: this.searchResultDropdownMobile.copy.locator('a'),
             onetm: this.searchResultDropdownMobile.onetm.locator('a'),
-            // litera: this.searchResultDropdownMobile.litera.locator('a'),
+            litera: this.searchResultDropdownMobile.litera.locator('a'),
         };
 
         // Нижнее тап-меню для ccopy.ru (адаптив)
@@ -267,14 +267,14 @@ export class BasePage {
         this.catalogMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('div.--js-mobile-menu-catalog'),
             copy: page.locator('div.tab-bar.popup--catalog'),
-            // litera: this.header.litera.locator('div.header-menu.__active'),
+            litera: this.header.litera.locator('div.header-menu__catalog'),
             onetm: this.header.onetm.locator('div.header-menu__col-categories'),
         };
         // Категории (адаптив)
         this.categoriesItemsMobile = {
             mdmprint: this.catalogMobile.mdmprint.locator('span[data-mobile-menu*="menu-catalog"]'),
             copy: this.catalogMobile.copy.locator('button.state-category__list-item'),
-            // litera: this.catalogLeftSide.litera.locator('a'),
+            litera: this.catalogMobile.litera.locator('a[data-hover-tab*="HeaderMenuMain1"]'),
             onetm: this.catalogMobile.onetm.locator('a.header-menu__category'),
             // vea: this.catalogLeftSide.vea.locator('a.dropdown__list-item'),
         };
@@ -502,6 +502,9 @@ export class BasePage {
     // Метод для проверки меню каталога
     async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
+            // await this.page.waitForResponse((resp) => resp.url().includes('main.js') && resp.status() === 200);
+            // await this.page.waitForTimeout(2000);
+
             if (this.isMobile) {
                 if (this.site === 'copy') {
                     // Клик по кнопке "Каталог" в нижнем тап-меню (адаптив)
@@ -523,7 +526,7 @@ export class BasePage {
                 }
             }
 
-            // Ждём отображения каталога
+            // Ожидание отображения каталога
             const catalogSelector: Locator = this.isMobile
                 ? this.catalogMobile[this.site]
                 : this.catalogLeftSide[this.site];
@@ -540,9 +543,15 @@ export class BasePage {
             const randomCategory = categories[randomIndex];
 
             // На мобильном — всегда клик
-            if (this.isMobile || this.site === 'mdmprint') {
+            if (this.isMobile) {
+                if (this.site === 'litera') {
+                    return;
+                }
                 await randomCategory.click();
             } else {
+                if (this.site === 'mdmprint') {
+                    await randomCategory.click();
+                }
                 await randomCategory.hover();
             }
 
