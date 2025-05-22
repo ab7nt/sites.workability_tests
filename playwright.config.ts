@@ -57,13 +57,13 @@ export default defineConfig({
 
     /* Configure projects for major browsers */
     projects: [
-        // {
-        //     name: 'Desktop Chrome',
-        //     use: {
-        //         ...devices['Desktop Chrome'],
-        //         viewport: { width: 1560, height: 850 },
-        //     },
-        // },
+        {
+            name: 'Desktop Chrome',
+            use: {
+                ...devices['Desktop Chrome'],
+                viewport: { width: 1560, height: 850 },
+            },
+        },
 
         // {
         //     name: 'firefox',
