@@ -37,7 +37,7 @@ bot.action(/run_(.+)/, async (ctx) => {
     const grepMap = {
         all: 'Проверка работоспособности сайтов',
         mdm: 'mdmprint.ru - Проверка главной страницы',
-        copy: 'sequoiapay.io - Проверка сайта',
+        sequoiapay: 'sequoiapay.io - Проверка сайта',
     } as const;
 
     const grep = grepMap[site];
