@@ -7,18 +7,27 @@
         "test": "npx playwright test",
         "test:headed": "npx playwright test --headed",
         "test:debug": "npx playwright test --debug",
-        "build": "tsc"
+        "build": "tsc",
+        "bot": "ts-node --loader ts-node/esm bot.ts"
     },
+    "type": "module",
     "keywords": [],
     "author": "",
     "license": "ISC",
     "devDependencies": {
         "@playwright/test": "^1.52.0",
+        "@types/dotenv": "^8.2.3",
         "@types/node": "^22.15.17",
+        "@types/node-fetch": "^2.6.12",
         "allure-playwright": "^2.15.1",
+        "ts-node": "^10.9.2",
         "typescript": "^5.4.0"
     },
     "engines": {
         "node": ">=16.0.0"
+    },
+    "dependencies": {
+        "dotenv": "^16.5.0",
+        "telegraf": "^4.16.3"
     }
 }

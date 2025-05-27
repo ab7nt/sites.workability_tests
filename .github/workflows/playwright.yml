@@ -4,6 +4,11 @@ on:
     schedule:
         - cron: '0 6 * * *'
     workflow_dispatch:
+        inputs:
+            grep:
+                description: 'Grep pattern for Playwright tests'
+                required: false
+                default: 'Проверка работоспособности сайтов'
 
 jobs:
     check_sites_workability:
@@ -83,7 +88,7 @@ jobs:
             - name: Run tests
               run: |
                   set +e
-                  npx playwright test --grep 'Проверка работоспособности сайтов' --reporter=line,allure-playwright
+                  npx playwright test --grep '${{ github.event.inputs.grep }}' --reporter=line,allure-playwright
                   tests_exit=$?
                   echo "tests_exit_code=$tests_exit" >> $GITHUB_ENV
                   if [ $tests_exit -ne 0 ]; then
