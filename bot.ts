@@ -6,10 +6,13 @@ dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 
+// Главное меню для пользователя
 const mainMenu = Markup.keyboard([['🌐 Проверить все сайты'], ['📁 Выбрать сайт']]).resize();
 
+// Список поддерживаемых сайтов
 const sites = ['mdmprint.ru', 'copy.ru', '1-tm.ru', 'litera.studio', 'vea.ru', 'sequoiapay.io'];
 
+// Карта: сайт -> список доступных тестов
 const siteTests: Record<string, string[]> = {
     'mdmprint.ru': ['Все тесты сайта', 'Главная', 'Каталог', 'Быстрый заказ', 'Поиск'],
     'copy.ru': ['Все тесты сайта', 'Главная', 'Каталог', 'Быстрый заказ', 'Поиск'],
@@ -19,6 +22,7 @@ const siteTests: Record<string, string[]> = {
     'sequoiapay.io': ['Все тесты сайта', 'Главная', 'Смена языка'],
 };
 
+// Карта для сопоставления кнопки с grep-строкой для запуска нужного теста
 const grepMap: Record<string, string> = {
     'mdmprint.ru:Главная': 'mdmprint.ru - Проверка главной страницы',
     'mdmprint.ru:Каталог': 'mdmprint.ru - Проверка меню каталога',
@@ -54,27 +58,33 @@ const grepMap: Record<string, string> = {
     'sequoiapay.io:Все тесты сайта': 'sequoiapay.io - Проверка сайта',
 };
 
+// Состояние пользователя: хранит выбранный сайт для каждого пользователя
 let userState: Record<number, { currentSite?: string }> = {};
 
+// Обработка команды /start
 bot.start((ctx) => {
-    userState[ctx.from!.id] = {};
-    ctx.reply('Выберите действие:', mainMenu);
+    userState[ctx.from!.id] = {}; // Сброс состояния пользователя
+    ctx.reply('Выберите действие:', mainMenu); // Показываем главное меню
 });
 
+// Кнопка "Выбрать сайт" — показываем список сайтов
 bot.hears('📁 Выбрать сайт', (ctx) => {
-    userState[ctx.from!.id] = {};
+    userState[ctx.from!.id] = {}; // Сброс состояния
     const siteButtons = sites.map((site) => [site]);
     ctx.reply('Выберите сайт:', Markup.keyboard([...siteButtons, ['⬅️ Назад']]).resize());
 });
 
+// Кнопка "Назад" — возвращаемся в главное меню
 bot.hears('⬅️ Назад', (ctx) => {
     userState[ctx.from!.id] = {};
     ctx.reply('Выберите действие:', mainMenu);
 });
 
+// Кнопка "Проверить все сайты" — запуск всех автотестов через GitHub Actions
 bot.hears('🌐 Проверить все сайты', async (ctx) => {
     ctx.reply('🚀 Запускаю общую проверку работоспособности сайтов');
     try {
+        // Отправляем запрос на запуск workflow в GitHub Actions
         const res = await fetch(
             `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/${process.env.GITHUB_WORKFLOW}/dispatches`,
             {
@@ -97,10 +107,12 @@ bot.hears('🌐 Проверить все сайты', async (ctx) => {
     }
 });
 
+// Обработка всех остальных нажатий (выбор сайта и теста)
 bot.hears(/^(.+)$/, (ctx) => {
     const text = ctx.message.text.trim();
     const user = userState[ctx.from!.id];
 
+    // Если сайт ещё не выбран — пользователь выбирает сайт
     if (!user.currentSite && sites.includes(text)) {
         user.currentSite = text;
         const tests = siteTests[text].map((t) => [t]);
@@ -108,6 +120,7 @@ bot.hears(/^(.+)$/, (ctx) => {
         return;
     }
 
+    // Если сайт выбран — пользователь выбирает тест
     if (user.currentSite) {
         const grepKey = `${user.currentSite}:${text}`;
         const grep = grepMap[grepKey];
@@ -117,6 +130,7 @@ bot.hears(/^(.+)$/, (ctx) => {
         }
 
         ctx.reply(`🚀 Запускаю тест: ${grep}`);
+        // Запуск выбранного теста через GitHub Actions
         fetch(
             `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/${process.env.GITHUB_WORKFLOW}/dispatches`,
             {
