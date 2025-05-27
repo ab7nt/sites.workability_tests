@@ -4,9 +4,21 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const bot = new Telegraf(process.env.BOT_TOKEN!);
+const {
+    BOT_TOKEN,
+    GITHUB_TOKEN,
+    GITHUB_REPO,
+    GITHUB_WORKFLOW,
+    GITHUB_REF = 'main', // fallback если не указано явно
+} = process.env;
 
-// Стартовое меню с кнопками
+if (!BOT_TOKEN || !GITHUB_TOKEN || !GITHUB_REPO || !GITHUB_WORKFLOW) {
+    throw new Error('❌ Не заданы обязательные переменные окружения');
+}
+
+const bot = new Telegraf(BOT_TOKEN);
+
+// Кнопочное стартовое меню
 bot.start((ctx) => {
     ctx.reply(
         '👋 Привет! Я бот для запуска тестов.\nВыбери, что нужно проверить:',
@@ -18,47 +30,49 @@ bot.start((ctx) => {
     );
 });
 
-// Обработка нажатий по кнопкам
+// Обработка кнопок
 bot.action(/run_(.+)/, async (ctx) => {
-    const site = ctx.match[1]; // all, mdm, copy
+    const site = ctx.match[1] as 'all' | 'mdm' | 'sequoiapay';
 
-    const grepMap: Record<string, string> = {
+    const grepMap = {
         all: 'Проверка работоспособности сайтов',
-        mdm: 'mdmprint.ru - Проверка сайта mdmprint.ru',
-        copy: 'copy.ru - Проверка сайта copy.ru',
-    };
+        mdm: 'mdmprint.ru - Проверка главной страницы',
+        copy: 'sequoiapay.io - Проверка сайта',
+    } as const;
 
     const grep = grepMap[site];
+    if (!grep) {
+        ctx.reply('❌ Неизвестный параметр grep');
+        return;
+    }
 
-    ctx.answerCbQuery(); // скрыть "часики"
+    await ctx.answerCbQuery(); // скрываем "часики"
     ctx.reply(`🚀 Запускаю тесты для: ${grep}`);
 
     try {
         const res = await fetch(
-            `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/${process.env.GITHUB_WORKFLOW}/dispatches`,
+            `https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/${GITHUB_WORKFLOW}/dispatches`,
             {
                 method: 'POST',
                 headers: {
-                    Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+                    Authorization: `Bearer ${GITHUB_TOKEN}`,
                     Accept: 'application/vnd.github.v3+json',
                 },
                 body: JSON.stringify({
-                    ref: process.env.GITHUB_REF,
-                    inputs: {
-                        grep,
-                    },
+                    ref: GITHUB_REF,
+                    inputs: { grep },
                 }),
             }
         );
 
         if (res.ok) {
-            ctx.reply('✅ Тесты запущены!');
+            ctx.reply('✅ Тесты успешно запущены!');
         } else {
-            const err = await res.text();
-            ctx.reply(`❌ Ошибка запуска: ${err}`);
+            const errorText = await res.text();
+            ctx.reply(`❌ Ошибка запуска:\n${errorText}`);
         }
     } catch (err) {
-        ctx.reply('❌ Не удалось запустить: ' + (err as Error).message);
+        ctx.reply(`❌ Не удалось запустить: ${(err as Error).message}`);
     }
 });
 

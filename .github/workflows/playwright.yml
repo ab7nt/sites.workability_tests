@@ -88,7 +88,10 @@ jobs:
             - name: Run tests
               run: |
                   set +e
-                  npx playwright test --grep '${{ github.event.inputs.grep }}' --reporter=line,allure-playwright
+                  grep_pattern="${{ github.event.inputs.grep }}"
+                  [ -z "$grep_pattern" ] && grep_pattern="Проверка работоспособности сайтов"
+                  echo "Using grep pattern: $grep_pattern"
+                  npx playwright test --grep "$grep_pattern" --reporter=line,allure-playwright
                   tests_exit=$?
                   echo "tests_exit_code=$tests_exit" >> $GITHUB_ENV
                   if [ $tests_exit -ne 0 ]; then
