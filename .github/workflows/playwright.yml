@@ -101,17 +101,6 @@ jobs:
                   fi
                   exit $tests_exit
 
-            - name: Отправить статус в Telegram
-              if: always()
-              run: |
-                  STATUS="✅ Все тесты прошли успешно"
-                  if [ "${{ job.status }}" != "success" ]; then
-                    STATUS="❌ Тесты завершились с ошибками"
-                  fi
-                  curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
-                    -d chat_id=${{ secrets.CHAT_ID }} \
-                    -d text="${STATUS}%0AWorkflow: ${{ github.workflow }}%0ACommit: ${{ github.sha }}"
-
             - name: Generate Allure report with history
               if: always()
               run: |
@@ -121,6 +110,28 @@ jobs:
                     --title "Отчёт мониторинга сайтов" \
                     --report-url ${REPORT_URL} \
                     --history-folder allure-results/history
+
+            - name: Отправить статус в Telegram
+              if: always()
+              env:
+                  REPORT_URL: https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY#*/}/${{ env.REPORT_DATE }}/
+                  TEST_NAME: ${{ github.event.inputs.grep }}
+              run: |
+                  STATUS="✅ Все тесты прошли успешно"
+                  if [ "${{ job.status }}" != "success" ]; then
+                    STATUS="❌ Тесты завершились с ошибками"
+                  fi
+
+                  # Если TEST_NAME пустой, подставляем дефолт
+                  if [ -z "$TEST_NAME" ]; then
+                    TEST_NAME="Проверка работоспособности сайтов"
+                  fi
+
+                  MESSAGE="${STATUS}%0AТест: $TEST_NAME%0AОтчёт: $REPORT_URL"
+
+                  curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
+                    -d chat_id=${{ secrets.CHAT_ID }} \
+                    -d text="$MESSAGE"
 
             - name: Copy history for gh-pages
               if: always()
