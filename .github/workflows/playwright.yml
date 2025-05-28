@@ -121,7 +121,7 @@ jobs:
 
                   curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
                     -d chat_id=${{ secrets.CHAT_ID }} \
-                    -d text="${STATUS}%0AТест: Проверка сайтов%0AОтчёт: ${{ env.REPORT_URL }}"
+                    -d text="${STATUS}%0AТест: ${{ github.event.inputs.grep }}%0AОтчёт: ${{ env.REPORT_URL }}"
 
             - name: Copy history for gh-pages
               if: always()
