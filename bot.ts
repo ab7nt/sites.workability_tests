@@ -6,13 +6,8 @@ dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN!);
 
-// Главное меню для пользователя
-const mainMenu = Markup.keyboard([['🌐 Проверить все сайты'], ['📁 Выбрать сайт']]).resize();
-
-// Список поддерживаемых сайтов
 const sites = ['mdmprint.ru', 'copy.ru', '1-tm.ru', 'litera.studio', 'vea.ru', 'sequoiapay.io'];
 
-// Карта: сайт -> список доступных тестов
 const siteTests: Record<string, string[]> = {
     'mdmprint.ru': ['Все тесты сайта', 'Главная', 'Каталог', 'Быстрый заказ', 'Поиск'],
     'copy.ru': ['Все тесты сайта', 'Главная', 'Каталог', 'Быстрый заказ', 'Поиск'],
@@ -22,7 +17,6 @@ const siteTests: Record<string, string[]> = {
     'sequoiapay.io': ['Все тесты сайта', 'Главная', 'Смена языка'],
 };
 
-// Карта для сопоставления кнопки с grep-строкой для запуска нужного теста
 const grepMap: Record<string, string> = {
     'mdmprint.ru:Главная': 'mdmprint.ru - Проверка главной страницы',
     'mdmprint.ru:Каталог': 'mdmprint.ru - Проверка меню каталога',
@@ -58,33 +52,68 @@ const grepMap: Record<string, string> = {
     'sequoiapay.io:Все тесты сайта': 'sequoiapay.io - Проверка сайта',
 };
 
-// Состояние пользователя: хранит выбранный сайт для каждого пользователя
-let userState: Record<number, { currentSite?: string }> = {};
+let userState: Record<number, { currentSite?: string; runningTest?: string; runId?: number }> = {};
 
-// Обработка команды /start
 bot.start((ctx) => {
-    userState[ctx.from!.id] = {}; // Сброс состояния пользователя
-    ctx.reply('Выберите действие:', mainMenu); // Показываем главное меню
+    userState[ctx.from.id] = {};
+    ctx.reply(
+        'Нужно выбрать:',
+        Markup.inlineKeyboard([
+            [Markup.button.callback('🌐 Проверить все сайты', 'check_all')],
+            [Markup.button.callback('📁 Выбрать сайт', 'choose_site')],
+        ])
+    );
 });
 
-// Кнопка "Выбрать сайт" — показываем список сайтов
-bot.hears('📁 Выбрать сайт', (ctx) => {
-    userState[ctx.from!.id] = {}; // Сброс состояния
-    const siteButtons = sites.map((site) => [site]);
-    ctx.reply('Выберите сайт:', Markup.keyboard([...siteButtons, ['⬅️ Назад']]).resize());
+bot.action('choose_site', async (ctx) => {
+    userState[ctx.from.id] = {};
+    const siteButtons = sites.map((site) => [Markup.button.callback(site, `site:${site}`)]);
+    siteButtons.push([Markup.button.callback('⬅️ Назад', 'back_main')]);
+    await ctx.editMessageText('Выберите сайт:', Markup.inlineKeyboard(siteButtons));
 });
 
-// Кнопка "Назад" — возвращаемся в главное меню
-bot.hears('⬅️ Назад', (ctx) => {
-    userState[ctx.from!.id] = {};
-    ctx.reply('Выберите действие:', mainMenu);
+bot.action('back_main', async (ctx) => {
+    userState[ctx.from.id] = {};
+    await ctx.editMessageText(
+        'Выберите действие:',
+        Markup.inlineKeyboard([
+            [Markup.button.callback('🌐 Проверить все сайты', 'check_all')],
+            [Markup.button.callback('📁 Выбрать сайт', 'choose_site')],
+        ])
+    );
 });
 
-// Кнопка "Проверить все сайты" — запуск всех автотестов через GitHub Actions
-bot.hears('🌐 Проверить все сайты', async (ctx) => {
-    ctx.reply('🚀 Запускаю общую проверку работоспособности сайтов');
+bot.action(/^site:(.+)$/, async (ctx) => {
+    const site = ctx.match[1];
+    userState[ctx.from.id] = { currentSite: site };
+
+    const testButtons = siteTests[site].map((test) => [Markup.button.callback(test, `test:${site}:${test}`)]);
+    testButtons.push([Markup.button.callback('⬅️ Назад', 'choose_site')]);
+
+    await ctx.editMessageText(`Выберите тест для ${site}:`, Markup.inlineKeyboard(testButtons));
+});
+
+bot.action(/^test:(.+):(.+)$/, async (ctx) => {
+    const site = ctx.match[1];
+    const test = ctx.match[2];
+    const grep = grepMap[`${site}:${test}`];
+    if (!grep) return ctx.reply('❌ Неизвестный тест.');
+
+    const user = userState[ctx.from.id];
+    if (user.runningTest === test) return ctx.answerCbQuery('⏳ Этот тест уже выполняется');
+
+    user.runningTest = test;
+
+    const originalKeyboard = (ctx.callbackQuery.message as any).reply_markup?.inline_keyboard;
+    const updatedKeyboard = originalKeyboard?.map((row: any[]) =>
+        row.map((btn: any) =>
+            btn.text === test ? Markup.button.callback('⏳ Тест выполняется. Отменить?', 'cancel') : btn
+        )
+    );
+
+    await ctx.editMessageReplyMarkup({ inline_keyboard: updatedKeyboard });
+
     try {
-        // Отправляем запрос на запуск workflow в GitHub Actions
         const res = await fetch(
             `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/${process.env.GITHUB_WORKFLOW}/dispatches`,
             {
@@ -93,66 +122,97 @@ bot.hears('🌐 Проверить все сайты', async (ctx) => {
                     Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
                     Accept: 'application/vnd.github.v3+json',
                 },
-                body: JSON.stringify({
-                    ref: process.env.GITHUB_REF,
-                    inputs: {
-                        grep: 'Проверка работоспособности сайтов',
-                    },
-                }),
+                body: JSON.stringify({ ref: process.env.GITHUB_REF, inputs: { grep } }),
             }
         );
-        ctx.reply(res.ok ? '✅ Тесты запущены!' : `❌ Ошибка запуска: ${await res.text()}`);
-    } catch (err) {
-        ctx.reply('❌ Не удалось запустить: ' + (err as Error).message);
+
+        if (!res.ok) {
+            user.runningTest = undefined;
+            return ctx.reply(`❌ Ошибка запуска: ${await res.text()}`);
+        }
+
+        const runsRes = await fetch(
+            `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/runs?event=workflow_dispatch`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+                    Accept: 'application/vnd.github.v3+json',
+                },
+            }
+        );
+
+        const runsData = await runsRes.json();
+
+        // Фильтруем только запущенные или ожидающие run'ы на нужной ветке
+        const activeRuns = runsData.workflow_runs
+            .filter(
+                (r: any) =>
+                    r.head_branch === process.env.GITHUB_REF && (r.status === 'in_progress' || r.status === 'queued')
+            )
+            .sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+        const latestRun = activeRuns[0];
+        user.runId = latestRun?.id;
+
+        ctx.reply('✅ Тест запущен!');
+    } catch (err: any) {
+        ctx.reply('❌ Не удалось запустить: ' + err.message);
     }
 });
 
-// Обработка всех остальных нажатий (выбор сайта и теста)
-bot.hears(/^(.+)$/, (ctx) => {
-    const text = ctx.message.text.trim();
-    const user = userState[ctx.from!.id];
+bot.action('cancel', async (ctx) => {
+    const user = userState[ctx.from.id];
+    if (!user?.runId) return ctx.answerCbQuery('❌ Нет активного теста.');
 
-    // Если сайт ещё не выбран — пользователь выбирает сайт
-    if (!user.currentSite && sites.includes(text)) {
-        user.currentSite = text;
-        const tests = siteTests[text].map((t) => [t]);
-        ctx.reply(`Выберите тест для ${text}:`, Markup.keyboard([...tests, ['⬅️ Назад']]).resize());
-        return;
-    }
-
-    // Если сайт выбран — пользователь выбирает тест
-    if (user.currentSite) {
-        const grepKey = `${user.currentSite}:${text}`;
-        const grep = grepMap[grepKey];
-        if (!grep) {
-            ctx.reply('❌ Неизвестный тест.');
-            return;
-        }
-
-        ctx.reply(`🚀 Запускаю тест: ${grep}`);
-        // Запуск выбранного теста через GitHub Actions
-        fetch(
-            `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/workflows/${process.env.GITHUB_WORKFLOW}/dispatches`,
+    try {
+        // Пытаемся отменить run
+        const cancelRes = await fetch(
+            `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/runs/${user.runId}/cancel`,
             {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
                     Accept: 'application/vnd.github.v3+json',
                 },
-                body: JSON.stringify({
-                    ref: process.env.GITHUB_REF,
-                    inputs: {
-                        grep,
-                    },
-                }),
             }
-        )
-            .then((res) =>
-                res.ok
-                    ? ctx.reply('✅ Тест запущен!')
-                    : res.text().then((err) => ctx.reply(`❌ Ошибка запуска: ${err}`))
-            )
-            .catch((err) => ctx.reply('❌ Не удалось запустить: ' + err.message));
+        );
+
+        if (cancelRes.ok) {
+            user.runId = undefined;
+            user.runningTest = undefined;
+            return ctx.editMessageText(
+                '⛔ Тест отменён.',
+                Markup.inlineKeyboard([[Markup.button.callback('⬅️ Назад', `site:${user.currentSite}`)]])
+            );
+        }
+
+        // Если отмена не удалась — проверяем статус
+        const statusRes = await fetch(
+            `https://api.github.com/repos/${process.env.GITHUB_REPO}/actions/runs/${user.runId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+                    Accept: 'application/vnd.github.v3+json',
+                },
+            }
+        );
+
+        const statusData = await statusRes.json();
+        const { id, status, conclusion } = statusData;
+
+        user.runId = undefined;
+        user.runningTest = undefined;
+
+        if (status === 'completed') {
+            return ctx.reply(
+                `⚠️ Тест уже завершён.\nРезультат: ${conclusion ?? 'неизвестно'}\nrunId: ${id ?? 'неизвестно'}`
+            );
+        }
+
+        const errorText = await cancelRes.text();
+        return ctx.reply(`❌ Не удалось отменить тест: ${errorText}`);
+    } catch (err: any) {
+        ctx.reply('❌ Ошибка отмены: ' + err.message);
     }
 });
 
