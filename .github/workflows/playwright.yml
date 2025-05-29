@@ -33,7 +33,7 @@ jobs:
                   [ -z "$GREP" ] && GREP="Проверка работоспособности сайтов (по расписанию)"  # fallback для cron-запуска
                   curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
                     -d chat_id=${{ secrets.CHAT_ID }} \
-                    -d text="🚀 Workflow запущен.%0AЦель: $GREP"
+                    -d text="🚀 Workflow запущен.%0AЦель: $GREP%0ARun ID: ${{ github.run_id }}"
 
             - name: Checkout code and gh-pages
               uses: actions/checkout@v3
