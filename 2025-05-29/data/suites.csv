@@ -1,3 +1,0 @@
-"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","3287","sequoiapay.io - Проверка смены языка","Mobile Chrome","Thu May 29 10:13:14 MSK 2025","passed","Thu May 29 10:13:18 MSK 2025","Проверка работоспособности сайтов > sequoiapay.io - Проверка сайта","sitesWorkabilityCheking.spec.ts","",""
-"","3252","sequoiapay.io - Проверка смены языка","Desktop Chrome","Thu May 29 10:13:10 MSK 2025","passed","Thu May 29 10:13:14 MSK 2025","Проверка работоспособности сайтов > sequoiapay.io - Проверка сайта","sitesWorkabilityCheking.spec.ts","",""
