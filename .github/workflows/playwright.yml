@@ -192,7 +192,7 @@ jobs:
                   publish_branch: gh-pages
                   destination_dir: ${{ env.REPORT_DATE }}
                   force_orphan: false
-                  keep_files: true
+                  keep_files: false
                   user_name: 'GitHub Actions'
                   user_email: 'actions@github.com'
 
