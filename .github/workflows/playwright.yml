@@ -120,14 +120,14 @@ jobs:
             - name: Отправить статус в Telegram
               if: always()
               run: |
-                  STATUS="✅ Все тесты прошли успешно"
+                  STATUS="✅ Всё прошло успешно"
                   if [ "${{ job.status }}" != "success" ]; then
-                    STATUS="❌ Тесты завершились с ошибками"
+                    STATUS="❌ Проверка прошла с ошибками"
                   fi
 
                   curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
                     -d chat_id=${{ secrets.CHAT_ID }} \
-                    -d text="${STATUS}%0AТест: ${{ github.event.inputs.grep }}%0AОтчёт: ${{ env.REPORT_URL }}"
+                    -d text="${STATUS}%0AЦель: ${{ github.event.inputs.grep }}%0AОтчёт: ${{ env.REPORT_URL }}"
 
             - name: Copy history for gh-pages
               if: always()
