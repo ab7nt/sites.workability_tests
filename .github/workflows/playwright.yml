@@ -29,9 +29,11 @@ jobs:
 
             - name: Notify about workflow start
               run: |
+                  GREP="${{ github.event.inputs.grep }}"
+                  [ -z "$GREP" ] && GREP="Проверка работоспособности сайтов (по расписанию)"  # fallback для cron-запуска
                   curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
                     -d chat_id=${{ secrets.CHAT_ID }} \
-                    -d text="🚀 Запущен workflow: ${{ github.workflow }} №${{ github.run_number }}%0AСсылка: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    -d text="🚀 Workflow запущен. Цель: $GREP"
 
             - name: Checkout code and gh-pages
               uses: actions/checkout@v3
