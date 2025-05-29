@@ -27,6 +27,12 @@ jobs:
                   echo "job_exit_code=0" >> $GITHUB_ENV
                   echo "REPORT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
+            - name: Notify about workflow start
+              run: |
+                  curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
+                    -d chat_id=${{ secrets.CHAT_ID }} \
+                    -d text="🚀 Запущен workflow: ${{ github.workflow }}
+
             - name: Checkout code and gh-pages
               uses: actions/checkout@v3
               with:
