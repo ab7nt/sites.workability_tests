@@ -181,6 +181,18 @@ jobs:
                     echo "gh-pages directory not found — nothing to clean"
                   fi
 
+            - name: Commit and push cleanup to gh-pages
+              if: always()
+              run: |
+                  if [ -d gh-pages ]; then
+                    cd gh-pages
+                    git config user.name "GitHub Actions"
+                    git config user.email "actions@github.com"
+                    git add -A
+                    git commit -m "🧹 Cleanup old reports (older than 7 days)" || echo "No changes to commit"
+                    git push origin gh-pages
+                  fi
+
             - name: Save test status to report directory
               if: always()
               run: echo "${{ env.tests_exit_code }}" > allure-report/status.txt
