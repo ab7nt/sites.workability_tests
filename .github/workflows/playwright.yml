@@ -190,7 +190,8 @@ jobs:
                     git config user.email "actions@github.com"
                     git add -A
                     git commit -m "🧹 Cleanup old reports (older than 7 days)" || echo "No changes to commit"
-                    git push origin gh-pages
+                    # Указание ветки ЯВНО нужно в worktree
+                    git push origin HEAD:gh-pages
                   fi
 
             - name: Save test status to report directory
