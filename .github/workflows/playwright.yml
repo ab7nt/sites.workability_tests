@@ -220,9 +220,9 @@ jobs:
                   {
                     echo "past_reports_list<<EOF"
                     if [ -d gh-pages ]; then
-                      for d in $(ls -d gh-pages/20*/ | sed 's|gh-pages/||' | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
+                      for d in $(ls -d gh-pages/20*/ 2>/dev/null | sed 's|gh-pages/||' | sort -r | grep -v "${{ env.REPORT_DATE }}" | head -n 7); do
                         emoji="❓"
-                        if [ -f gh-pages/$d/status.txt ]; then
+                        if [ -f "gh-pages/$d/status.txt" ]; then
                           code=$(cat gh-pages/$d/status.txt)
                           if [ "$code" -eq 0 ]; then emoji="✅"; else emoji="❌"; fi
                         fi
