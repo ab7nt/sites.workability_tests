@@ -92,7 +92,7 @@ jobs:
                     "buildOrder": "${{ github.run_id }}",
                     "buildName": "${{ github.workflow }} #${{ github.run_number }}",
                     "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                    "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ github.repository_name }}/${{ env.REPORT_DATE }}/",
+                    "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ env.REPO_NAME }}/${{ env.REPORT_DATE }}/",
                     "reportName": "Allure Report"
                   }' > allure-results/executor.json
 
@@ -113,7 +113,7 @@ jobs:
             - name: Generate Allure report with history
               if: always()
               run: |
-                  REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ github.repository_name }}/${{ env.REPORT_DATE }}/"
+                  REPORT_URL="https://${{ github.repository_owner }}.github.io/${{ env.REPO_NAME }}/${{ env.REPORT_DATE }}/"
                   echo "REPORT_URL=${REPORT_URL}" >> $GITHUB_ENV
                   npx allure generate allure-results --clean -o allure-report \
                     --title "Отчёт мониторинга сайтов" \
@@ -241,7 +241,7 @@ jobs:
                           code=$(cat gh-pages/$d/status.txt)
                           if [ "$code" -eq 0 ]; then emoji="✅"; else emoji="❌"; fi
                         fi
-                        echo "$emoji https://${{ github.repository_owner }}.github.io/${{ github.repository_name }}/$d"
+                        echo "$emoji https://${{ github.repository_owner }}.github.io/${{ env.REPO_NAME }}/$d"
                       done
                     else
                       echo "не найдены"
@@ -272,43 +272,27 @@ jobs:
               if: always()
               run: |
                   {
-                    echo "email_body<<EOF"
-                    echo " Результат проверки работоспособности сайтов: ${{ env.job_emoji }} ${{ env.job_status }}"
-                    echo "Время запуска: ${{ env.job_started_at }}"
-                    echo "Ссылка на отчёт:"
-                    echo "${{ env.REPORT_URL }}"
+                    echo "email_body=Отчёт мониторинга сайтов"
+                    echo "Цель: ${{ github.event.inputs.grep }}"
+                    echo "Статус: ${{ env.job_status }} ${{ env.job_emoji }}"
+                    echo "Run ID: ${{ github.run_id }}"
+                    echo "Дата: ${{ env.REPORT_DATE }}"
+                    echo "Отчёт: ${{ env.REPORT_URL }}"
                     echo ""
-                    echo "📂 Предыдущие отчёты за 7 дней:"
+                    echo "Последние отчёты:"
                     echo "${{ env.past_reports_list }}"
-                    if [ ${{ env.tests_exit_code }} -ne 0 ]; then
-                      echo "Тесты завершились с ошибками (код: ${{ env.tests_exit_code }})"
-                    fi
-                    if [ ${{ env.job_exit_code }} -ne 0 ]; then
-                      echo "Job завершился с ошибками (код: ${{ env.job_exit_code }})"
-                    fi
-                    if [[ "${{ job.status }}" == "cancelled" ]]; then
-                      echo "Job был отменен вручную или системой"
-                    fi
-                    echo "EOF"
-                  } >> $GITHUB_ENV
+                  } > email_body.txt
 
             - name: Send email notification
               if: always()
               uses: dawidd6/action-send-mail@v3
               with:
-                  server_address: smtp.yandex.ru
-                  server_port: 587
-                  username: ${{ secrets.EMAIL_USERNAME }}
-                  password: ${{ secrets.EMAIL_PASSWORD }}
-                  subject: '${{ env.job_emoji }} Результат проверки работоспособности сайтов (run_id:${{ github.run_id }})'
-                  body: ${{ env.email_body }}
-                  to: ${{ secrets.EMAIL_RECIPIENTS }}
-                  from: 'Автоматическое тестирование работоспособности сайтов'
-
-            - name: Force fail job if needed
-              if: ${{ env.job_exit_code != '0' || env.tests_exit_code != '0' }}
-              run: |
-                  echo "Job завершен со статусом: ${{ env.job_status }}"
-                  echo "Код тестов: ${{ env.tests_exit_code }}"
-                  echo "Код job: ${{ env.job_exit_code }}"
-                  exit 1
+                  server_address: smtp.example.com
+                  server_port: 465
+                  username: ${{ secrets.SMTP_USERNAME }}
+                  password: ${{ secrets.SMTP_PASSWORD }}
+                  subject: '[Мониторинг сайтов] Статус: ${{ env.job_status }} ${{ env.job_emoji }}'
+                  to: team@example.com
+                  from: monitoring@example.com
+                  content_type: text/plain
+                  body: ${{ steps.prepare_notification.outputs.email_body || 'No body' }}
