@@ -26,6 +26,7 @@ jobs:
                   echo "tests_exit_code=0" >> $GITHUB_ENV
                   echo "job_exit_code=0" >> $GITHUB_ENV
                   echo "REPORT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+                  echo "REPO_NAME=$(echo '${{ github.repository }}' | cut -d/ -f2)" >> $GITHUB_ENV
 
             - name: Notify about workflow start
               run: |
