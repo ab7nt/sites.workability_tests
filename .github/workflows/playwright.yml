@@ -72,28 +72,30 @@ jobs:
 
             - name: Set Allure environment and executor info
               run: |
-                  echo '{
-                    "Project": "Мониторинг сайтов",
-                    "Environment": "Production",
-                    "TestSuite": "Проверка работоспособности",
-                    "CI": "GitHub Actions",
-                    "OS": "'${{ runner.os }}'",
-                    "Node.js": "'$(node --version)'",
-                    "Playwright": "'$(npx playwright --version)'",
-                    "Run ID": "'${{ github.run_id }}'",
-                    "Commit": "'${{ github.sha }}'"
-                  }' > allure-results/environment.json
+                  mkdir -p allure-results
 
-                  echo '{
-                    "name": "GitHub Actions",
-                    "type": "github",
-                    "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                    "buildOrder": "'${{ github.run_id }}'",
-                    "buildName": "'${{ github.workflow }} #${{ github.run_number }}'",
-                    "buildUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                    "reportUrl": "https://${{ github.repository_owner }}.github.io/${{ env.REPO_NAME }}/${{ env.REPORT_DATE }}/",
-                    "reportName": "Allure Report"
-                  }' > allure-results/executor.json
+                  echo "{
+                    \"Project\": \"Мониторинг сайтов\",
+                    \"Environment\": \"Production\",
+                    \"TestSuite\": \"Проверка работоспособности\",
+                    \"CI\": \"GitHub Actions\",
+                    \"OS\": \"${{ runner.os }}\",
+                    \"Node.js\": \"$(node --version)\",
+                    \"Playwright\": \"$(npx playwright --version)\",
+                    \"Run ID\": \"${{ github.run_id }}\",
+                    \"Commit\": \"${{ github.sha }}\"
+                  }" > allure-results/environment.json
+
+                  echo "{
+                    \"name\": \"GitHub Actions\",
+                    \"type\": \"github\",
+                    \"url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",
+                    \"buildOrder\": \"${{ github.run_id }}\",
+                    \"buildName\": \"${{ github.workflow }} #${{ github.run_number }}\",
+                    \"buildUrl\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",
+                    \"reportUrl\": \"https://${{ github.repository_owner }}.github.io/${{ env.REPO_NAME }}/${{ env.REPORT_DATE }}/\",
+                    \"reportName\": \"Allure Report\"
+                  }" > allure-results/executor.json
 
             - name: Run tests
               run: |
