@@ -39,19 +39,13 @@ export class SequoiaMainPage extends BasePage {
 
         await test.step('Выбор языка в меню хедера', async () => {
             // Выбор языка в дропдауне
-            // if (this.isMobile) {
-            //     await this.changeLanguageDropdownButton.click();
-            // } else {
-            //     await this.changeLanguageDropdownButton.hover();
-            // }
             if (this.isMobile) {
-                await this.clickOnElement(this.changeLanguageDropdownButton);
+                await this.changeLanguageDropdownButton.click();
             } else {
                 await this.changeLanguageDropdownButton.hover();
             }
 
-            // await this.changeLanguageItemLink.click();
-            await this.clickOnElement(this.changeLanguageItemLink);
+            await this.changeLanguageItemLink.click();
             await this.page.waitForLoadState('networkidle');
         });
 

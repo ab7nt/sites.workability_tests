@@ -275,13 +275,6 @@ export class BasePage {
         };
     }
 
-    // Общие методы
-    // Клик по элементу
-    async clickOnElement(locator: Locator): Promise<void> {
-        await locator.waitFor();
-        await locator.click();
-    }
-
     // Метод для получения имени сайта из URL
     // Например, для URL "https://mdmprint.ru" вернёт "mdmprint"
     getSiteNameFromURL(): string {
