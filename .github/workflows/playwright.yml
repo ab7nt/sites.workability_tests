@@ -14,7 +14,8 @@ jobs:
     check_sites_workability:
         runs-on: ubuntu-latest
         container:
-            image: mcr.microsoft.com/playwright:latest
+            image: mcr.microsoft.com/playwright:v1.53.0-noble
+
         env:
             TZ: Europe/Moscow
 
