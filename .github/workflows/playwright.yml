@@ -247,3 +247,53 @@ jobs:
                   else
                     echo "conclusion=success" >> "$GITHUB_OUTPUT"
                   fi
+
+            - name: Prepare notification
+              id: prepare_email
+              if: always()
+              run: |
+                  {
+                    echo "email_body<<EOF"
+                    echo "Результат проверки работоспособности сайтов: $job_emoji $job_status"
+                    echo "Время запуска: $job_started_at"
+                    echo "Ссылка на отчёт: $REPORT_URL"
+                    echo ""
+                    echo "📂 Предыдущие отчёты за 7 дней (если есть):"
+                    if [ -f past_reports.txt ]; then
+                      cat past_reports.txt
+                    else
+                      echo "не найдены"
+                    fi
+                    if [ "$tests_exit_code" != "0" ]; then
+                      echo ""
+                      echo "⚠️ Тесты завершились с ошибками (код: $tests_exit_code)"
+                    fi
+                    if [ "$job_exit_code" != "0" ]; then
+                      echo "❌ Job завершился с ошибками (код: $job_exit_code)"
+                    fi
+                    if [ "$GITHUB_JOB_STATUS" = "cancelled" ]; then
+                      echo "🚫 Job был отменен вручную или системой"
+                    fi
+                    echo "EOF"
+                  } >> $GITHUB_OUTPUT
+              env:
+                  job_emoji: ${{ env.job_emoji }}
+                  job_status: ${{ env.job_status }}
+                  job_started_at: ${{ env.job_started_at }}
+                  REPORT_URL: ${{ env.REPORT_URL }}
+                  tests_exit_code: ${{ env.tests_exit_code }}
+                  job_exit_code: ${{ env.job_exit_code }}
+                  GITHUB_JOB_STATUS: ${{ job.status }}
+
+            - name: Send email notification
+              if: always()
+              uses: dawidd6/action-send-mail@v3
+              with:
+                  server_address: smtp.yandex.ru
+                  server_port: 587
+                  username: ${{ secrets.EMAIL_USERNAME }}
+                  password: ${{ secrets.EMAIL_PASSWORD }}
+                  subject: 'Результат проверки сайтов - ${{ env.job_emoji }} ${{ env.job_status }} (run_id:${{ github.run_id }})'
+                  body: ${{ steps.prepare_email.outputs.email_body }}
+                  to: ${{ secrets.EMAIL_RECIPIENTS }}
+                  from: 'Автотесты работоспособности сайтов'
