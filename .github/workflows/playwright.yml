@@ -111,6 +111,12 @@ jobs:
                   fi
                   exit $tests_exit
 
+            - name: Set up Java
+              uses: actions/setup-java@v3
+              with:
+                  distribution: 'temurin'
+                  java-version: '17'
+
             - name: Generate Allure report with history
               if: always()
               run: |
@@ -236,8 +242,8 @@ jobs:
               if: always()
               run: |
                   if [ "${{ env.job_exit_code }}" != "0" ]; then
-                    echo "::set-output name=conclusion::failure"
+                    echo "conclusion=failure" >> "$GITHUB_OUTPUT"
                     exit 1
                   else
-                    echo "::set-output name=conclusion::success"
+                    echo "conclusion=success" >> "$GITHUB_OUTPUT"
                   fi
