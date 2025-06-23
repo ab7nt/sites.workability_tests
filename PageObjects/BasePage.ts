@@ -29,6 +29,8 @@ export class BasePage {
     protected searchForm: LocatorMap;
     protected quickOrderPopup: LocatorMap;
     protected quickOrderPopupCloseButton: LocatorMap;
+    protected cookiePopup: LocatorMap;
+    protected cookiePopupAcceptButton: LocatorMap;
     protected catalogLeftSide: LocatorMap;
     protected categoriesItems: LocatorMap;
     protected catalogRightSide: LocatorMap;
@@ -127,6 +129,23 @@ export class BasePage {
         };
 
         // Поп-апы
+        // Поп-ап "Использование куки-файлов"
+        this.cookiePopup = {
+            // mdmprint: page.locator('div.cookie-popup'),
+            // copy: page.locator('div.cookie-popup'),
+            litera: page.locator('div.cookie-popup'),
+            // onetm: page.locator('div.cookie-popup'),
+            // vea: page.locator('div.cookie-popup'),
+        };
+        // Закрывающая кнопка поп-апа "Использование куки-файлов"
+        this.cookiePopupAcceptButton = {
+            // mdmprint: this.cookiePopup.mdmprint.locator('button.cookie-popup__close'),
+            // copy: this.cookiePopup.copy.locator('button.cookie-popup__close'),
+            litera: this.cookiePopup.litera.locator('button.cookie__agree'),
+            // onetm: this.cookiePopup.onetm.locator('button.cookie-popup__close'),
+            // vea: this.cookiePopup.vea.locator('button.cookie-popup__close'),
+        };
+
         // Быстрый заказ или "Оставить заявку" и т.д.
         this.quickOrderPopup = {
             mdmprint: page.locator('div.popup--quick-order.popup--active'),
@@ -561,6 +580,7 @@ export class BasePage {
     async checkingQuickOrderPopup(): Promise<void> {
         await test.step('Открытие поп-апа', async () => {
             if (this.isMobile) {
+                await this.closeCookiePopup();
                 await this.quickOrderButtonMobile[this.site].click();
             } else {
                 await this.quickOrderButton[this.site].click();
@@ -575,5 +595,12 @@ export class BasePage {
         //     await this.quickOrderPopupCloseButton[this.site].click();
         //     await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor({ state: 'hidden' });
         // });
+    }
+
+    async closeCookiePopup(): Promise<void> {
+        await test.step('Закрытие поп-апа "Использование куки-файлов"', async () => {
+            await this.cookiePopupAcceptButton[this.site].click();
+            await expect(this.cookiePopup[this.site]).toHaveCSS('opacity', '0');
+        });
     }
 }
