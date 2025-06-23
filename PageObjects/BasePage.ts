@@ -599,6 +599,10 @@ export class BasePage {
 
     async closeCookiePopup(): Promise<void> {
         await test.step('Закрытие поп-апа "Использование куки-файлов"', async () => {
+            if (this.site !== 'litera') {
+                return;
+            }
+
             await this.cookiePopupAcceptButton[this.site].click();
             await expect(this.cookiePopup[this.site]).toHaveCSS('opacity', '0');
         });
