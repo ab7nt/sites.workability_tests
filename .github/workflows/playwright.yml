@@ -152,7 +152,7 @@ jobs:
               run: |
                   curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
                     -d chat_id=${{ secrets.CHAT_ID }} \
-                    -d text="${{ env.FINAL_EMOJI }} ${{ env.FINAL_MESSAGE }}%0AЦель: ${{ github.event.inputs.grep }}%0AОтчёт: ${{ env.REPORT_URL }}%0AСтатус тестов: ${{ env.tests_exit_code }}%0AСтатус job: ${{ env.job_exit_code }}"
+                    -d text="${{ env.FINAL_EMOJI }} ${{ env.FINAL_MESSAGE }}%0AЦель: ${{ github.event.inputs.grep }}%0AОтчёт: ${{ env.REPORT_URL }}"
 
             - name: Copy history for gh-pages
               if: always()
@@ -254,7 +254,7 @@ jobs:
             - name: Set job conclusion
               if: always()
               run: |
-                  if [ "${{ env.FINAL_STATUS }}" = "FAILED" ]; then
+                  if [ "${{ env.FINAL_STATUS }}" = "С ошибками" ]; then
                     echo "conclusion=failure" >> "$GITHUB_OUTPUT"
                     exit 1
                   else
