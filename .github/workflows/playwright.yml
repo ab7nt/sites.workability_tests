@@ -254,7 +254,7 @@ jobs:
             - name: Set job conclusion
               if: always()
               run: |
-                  if [ "${{ env.FINAL_STATUS }}" = "С ошибками" ]; then
+                  if [ "${{ env.FINAL_STATUS }}" = "FAILED" ]; then
                     echo "conclusion=failure" >> "$GITHUB_OUTPUT"
                     exit 1
                   else
