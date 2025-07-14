@@ -8,7 +8,9 @@ export type LocatorMap = { [key: string]: Locator };
 // Базовый класс для страниц
 export class BasePage {
     protected page: Page;
+
     protected pageUrl: string | null = null;
+    protected isMobile: boolean = false;
 
     protected get site(): string {
         if (!this.pageUrl) throw new Error('pageUrl not set');
@@ -16,8 +18,6 @@ export class BasePage {
     }
 
     // Локаторы
-    protected isMobile: boolean = false;
-
     protected headerTitle: Locator;
     protected searchInputButton: LocatorMap;
     protected searchResultItems: LocatorMap;
@@ -131,7 +131,7 @@ export class BasePage {
         // Поп-апы
         // Поп-ап "Использование куки-файлов"
         this.cookiePopup = {
-            // mdmprint: page.locator('div.cookie-popup'),
+            mdmprint: page.locator('div.cookie-popup'),
             // copy: page.locator('div.cookie-popup'),
             litera: page.locator('div.cookie-popup'),
             // onetm: page.locator('div.cookie-popup'),
@@ -139,7 +139,7 @@ export class BasePage {
         };
         // Закрывающая кнопка поп-апа "Использование куки-файлов"
         this.cookiePopupAcceptButton = {
-            // mdmprint: this.cookiePopup.mdmprint.locator('button.cookie-popup__close'),
+            mdmprint: this.cookiePopup.mdmprint.locator('button.cookie__agree'),
             // copy: this.cookiePopup.copy.locator('button.cookie-popup__close'),
             litera: this.cookiePopup.litera.locator('button.cookie__agree'),
             // onetm: this.cookiePopup.onetm.locator('button.cookie-popup__close'),
@@ -599,7 +599,7 @@ export class BasePage {
 
     async closeCookiePopup(): Promise<void> {
         await test.step('Закрытие поп-апа "Использование куки-файлов"', async () => {
-            if (this.site !== 'litera') {
+            if (this.site !== 'litera' && this.site !== 'mdmprint') {
                 return;
             }
 
