@@ -407,14 +407,11 @@ export class BasePage {
     // Основная функция для проверки работоспособности страницы
     async generalWorkabilityChecking(): Promise<void> {
         await test.step('Общие проверки', async () => {
-            try {
-                await this.open();
-                await this.checkingTheVisibilityOfElements();
-                await this.scrollToEndOfThePage();
-                await this.takeAScreenshotForReport('Главная страница', { fullPage: true });
-            } catch (error) {
-                console.error('Ошибка при выполнении общих проверок:', error);
-            }
+            await this.open();
+            await this.closeCookiePopup(); // Скрытие поп-апа с куками
+            await this.checkingTheVisibilityOfElements();
+            await this.scrollToEndOfThePage();
+            await this.takeAScreenshotForReport('Главная страница', { fullPage: true });
         });
     }
 
@@ -430,15 +427,17 @@ export class BasePage {
 
     // Метод для проверки поиска
     async checkingSearch(): Promise<void> {
+        await this.closeCookiePopup(); // Скрытие поп-апа с куками
+
         // Случайное слово для поиска
         const word = helpers.getRandomSearchWord(this.site);
 
         await test.step('Ввод текста в поле поиска', async () => {
             // Ожидание загрузки основного скрипта
-            if (this.site === 'mdmprint') {
-                await this.page.waitForResponse((resp) => resp.url().includes('main.js') && resp.status() === 200);
-                await this.page.waitForTimeout(1000);
-            }
+            // if (this.site === 'mdmprint') {
+            //     await this.page.waitForResponse((resp) => resp.url().includes('main.js') && resp.status() === 200);
+            //     await this.page.waitForTimeout(1000);
+            // }
 
             // Открытие поля поиска (если требуется)
             if (this.isMobile) {
@@ -486,7 +485,6 @@ export class BasePage {
                 return;
             }
 
-            await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Дропдаун результатов поиска');
         });
 
@@ -504,12 +502,11 @@ export class BasePage {
                 await this.searchInputButton[this.site].click();
             }
 
-            await this.page.waitForLoadState('domcontentloaded');
-
             // Дождаться нужного URL (или падение через timeout)
             await expect.poll(() => this.page.url(), { timeout: 10000 }).toContain('?s=');
+            await this.page.waitForLoadState('load');
 
-            // await this.scrollToEndOfThePage();
+            await this.scrollToEndOfThePage();
             await this.takeAScreenshotForReport('Страница результатов поиска', { fullPage: true });
         });
     }
@@ -517,6 +514,8 @@ export class BasePage {
     // Метод для проверки меню каталога
     async catalogChecking(): Promise<void> {
         await test.step('Открытие меню каталога', async () => {
+            await this.closeCookiePopup(); // Скрытие поп-апа с куками
+
             if (this.isMobile) {
                 if (this.site === 'copy') {
                     // Клик по кнопке "Каталог" в нижнем тап-меню (адаптив)
@@ -579,8 +578,10 @@ export class BasePage {
     // Метод для проверки поп-апа "Быстрый заказ", ""Оставить заявку" и т.д.
     async checkingQuickOrderPopup(): Promise<void> {
         await test.step('Открытие поп-апа', async () => {
+            await this.closeCookiePopup(); // Скрытие поп-апа с куками
+
             if (this.isMobile) {
-                await this.closeCookiePopup();
+                // await this.closeCookiePopup();
                 await this.quickOrderButtonMobile[this.site].click();
             } else {
                 await this.quickOrderButton[this.site].click();
