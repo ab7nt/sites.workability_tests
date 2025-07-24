@@ -19,6 +19,7 @@ export class BasePage {
 
     // Локаторы
     protected headerTitle: Locator;
+    protected bannersSection: LocatorMap;
     protected searchInputButton: LocatorMap;
     protected searchResultItems: LocatorMap;
     protected searchResultDropdown: LocatorMap;
@@ -60,6 +61,15 @@ export class BasePage {
         // Десктопная версия
         // Заголовок страницы
         this.headerTitle = page.locator('h1');
+        // Блок с баннерами
+        this.bannersSection = {
+            mdmprint: page.locator('section.news-slider'),
+            copy: page.locator('section#news-slider'),
+            // litera: page.locator('section#news-slider'),
+            // onetm: page.locator('section#news-slider'),
+            // vea: page.locator('section#news-slider'),
+            // sequoia: page.locator('section#news-slider'),
+        };
         // Хедер
         this.header = {
             mdmprint: page.locator('div.header-content_desktop'),
@@ -347,7 +357,19 @@ export class BasePage {
     // Проверка отображения элементов
     async checkingTheVisibilityOfElements(): Promise<void> {
         await test.step('Проверка отображения заголовка H1', async () => {
-            await expect(this.headerTitle).toBeVisible();
+            if (this.site === 'copy') {
+                return;
+            } else {
+                await expect(this.headerTitle).toBeVisible();
+            }
+        });
+
+        await test.step('Проверка отображения блока с баннерами', async () => {
+            if (this.site !== 'copy' && this.site !== 'mdmprint') {
+                return;
+            } else {
+                await expect(this.bannersSection[this.site]).toBeVisible();
+            }
         });
     }
 
