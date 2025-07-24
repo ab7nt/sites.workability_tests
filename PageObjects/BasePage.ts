@@ -598,6 +598,7 @@ export class BasePage {
         // });
     }
 
+    // Закрытие поп-апа "Использование куки-файлов"
     async closeCookiePopup(): Promise<void> {
         await test.step('Закрытие поп-апа "Использование куки-файлов"', async () => {
             if (this.site !== 'litera' && this.site !== 'mdmprint') {
