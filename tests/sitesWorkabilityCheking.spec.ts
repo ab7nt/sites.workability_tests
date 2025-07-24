@@ -92,8 +92,9 @@ test.describe('Проверка работоспособности сайтов'
             await sequoiaMainPage.generalWorkabilityChecking();
         });
 
-        test('sequoiapay.io - Проверка смены языка', async ({ sequoiaMainPage }) => {
-            await sequoiaMainPage.changeSiteLanguage();
-        });
+        // // Отключено, так как убран русский язык
+        // test('sequoiapay.io - Проверка смены языка', async ({ sequoiaMainPage }) => {
+        //     await sequoiaMainPage.changeSiteLanguage();
+        // });
     });
 });
