@@ -64,7 +64,7 @@ export class BasePage {
         // Блок с баннерами
         this.bannersSection = {
             mdmprint: page.locator('section.news-slider'),
-            copy: page.locator('section#news-slider'),
+            copy: page.locator('section.section.slider'),
             // litera: page.locator('section#news-slider'),
             // onetm: page.locator('section#news-slider'),
             // vea: page.locator('section#news-slider'),
@@ -112,7 +112,7 @@ export class BasePage {
         // Поле ввода поиска в хедере
         this.searchInput = {
             mdmprint: this.searchForm.mdmprint.locator('input[name="s"]'),
-            copy: this.searchForm.copy.locator('input[name="s"]'),
+            copy: this.searchForm.copy.locator('header.header--pc input[name="s"]'),
             onetm: this.searchForm.onetm.locator('input[name="s"]'),
             litera: this.searchForm.litera.locator('input[name="s"]'),
         };
@@ -331,6 +331,7 @@ export class BasePage {
             const response = await this.page.goto(this.pageUrl, {
                 referer: 'workability-checking',
                 waitUntil: 'load',
+                timeout: 120000,
             });
 
             // Отмена перехвата после загрузки страницы
