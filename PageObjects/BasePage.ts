@@ -112,7 +112,7 @@ export class BasePage {
         // Поле ввода поиска в хедере
         this.searchInput = {
             mdmprint: this.searchForm.mdmprint.locator('input[name="s"]'),
-            copy: this.searchForm.copy.locator('header.header--pc input[name="s"]'),
+            copy: this.searchForm.copy.locator('input[name="s"]'),
             onetm: this.searchForm.onetm.locator('input[name="s"]'),
             litera: this.searchForm.litera.locator('input[name="s"]'),
         };
