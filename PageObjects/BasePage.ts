@@ -126,7 +126,7 @@ export class BasePage {
         // Выпадающий список результатов поиска
         this.searchResultDropdown = {
             mdmprint: this.header.mdmprint.locator('span.search-results__list'),
-            copy: this.header.copy.locator('span.search-results__list'),
+            copy: this.header.copy.locator('span.search-results-list'),
             onetm: this.searchForm.onetm.locator('div.search-results__list'),
             litera: this.header.litera.locator('div.search-results__list'),
         };
