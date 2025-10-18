@@ -1,0 +1,18 @@
+# Page snapshot
+
+```yaml
+- link:
+  - /url: //telegram.org/
+  - img
+- link "Download":
+  - /url: //telegram.org/dl?tme=c1fb83f8db91006f4d_10937558253674491786
+- link:
+  - /url: tg:join?invite=8Bc-X9u2awFkYmIy
+  - img
+- text: Типография МДМпринт 3 716 subscribers МДМпринт - цифровая типография и сувенирное производство. • Сделать заказ clck.ru/3Db8YP • Cайт clck.ru/32nwk5 • Почта zakaz@mdmprint.ru • Тел. +7(495)256-10-00
+- link "Join Channel":
+  - /url: tg:join?invite=8Bc-X9u2awFkYmIy
+- text: You are invited to the channel
+- strong: Типография МДМпринт
+- text: . Click above to join.
+```
