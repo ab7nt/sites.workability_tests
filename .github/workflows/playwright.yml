@@ -29,14 +29,6 @@ jobs:
                   echo "REPORT_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
                   echo "REPO_NAME=$(echo '${{ github.repository }}' | cut -d/ -f2)" >> $GITHUB_ENV
 
-            - name: Notify about workflow start
-              run: |
-                  GREP="${{ github.event.inputs.grep }}"
-                  [ -z "$GREP" ] && GREP="Проверка работоспособности сайтов (по расписанию)"
-                  curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
-                    -d chat_id=${{ secrets.CHAT_ID }} \
-                    -d text="🚀 Workflow запущен.%0AЦель: $GREP%0ARun ID: ${{ github.run_id }}"
-
             - name: Checkout code and gh-pages
               uses: actions/checkout@v3
               with:
@@ -147,12 +139,11 @@ jobs:
                     echo "FINAL_MESSAGE=Всё прошло успешно" >> $GITHUB_ENV
                   fi
 
-            - name: Отправить статус в Telegram
+            - name: Copy history for gh-pages
               if: always()
               run: |
-                  curl -s -X POST https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage \
-                    -d chat_id=${{ secrets.CHAT_ID }} \
-                    -d text="${{ env.FINAL_EMOJI }} ${{ env.FINAL_MESSAGE }}%0AЦель: ${{ github.event.inputs.grep }}%0AОтчёт: ${{ env.REPORT_URL }}"
+                  mkdir -p allure-report/history
+                  cp -r allure-results/history/* allure-report/history/ || echo "No history to copy"
 
             - name: Copy history for gh-pages
               if: always()
