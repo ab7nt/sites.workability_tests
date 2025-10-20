@@ -497,10 +497,14 @@ export class BasePage {
             // Проверка наличия выпадающего списка результатов поиска
             if (this.isMobile) {
                 await this.searchResultDropdownMobile[this.site].waitFor({ state: 'visible' });
+                // Ждём, пока появится хотя бы один элемент в списке результатов
+                await this.searchResultItemsMobile[this.site].first().waitFor({ state: 'visible' });
                 await this.page.waitForTimeout(1000); // Пропуск анимации
                 expect(await this.searchResultItemsMobile[this.site].count()).toBeGreaterThan(0);
             } else {
                 await this.searchResultDropdown[this.site].waitFor({ state: 'visible' });
+                // Ждём, пока появится хотя бы один элемент в списке результатов
+                await this.searchResultItems[this.site].first().waitFor({ state: 'visible' });
                 expect(await this.searchResultItems[this.site].count()).toBeGreaterThan(0);
             }
 
@@ -566,11 +570,53 @@ export class BasePage {
                 }
             }
 
-            // Ожидание отображения каталога
+            // Ожидание отображения каталога и устойчивости (защита от "мигания")
             const catalogSelector: Locator = this.isMobile
                 ? this.catalogMobile[this.site]
                 : this.catalogLeftSide[this.site];
-            await catalogSelector.waitFor({ state: 'visible' });
+
+            // Ждём пока каталог станет видимым
+            await expect(catalogSelector).toBeVisible({ timeout: 5000 });
+
+            // Локатор для списка категорий (понадобится дальше)
+            const categoriesLocator: Locator = this.isMobile
+                ? this.categoriesItemsMobile[this.site]
+                : this.categoriesItems[this.site];
+
+            // Иногда меню открывается и тут же скрывается — проверим, что внутри есть категории.
+            // Если категорий нет — попробуем открыть меню ещё раз и подождать.
+            let categoriesCount = await categoriesLocator.count();
+            if (categoriesCount === 0) {
+                try {
+                    // Попробуем повторно открыть меню
+                    if (this.isMobile) {
+                        if (this.site === 'copy') {
+                            await this.bottomTabMenuCatalogTab['inactive'].click();
+                        } else if (this.site === 'onetm' || this.site === 'litera' || this.site === 'vea') {
+                            await this.burgerMenuButton[this.site].click();
+                        } else {
+                            await this.burgerMenuButton[this.site].click();
+                            await this.catalogButtonMobile[this.site].click();
+                        }
+                    } else {
+                        if (this.site === 'litera') {
+                            await this.catalogButton[this.site].hover();
+                        } else {
+                            await this.catalogButton[this.site].click();
+                        }
+                    }
+
+                    // Небольшая пауза на анимацию и повторная проверка
+                    await this.page.waitForTimeout(500);
+                    await expect(catalogSelector).toBeVisible({ timeout: 3000 });
+                    categoriesCount = await categoriesLocator.count();
+                } catch (e) {
+                    // Если всё равно не получилось — продолжим, ниже будет явная проверка
+                }
+            }
+
+            // Гарантируем, что в каталоге появится хотя бы одна категория
+            await expect.poll(async () => await categoriesLocator.count(), { timeout: 5000 }).toBeGreaterThan(0);
         });
 
         await test.step('Раскрытие случайной категории в меню каталога', async () => {
