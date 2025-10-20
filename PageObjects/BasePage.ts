@@ -256,7 +256,7 @@ export class BasePage {
         // Выпадающий список результатов поиска (адаптив)
         this.searchResultDropdownMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('span.search-results__list').first(),
-            copy: this.headerMobile.copy.locator('span.search-results__list'),
+            copy: this.headerMobile.copy.locator('div.search-results-items'),
             onetm: page.locator('div.show-mobile div.search-results__list'),
             litera: this.header.litera.locator('div.search-results__list'),
         };
@@ -353,6 +353,12 @@ export class BasePage {
     async init(): Promise<void> {
         const viewport = this.page.viewportSize();
         this.isMobile = viewport ? viewport.width <= 768 : false;
+        // Поп-ап внизу (promo) на мобильной версии copy.ru — скрываем свайпом вниз, если есть
+        try {
+            await this.closePromotionPopup();
+        } catch (e) {
+            // Не критично — продолжаем, если что-то пошло не так при попытке скрыть поп-ап
+        }
     }
 
     // Проверка отображения элементов
@@ -630,6 +636,64 @@ export class BasePage {
 
             await this.cookiePopupAcceptButton[this.site].click();
             await expect(this.cookiePopup[this.site]).toHaveCSS('opacity', '0');
+        });
+    }
+
+    // Закрытие/скрытие поп-апа промо (внизу) для мобильной версии copy.ru
+    async closePromotionPopup(): Promise<void> {
+        await test.step('Скрытие мобильного поп-апа promo (swipe down)', async () => {
+            // Работаем только для copy.ru и только на мобильной версии
+            if (this.site !== 'copy' || !this.isMobile) return;
+
+            const promo = this.page.locator('div.popup--promotion');
+
+            // Дождаться появления поп-апа — таймаут небольшой, чтобы не блокировать тесты
+            try {
+                await promo.waitFor({ state: 'visible', timeout: 3000 });
+            } catch (err) {
+                // Поп-ап не показан — ничего делать не нужно
+                return;
+            }
+
+            // Попробуем выполнить свайп вниз: определим bounding box и выполним drag через mouse
+            const box = await promo.boundingBox();
+
+            if (box) {
+                // Сначала попробуем клик по оверлею, если он есть
+                const overlay = this.page.locator('div.popup__overlay, div.popup-overlay, div.popup__backdrop, .popup-backdrop');
+                try {
+                    if ((await overlay.count()) > 0) {
+                        await overlay.first().click();
+                        await promo.waitFor({ state: 'hidden', timeout: 2000 });
+                        return;
+                    }
+                } catch (e) {
+                    // Если клик по оверлею не сработал — продолжаем к клику вне области
+                }
+
+                // Попробуем кликнуть вне области поп-апа: чуть выше его верхней границы
+                try {
+                    const clickX = box.x + box.width / 2;
+                    const clickY = Math.max(10, box.y - 20);
+                    await this.page.mouse.click(clickX, clickY);
+                    await promo.waitFor({ state: 'hidden', timeout: 2000 });
+                    return;
+                } catch (e) {
+                    // Если клик не сработал — попробуем кликнуть в центре viewport над поп-апом
+                    try {
+                        const vp = this.page.viewportSize();
+                        if (vp) {
+                            const fallbackX = Math.floor(vp.width / 2);
+                            const fallbackY = Math.max(10, Math.floor(vp.height / 2));
+                            await this.page.mouse.click(fallbackX, fallbackY);
+                            await promo.waitFor({ state: 'hidden', timeout: 2000 });
+                            return;
+                        }
+                    } catch (err) {
+                        // продолжим к DOM-фолбэку
+                    }
+                }
+            }
         });
     }
 }
