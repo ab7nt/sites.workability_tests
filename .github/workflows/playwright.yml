@@ -262,6 +262,43 @@ jobs:
                     echo "Время запуска: ${{ env.job_started_at }}"
                     echo "Ссылка на отчёт: ${{ env.REPORT_URL }}"
                     echo ""
+                    echo "Ссылки на предыдущие отчёты:"
+                    REPORT_ROOT="https://${{ github.repository_owner }}.github.io/${{ env.REPO_NAME }}"
+
+                    # Try to list dated report folders from gh-pages worktree, newest first.
+                    if [ -d gh-pages ]; then
+                      cd gh-pages || true
+                      # collect directories matching YYYY-MM-DD
+                      dates=$(ls -1d 20* 2>/dev/null | grep -E '^20[0-9]{2}-[0-9]{2}-[0-9]{2}$' | sort -r || true)
+                      count=0
+                      if [ -n "$dates" ]; then
+                        for d in $dates; do
+                          # skip current report date
+                          if [ "$d" = "${{ env.REPORT_DATE }}" ]; then
+                            continue
+                          fi
+                          echo "- $REPORT_ROOT/$d/"
+                          count=$((count+1))
+                          if [ $count -ge 7 ]; then
+                            break
+                          fi
+                        done
+                      fi
+                      cd .. || true
+                    fi
+
+                    # If no links were emitted (no gh-pages or no dated folders), fall back to computing last 7 dates.
+                    if [ -z "$(ls -1d gh-pages 2>/dev/null)" ] || [ "$count" = "0" ]; then
+                      echo "(Автосгенерированные ссылки — могут отсутствовать на gh-pages)"
+                      for i in $(seq 1 7); do
+                        d=$(date -d "${i} days ago" +%Y-%m-%d 2>/dev/null || date -v-${i}d +%Y-%m-%d 2>/dev/null || echo "")
+                        if [ -n "$d" ]; then
+                          echo "- $REPORT_ROOT/$d/"
+                        fi
+                      done
+                    fi
+
+                    echo ""
                     echo "Детали:"
                     echo "- Код выхода тестов: ${{ env.tests_exit_code }}"
                     echo "- Код выхода job: ${{ env.job_exit_code }}"
