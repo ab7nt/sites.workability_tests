@@ -579,9 +579,29 @@ export class BasePage {
             await expect(catalogSelector).toBeVisible({ timeout: 5000 });
 
             // Локатор для списка категорий (понадобится дальше)
-            const categoriesLocator: Locator = this.isMobile
+            // Может быть не определён для некоторых сайтов/режимов — используем защиту и фоллбэк
+            let categoriesLocator: Locator | undefined = this.isMobile
                 ? this.categoriesItemsMobile[this.site]
                 : this.categoriesItems[this.site];
+
+            // Фоллбэк: если специфичный локатор категорий не задан, попробуем найти ссылки внутри каталога
+            if (!categoriesLocator) {
+                if (this.isMobile) {
+                    // Попробуем взять все ссылки внутри мобильного каталога (если он есть)
+                    const mobileCatalog = (this.catalogMobile as any)[this.site] as Locator | undefined;
+                    if (mobileCatalog) categoriesLocator = mobileCatalog.locator('a');
+                } else {
+                    const leftSide = (this.catalogLeftSide as any)[this.site] as Locator | undefined;
+                    if (leftSide) categoriesLocator = leftSide.locator('a');
+                }
+            }
+
+            // Если всё ещё нет локатора — выбросим понятную ошибку, чтобы не получать TypeError
+            if (!categoriesLocator) {
+                throw new Error(
+                    `categories locator is not defined for site \"${this.site}\" (isMobile=${this.isMobile}). Please add a locator in BasePage.`
+                );
+            }
 
             // Иногда меню открывается и тут же скрывается — проверим, что внутри есть категории.
             // Если категорий нет — попробуем открыть меню ещё раз и подождать.
@@ -626,25 +646,97 @@ export class BasePage {
                 return;
             }
 
-            const categories = await (this.isMobile
+            // Локатор каталога (нужен для проверки видимости перед кликом)
+            const catalogSelector: Locator = this.isMobile
+                ? this.catalogMobile[this.site]
+                : this.catalogLeftSide[this.site];
+
+            // Получим локатор категорий (с теми же фоллбэками, что выше)
+            let categoriesLocatorForClick: Locator | undefined = this.isMobile
                 ? this.categoriesItemsMobile[this.site]
-                : this.categoriesItems[this.site]
-            ).all();
+                : this.categoriesItems[this.site];
 
-            const randomIndex = Math.floor(Math.random() * categories.length);
-            const randomCategory = categories[randomIndex];
-
-            // На мобильном — всегда клик
-            if (this.isMobile) {
-                await randomCategory.click();
-            } else {
-                if (this.site === 'mdmprint') {
-                    await randomCategory.click();
+            if (!categoriesLocatorForClick) {
+                if (this.isMobile) {
+                    const mobileCatalog = (this.catalogMobile as any)[this.site] as Locator | undefined;
+                    if (mobileCatalog) categoriesLocatorForClick = mobileCatalog.locator('a, button, span');
+                } else {
+                    const leftSide = (this.catalogLeftSide as any)[this.site] as Locator | undefined;
+                    if (leftSide) categoriesLocatorForClick = leftSide.locator('a, button, span');
                 }
-                await randomCategory.hover();
             }
 
-            await this.page.waitForTimeout(2000); // Пропуск анимации
+            if (!categoriesLocatorForClick) {
+                throw new Error(
+                    `Unable to determine categories locator for clicking for site \"${this.site}\" (isMobile=${this.isMobile}).`
+                );
+            }
+
+            // Попробуем надёжно кликнуть по случайной категории: выбираем по count() и используем nth()
+            const total = await categoriesLocatorForClick.count();
+            if (total === 0) {
+                throw new Error(`No categories found to click for site \"${this.site}\" (isMobile=${this.isMobile}).`);
+            }
+
+            let clicked = false;
+            const maxAttempts = 6;
+            for (let attempt = 0; attempt < maxAttempts && !clicked; attempt++) {
+                const randomIndex = Math.floor(Math.random() * total);
+                const randomCategoryLocator = categoriesLocatorForClick.nth(randomIndex);
+
+                try {
+                    // Убедимся, что каталог видим перед кликом
+                    await expect(catalogSelector).toBeVisible({ timeout: 1500 });
+
+                    // Скроллим элемент в область видимости
+                    try {
+                        await randomCategoryLocator.scrollIntoViewIfNeeded();
+                    } catch (e) {
+                        // игнорируем; scrollIntoViewIfNeeded не обязателен во всех версиях
+                    }
+
+                    // Дадим время на завершение анимаций
+                    await this.page.waitForTimeout(120 + attempt * 80);
+
+                    if (this.isMobile) {
+                        await randomCategoryLocator.click();
+                    } else {
+                        if (this.site === 'mdmprint') await randomCategoryLocator.click();
+                        await randomCategoryLocator.hover();
+                    }
+
+                    clicked = true;
+                } catch (err) {
+                    // Если элемент внешне неподвижен/вне viewport или меню закрылось — пробуем ещё раз
+                    if (attempt === maxAttempts - 1) {
+                        // последний шанс: попытаемся пройти по всем и кликнуть первый рабочий
+                        for (let i = 0; i < total && !clicked; i++) {
+                            const loc = categoriesLocatorForClick.nth(i);
+                            try {
+                                await loc.scrollIntoViewIfNeeded().catch(() => {});
+                                await this.page.waitForTimeout(80);
+                                await loc.click();
+                                clicked = true;
+                                break;
+                            } catch (e) {
+                                // noop
+                            }
+                        }
+                    } else {
+                        // Подождём чуть больше и попробуем снова
+                        await this.page.waitForTimeout(200 + attempt * 100);
+                    }
+                }
+            }
+
+            if (!clicked) {
+                throw new Error(
+                    `Failed to click any category for site \"${this.site}\" after ${maxAttempts} attempts.`
+                );
+            }
+
+            // Подождём завершения анимации
+            await this.page.waitForTimeout(2000);
         });
 
         await this.takeAScreenshotForReport(this.isMobile ? 'Каталог (моб)' : 'Каталог');
