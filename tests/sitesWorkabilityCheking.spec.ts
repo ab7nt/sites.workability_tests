@@ -1,6 +1,6 @@
 import { test } from '../fixtures';
 
-test.describe('Проверка работоспособности сайтов', () => {
+test.describe('Проверка Проверка доступности сайтов сайтов', () => {
     // test.describe('mdmprint.ru - Проверка сайта', () => {
     //     test('mdmprint.ru - Проверка главной страницы', async ({ mdmprintMainPage }) => {
     //         await mdmprintMainPage.generalWorkabilityChecking();
