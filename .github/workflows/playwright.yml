@@ -14,7 +14,7 @@ jobs:
     check_sites_workability:
         runs-on: ubuntu-latest
         container:
-            image: mcr.microsoft.com/playwright:v1.53.0-noble
+            image: mcr.microsoft.com/playwright:v1.57.0-noble
 
         env:
             TZ: Europe/Moscow
@@ -31,10 +31,12 @@ jobs:
                   echo "REPO_NAME=$(echo '${{ github.repository }}' | cut -d/ -f2)" >> $GITHUB_ENV
 
             - name: Checkout code and gh-pages
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
               with:
-                  fetch-depth: 0
                   ref: main
+                  fetch-depth: 1
+                  fetch-tags: false
+                  filter: blob:none
 
             - name: Mark repository as safe
               run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
@@ -42,7 +44,7 @@ jobs:
             - name: Download Allure history from gh-pages
               if: always()
               run: |
-                  git fetch origin gh-pages || exit 0
+                  git fetch --depth=8 origin gh-pages || exit 0
                   if git show-ref --verify refs/remotes/origin/gh-pages; then
                     git worktree add --force gh-pages origin/gh-pages
                     mkdir -p allure-results/history
