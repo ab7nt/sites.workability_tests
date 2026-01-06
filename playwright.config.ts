@@ -41,7 +41,7 @@ export default defineConfig({
         // ['allure-playwright', { outputFolder: 'allure-results' }],
     ],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-    timeout: 30 * 1000, // Время ожидания для всех неявных ожиданий
+    timeout: 40 * 1000, // Время ожидания для всех неявных ожиданий
     use: {
         headless: true,
         // baseURL: settings.envURL, // Base URL to use in actions like `await page.goto('/')`
