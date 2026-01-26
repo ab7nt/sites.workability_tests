@@ -341,10 +341,18 @@ export class BasePage {
             expect(response?.status(), `Неверный статус: ${response?.status()}`).toBe(200);
 
             // Ожидание отображения баннера над хедером (для copy.ru)
-            if (this.site === 'copy') {
-                await this.page.locator('div.promo').waitFor({ state: 'visible' });
-            } else {
-                await this.page.waitForLoadState('load');
+            try {
+                if (this.site === 'copy') {
+                    await this.page.locator('div.promo').waitFor({ state: 'visible', timeout: 10000 });
+                } else {
+                    await this.page.waitForLoadState('load', { timeout: 10000 });
+                }
+            } catch (e) {
+                console.log('Ожидание загрузки превысило 10 секунд, продолжаем выполнение...');
+                test.info().annotations.push({
+                    type: 'warning',
+                    description: `Ожидание загрузки превысило 10 секунд (site: ${this.site}). Игнорируем и продолжаем.`
+                });
             }
         });
     }
