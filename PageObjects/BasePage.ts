@@ -53,6 +53,8 @@ export class BasePage {
     protected bottomTabMenu: Locator;
     protected bottomTabMenuMainTab: LocatorMap;
     protected bottomTabMenuCatalogTab: LocatorMap;
+    protected promoPopup: LocatorMap
+    protected promoPopupCloseButton: LocatorMap
 
     constructor(page: Page) {
         this.page = page;
@@ -82,7 +84,7 @@ export class BasePage {
         // Кнопка "Каталог" или бургер-меню
         this.catalogButton = {
             mdmprint: this.header.mdmprint.locator('div.header-catalog__btn'),
-            copy: this.header.copy.locator('div.header-catalog__btn'),
+            copy: this.header.copy.locator('button.header-catalog__btn'),
             litera: this.header.litera.locator('div.link-btn.header-menu__toggler'),
             onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
             vea: this.header.vea.locator('div.header-dropdown'),
@@ -173,6 +175,15 @@ export class BasePage {
             vea: this.quickOrderPopup.vea.locator('button.popup-close'),
         };
 
+        // Рекламный поп-ап сбоку страницы
+        this.promoPopup = {
+            copy: page.locator('div.popup--promotion'),
+        }
+        // Закрывающая кнопка рекламного поп-апа
+        this.promoPopupCloseButton = {
+            copy: this.promoPopup.copy.locator('div.popup-close'),
+        }
+
         // Каталог или бургер-меню
         // Сам каталог или бургер-меню
         this.catalog = {
@@ -184,7 +195,7 @@ export class BasePage {
         // Левая часть (категории)
         this.catalogLeftSide = {
             mdmprint: this.catalog.mdmprint.locator('div.header-catalog__aside, div.--js-mobile-menu-catalog'),
-            copy: this.catalog.copy.locator('ul#menu-katalog1'),
+            copy: this.catalog.copy.locator('ul#menu-katalog'),
             litera: this.catalog.litera.locator('div.header-menu__level0'),
             onetm: this.catalog.onetm.locator('div.header-menu__col.header-menu__col-categories'),
             vea: this.header.vea.locator('div.header-dropdown__list'),
@@ -340,18 +351,14 @@ export class BasePage {
             expect(response, 'Не удалось перейти по URL').not.toBeNull();
             expect(response?.status(), `Неверный статус: ${response?.status()}`).toBe(200);
 
-            // Ожидание отображения баннера над хедером (для copy.ru)
+            // Ожидание загрузки страницы
             try {
-                if (this.site === 'copy') {
-                    await this.page.locator('div.promo').waitFor({ state: 'visible', timeout: 10000 });
-                } else {
-                    await this.page.waitForLoadState('load', { timeout: 10000 });
-                }
+                await this.page.waitForLoadState('load', { timeout: 15000 });
             } catch (e) {
-                console.log('Ожидание загрузки превысило 10 секунд, продолжаем выполнение...');
+                console.log('Ожидание загрузки (load state) превысило 15 секунд, продолжаем выполнение...');
                 test.info().annotations.push({
                     type: 'warning',
-                    description: `Ожидание загрузки превысило 10 секунд (site: ${this.site}). Игнорируем и продолжаем.`
+                    description: `Ожидание загрузки превысило 15 секунд (site: ${this.site}). Игнорируем и продолжаем.`
                 });
             }
         });
@@ -361,6 +368,28 @@ export class BasePage {
     async init(): Promise<void> {
         const viewport = this.page.viewportSize();
         this.isMobile = viewport ? viewport.width <= 768 : false;
+
+        // Периодическая проверка и закрытие баннера promo (только для copy.ru)
+        if (this.site === 'copy') {
+            await this.page.addLocatorHandler(this.page.locator('div.promo'), async (overlay) => {
+                // Пытаемся закрыть баннер
+                await overlay.locator('i.close').click();
+            });
+
+            // Периодическая проверка и закрытие рекламного поп-апа
+            if (this.promoPopup[this.site]) {
+                await this.page.addLocatorHandler(this.promoPopup[this.site], async () => {
+                    if (this.isMobile) {
+                        await this.closePromotionPopup();
+                    } else {
+                        await this.promoPopupCloseButton[this.site].click();
+                        // Небольшая пауза, чтобы убедиться, что анимация закрытия началась
+                        await this.page.waitForTimeout(500);
+                    }
+                });
+            }
+        }
+
         // Поп-ап внизу (promo) на мобильной версии copy.ru — скрываем свайпом вниз, если есть
         try {
             await this.closePromotionPopup();

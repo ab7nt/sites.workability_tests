@@ -25,6 +25,7 @@ test.describe('Проверка доступности сайтов', () => {
         });
 
         test('copy.ru - Проверка меню каталога', async ({ copyRuMainPage }) => {
+            test.setTimeout(60000);
             await copyRuMainPage.catalogChecking();
         });
 
