@@ -229,7 +229,8 @@ export class BasePage {
         // Кнопка "Быстрый заказ", "Оставить заявку и т.д." (адаптив)
         this.quickOrderButtonMobile = {
             mdmprint: this.headerMobile.mdmprint.locator('button[data-popup="quick-order"]'),
-            copy: page.locator('button.fastorder-trigger_mobile'),
+            copy: this.page.locator('div.fastorder-trigger_mobile-wrapper button[data-popup="fast-order"]'),
+            // copy: page.locator('button.fastorder-trigger_mobile'),
             litera: this.page.locator('footer button[data-popup="order"]'),
             onetm: page.locator('button[data-popup="consult"].footer-consult'),
             vea: this.page.locator('div.footer-order button[data-popup="order"]'),
