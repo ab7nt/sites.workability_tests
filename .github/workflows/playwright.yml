@@ -19,6 +19,23 @@ jobs:
         env:
             TZ: Europe/Moscow
             PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+            job_status: running
+            job_emoji: ⌛
+            tests_exit_code: 0
+            job_exit_code: 0
+            ALLURE_TOTAL: 0
+            ALLURE_PASSED: 0
+            ALLURE_FAILED: 0
+            ALLURE_BROKEN: 0
+            ALLURE_SKIPPED: 0
+            ALLURE_UNKNOWN: 0
+            REPORT_DATE: ""
+            REPORT_URL: ""
+            REPO_NAME: ${{ github.event.repository.name }}
+            job_started_at: ""
+            FINAL_STATUS: FAILED
+            FINAL_EMOJI: ❌
+            FINAL_MESSAGE: Сбой job
 
         steps:
             - name: Initialize variables
