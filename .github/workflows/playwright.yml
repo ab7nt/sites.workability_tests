@@ -2,7 +2,7 @@
 
 on:
     schedule:
-        - cron: "0 5 * * *"
+        - cron: "0 3 * * *"
     workflow_dispatch:
         inputs:
             grep:
@@ -320,6 +320,7 @@ jobs:
                     echo "email_body<<EOF"
                     echo "Результат проверки сайтов: ${{ env.FINAL_EMOJI }} ${{ env.FINAL_MESSAGE }}"
                     echo "Время запуска: ${{ env.job_started_at }}"
+                    echo "Время отправки письма: $(TZ=Europe/Moscow date '+%d.%m.%Y %H:%M')"
                     echo "Ссылка на отчёт: ${{ env.REPORT_URL }}"
                     echo ""
                     echo "Ссылки на последние отчёты:"
