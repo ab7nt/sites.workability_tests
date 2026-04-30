@@ -33,6 +33,15 @@ jobs:
             REPORT_URL: ""
             REPO_NAME: ${{ github.event.repository.name }}
             job_started_at: ""
+            job_started_epoch: ""
+            tests_finished_at: ""
+            tests_finished_epoch: ""
+            report_generated_at: ""
+            report_generated_epoch: ""
+            pages_prepared_at: ""
+            pages_prepared_epoch: ""
+            deploy_finished_at: ""
+            deploy_finished_epoch: ""
             FINAL_STATUS: FAILED
             FINAL_EMOJI: ❌
             FINAL_MESSAGE: Сбой job
@@ -53,6 +62,8 @@ jobs:
                     echo "ALLURE_UNKNOWN=0"
                     echo "REPORT_DATE=$(date +'%Y-%m-%d')"
                     echo "REPO_NAME=$(echo '${{ github.repository }}' | cut -d/ -f2)"
+                    echo "job_started_at=$(date '+%d.%m.%Y %H:%M')"
+                    echo "job_started_epoch=$(date +%s)"
                   } >> "$GITHUB_ENV"
 
             - name: Checkout code and gh-pages
@@ -90,9 +101,6 @@ jobs:
               run: |
                   npm ci
                   npm install -g allure-commandline
-
-            - name: Capture job start time
-              run: echo "job_started_at=$(TZ=\"Europe/Moscow\" date '+%d.%m.%Y %H:%M')" >> "$GITHUB_ENV"
 
             - name: Create Allure results directory
               run: mkdir -p allure-results
@@ -133,7 +141,11 @@ jobs:
                   echo "Using grep pattern: $grep_pattern"
                   npx playwright test --grep "$grep_pattern" --reporter=line,allure-playwright
                   tests_exit=$?
-                  echo "tests_exit_code=$tests_exit" >> "$GITHUB_ENV"
+                  {
+                    echo "tests_exit_code=$tests_exit"
+                    echo "tests_finished_at=$(date '+%d.%m.%Y %H:%M')"
+                    echo "tests_finished_epoch=$(date +%s)"
+                  } >> "$GITHUB_ENV"
                   exit $tests_exit
 
             - name: Summarize Allure results
@@ -204,6 +216,10 @@ jobs:
                     --title "Отчёт по доступности сайтов" \
                     --report-url "$REPORT_URL" \
                     --history-folder allure-results/history
+                  {
+                    echo "report_generated_at=$(date '+%d.%m.%Y %H:%M')"
+                    echo "report_generated_epoch=$(date +%s)"
+                  } >> "$GITHUB_ENV"
 
             - name: Copy history for gh-pages
               if: always()
@@ -284,6 +300,10 @@ jobs:
                   rm -rf "pages-publish/${{ env.REPORT_DATE }}"
                   mkdir -p "pages-publish/${{ env.REPORT_DATE }}"
                   cp -a allure-report/. "pages-publish/${{ env.REPORT_DATE }}/"
+                  {
+                    echo "pages_prepared_at=$(date '+%d.%m.%Y %H:%M')"
+                    echo "pages_prepared_epoch=$(date +%s)"
+                  } >> "$GITHUB_ENV"
 
             - name: Deploy dated report to GitHub Pages
               id: deploy_report
@@ -294,6 +314,14 @@ jobs:
                   publish_dir: ./pages-publish
                   user_name: github-actions
                   user_email: github-actions@github.com
+
+            - name: Capture deploy finish time
+              if: always()
+              run: |
+                  {
+                    echo "deploy_finished_at=$(date '+%d.%m.%Y %H:%M')"
+                    echo "deploy_finished_epoch=$(date +%s)"
+                  } >> "$GITHUB_ENV"
 
             - name: Determine final status
               id: determine_status
@@ -333,11 +361,52 @@ jobs:
               id: prepare_email
               if: always()
               run: |
+                  format_duration() {
+                    start="$1"
+                    finish="$2"
+
+                    if [ -z "$start" ] || [ -z "$finish" ] || [ "$start" = "0" ] || [ "$finish" = "0" ]; then
+                      echo "н/д"
+                      return
+                    fi
+
+                    total=$((finish - start))
+                    if [ "$total" -lt 0 ]; then
+                      echo "н/д"
+                      return
+                    fi
+
+                    hours=$((total / 3600))
+                    minutes=$(((total % 3600) / 60))
+                    seconds=$((total % 60))
+
+                    if [ "$hours" -gt 0 ]; then
+                      printf '%d ч %02d мин %02d сек' "$hours" "$minutes" "$seconds"
+                    else
+                      printf '%d мин %02d сек' "$minutes" "$seconds"
+                    fi
+                  }
+
+                  email_sent_epoch=$(date +%s)
+                  email_sent_at=$(date '+%d.%m.%Y %H:%M')
+                  tests_duration=$(format_duration "$job_started_epoch" "$tests_finished_epoch")
+                  report_duration=$(format_duration "$tests_finished_epoch" "$report_generated_epoch")
+                  publish_prepare_duration=$(format_duration "$report_generated_epoch" "$pages_prepared_epoch")
+                  deploy_duration=$(format_duration "$pages_prepared_epoch" "$deploy_finished_epoch")
+                  email_wait_duration=$(format_duration "$deploy_finished_epoch" "$email_sent_epoch")
+                  total_duration=$(format_duration "$job_started_epoch" "$email_sent_epoch")
+
                   {
                     echo "email_body<<EOF"
                     echo "Результат проверки сайтов: ${{ env.FINAL_EMOJI }} ${{ env.FINAL_MESSAGE }}"
-                    echo "Время запуска: ${{ env.job_started_at }}"
-                    echo "Время отправки письма: $(TZ=Europe/Moscow date '+%d.%m.%Y %H:%M')"
+                    echo "Время запуска: $job_started_at"
+                    echo "Время окончания тестов: $tests_finished_at ($tests_duration от запуска)"
+                    echo "Время генерации отчёта: $report_generated_at ($report_duration после тестов)"
+                    echo "Время подготовки Pages: $pages_prepared_at ($publish_prepare_duration после отчёта)"
+                    echo "Время окончания деплоя: $deploy_finished_at ($deploy_duration после подготовки Pages)"
+                    echo "Время отправки письма: $email_sent_at ($email_wait_duration после деплоя)"
+                    echo "Общая длительность до письма: $total_duration"
+                    echo "Ссылка на запуск Actions: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                     echo "Ссылка на отчёт: ${{ env.REPORT_URL }}"
                     echo ""
                     echo "Ссылки на последние отчёты:"
