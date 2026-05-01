@@ -2,7 +2,8 @@
 
 on:
     schedule:
-        - cron: "0 3 * * *"
+        # GitHub Actions schedule uses UTC. 04:45 UTC = 07:45 Moscow time.
+        - cron: "45 4 * * *"
     workflow_dispatch:
         inputs:
             grep:
@@ -42,6 +43,8 @@ jobs:
             pages_prepared_epoch: ""
             deploy_finished_at: ""
             deploy_finished_epoch: ""
+            report_available_at: ""
+            report_available_epoch: ""
             FINAL_STATUS: FAILED
             FINAL_EMOJI: ❌
             FINAL_MESSAGE: Сбой job
@@ -323,6 +326,38 @@ jobs:
                     echo "deploy_finished_epoch=$(date +%s)"
                   } >> "$GITHUB_ENV"
 
+            - name: Wait for GitHub Pages report availability
+              id: wait_report
+              if: always() && steps.deploy_report.outcome == 'success'
+              run: |
+                  report_url="${REPORT_URL:-https://${{ github.repository_owner }}.github.io/${{ env.REPO_NAME }}/${{ env.REPORT_DATE }}/}"
+                  deadline=$((SECONDS + 600))
+                  attempt=1
+
+                  echo "Waiting for report to become available: $report_url"
+
+                  while [ "$SECONDS" -lt "$deadline" ]; do
+                    status=$(curl -L -s -o /dev/null -w '%{http_code}' --max-time 20 "$report_url" || true)
+                    [ -n "$status" ] || status="000"
+                    echo "Attempt $attempt: HTTP $status"
+
+                    if [ "$status" = "200" ]; then
+                      {
+                        echo "report_available_at=$(date '+%d.%m.%Y %H:%M')"
+                        echo "report_available_epoch=$(date +%s)"
+                      } >> "$GITHUB_ENV"
+                      echo "Report is available."
+                      exit 0
+                    fi
+
+                    attempt=$((attempt + 1))
+                    sleep 15
+                  done
+
+                  echo "::error::Report did not become available within 10 minutes: $report_url"
+                  echo "job_exit_code=1" >> "$GITHUB_ENV"
+                  exit 1
+
             - name: Determine final status
               id: determine_status
               if: always()
@@ -331,7 +366,8 @@ jobs:
                     || [ "${{ steps.generate_report.outcome }}" = "failure" ] \
                     || [ "${{ steps.verify_report.outcome }}" = "failure" ] \
                     || [ "${{ steps.prepare_pages_publish.outcome }}" = "failure" ] \
-                    || [ "${{ steps.deploy_report.outcome }}" = "failure" ]; then
+                    || [ "${{ steps.deploy_report.outcome }}" = "failure" ] \
+                    || [ "${{ steps.wait_report.outcome }}" = "failure" ]; then
                     {
                       echo "FINAL_STATUS=FAILED"
                       echo "FINAL_EMOJI=❌"
@@ -393,18 +429,21 @@ jobs:
                   report_duration=$(format_duration "$tests_finished_epoch" "$report_generated_epoch")
                   publish_prepare_duration=$(format_duration "$report_generated_epoch" "$pages_prepared_epoch")
                   deploy_duration=$(format_duration "$pages_prepared_epoch" "$deploy_finished_epoch")
-                  email_wait_duration=$(format_duration "$deploy_finished_epoch" "$email_sent_epoch")
+                  pages_wait_duration=$(format_duration "$deploy_finished_epoch" "$report_available_epoch")
+                  email_wait_duration=$(format_duration "$report_available_epoch" "$email_sent_epoch")
                   total_duration=$(format_duration "$job_started_epoch" "$email_sent_epoch")
 
                   {
                     echo "email_body<<EOF"
                     echo "Результат проверки сайтов: ${{ env.FINAL_EMOJI }} ${{ env.FINAL_MESSAGE }}"
+                    echo "Тип запуска: ${{ github.event_name }}"
                     echo "Время запуска: $job_started_at"
                     echo "Время окончания тестов: $tests_finished_at ($tests_duration от запуска)"
                     echo "Время генерации отчёта: $report_generated_at ($report_duration после тестов)"
                     echo "Время подготовки Pages: $pages_prepared_at ($publish_prepare_duration после отчёта)"
                     echo "Время окончания деплоя: $deploy_finished_at ($deploy_duration после подготовки Pages)"
-                    echo "Время отправки письма: $email_sent_at ($email_wait_duration после деплоя)"
+                    echo "Время доступности отчёта: $report_available_at ($pages_wait_duration после деплоя)"
+                    echo "Время отправки письма: $email_sent_at ($email_wait_duration после доступности отчёта)"
                     echo "Общая длительность до письма: $total_duration"
                     echo "Ссылка на запуск Actions: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                     echo "Ссылка на отчёт: ${{ env.REPORT_URL }}"
