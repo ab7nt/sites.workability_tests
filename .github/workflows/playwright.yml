@@ -2,8 +2,8 @@
 
 on:
     schedule:
-        # GitHub Actions schedule uses UTC. 04:45 UTC = 07:45 Moscow time.
-        - cron: "45 4 * * *"
+        # GitHub Actions schedule uses UTC. 03:15 UTC = 06:15 Moscow time.
+        - cron: "15 3 * * *"
     workflow_dispatch:
         inputs:
             grep:
@@ -331,12 +331,12 @@ jobs:
               if: always() && steps.deploy_report.outcome == 'success'
               run: |
                   report_url="${REPORT_URL:-https://${{ github.repository_owner }}.github.io/${{ env.REPO_NAME }}/${{ env.REPORT_DATE }}/}"
-                  deadline=$((SECONDS + 600))
+                  deadline=$(($(date +%s) + 600))
                   attempt=1
 
                   echo "Waiting for report to become available: $report_url"
 
-                  while [ "$SECONDS" -lt "$deadline" ]; do
+                  while [ "$(date +%s)" -lt "$deadline" ]; do
                     status=$(curl -L -s -o /dev/null -w '%{http_code}' --max-time 20 "$report_url" || true)
                     [ -n "$status" ] || status="000"
                     echo "Attempt $attempt: HTTP $status"
@@ -437,6 +437,7 @@ jobs:
                     echo "email_body<<EOF"
                     echo "Результат проверки сайтов: ${{ env.FINAL_EMOJI }} ${{ env.FINAL_MESSAGE }}"
                     echo "Тип запуска: ${{ github.event_name }}"
+                    echo "Расписание: 03:15 UTC / 06:15 МСК"
                     echo "Время запуска: $job_started_at"
                     echo "Время окончания тестов: $tests_finished_at ($tests_duration от запуска)"
                     echo "Время генерации отчёта: $report_generated_at ($report_duration после тестов)"
