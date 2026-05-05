@@ -2,8 +2,8 @@
 
 on:
     schedule:
-        # GitHub Actions schedule uses UTC. 03:15 UTC = 06:15 Moscow time.
-        - cron: "15 3 * * *"
+        # GitHub Actions schedule uses UTC. 02:15 UTC = 05:15 Moscow time.
+        - cron: "15 2 * * *"
     workflow_dispatch:
         inputs:
             grep:
@@ -557,7 +557,7 @@ jobs:
                     echo "Результат проверки сайтов: ${{ env.FINAL_EMOJI }} ${{ env.FINAL_MESSAGE }}"
                     echo "Тип запуска: ${{ github.event_name }}"
                     echo "Cron события: ${{ github.event.schedule }}"
-                    echo "Расписание: 03:15 UTC / 06:15 МСК"
+                    echo "Расписание: 02:15 UTC / 05:15 МСК"
                     echo "Run создан GitHub: $run_created_at"
                     echo "Run стартовал в GitHub: $run_started_at"
                     echo "Время запуска: $job_started_at"
