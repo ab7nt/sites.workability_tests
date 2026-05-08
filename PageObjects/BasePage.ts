@@ -248,13 +248,16 @@ export class BasePage {
         // Поиск (адаптив)
         // Кнопка поиска в хедере (адаптив)
         this.searchButtonMobile = {
-            mdmprint: this.headerMobile.mdmprint.locator('input[name="s"]').first(), // Клик по инпуту поиска
+            mdmprint: this.headerMobile.mdmprint.locator('div.header-search-toggler_mobile'),
             copy: this.headerMobile.copy.locator('button[data-mobile-menu="search"]'),
             litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
         };
         // Поле ввода поиска в хедере (адаптив)
         this.searchInputMobile = {
-            mdmprint: this.headerMobile.mdmprint.locator('input[name="s"]').first(),
+            mdmprint: this.page
+                .locator('div.header-menu__mobile input#mobile-search')
+                .or(this.page.locator('div.header-search__mobile input#mobile-search'))
+                .first(),
             copy: this.headerMobile.copy.locator('input[name="s"]'),
             litera: this.header.litera.locator('input[name="s"]'),
             onetm: this.header.onetm.locator('div[data-toggle-id="menu"] input[name="s"]'),
@@ -267,7 +270,10 @@ export class BasePage {
 
         // Выпадающий список результатов поиска (адаптив)
         this.searchResultDropdownMobile = {
-            mdmprint: this.headerMobile.mdmprint.locator('span.search-results__list').first(),
+            mdmprint: this.headerMobile.mdmprint
+                .locator('span.search-results__list')
+                .or(this.page.locator('div.header-search__mobile span.search-results__list'))
+                .first(),
             copy: this.headerMobile.copy.locator('div.search-results-items'),
             onetm: page.locator('div.show-mobile div.search-results__list'),
             litera: this.header.litera.locator('div.search-results__list'),
@@ -514,6 +520,10 @@ export class BasePage {
                 if (this.site === 'onetm') {
                     await this.burgerMenuButton[this.site].click();
                 }
+                if (this.site === 'mdmprint') {
+                    await this.searchInputMobile[this.site].waitFor({ state: 'visible' });
+                    await this.searchInputMobile[this.site].click();
+                }
             } else {
                 const sitesRequiringClick = new Set(['litera', 'onetm']);
                 if (sitesRequiringClick.has(this.site)) {
@@ -523,7 +533,11 @@ export class BasePage {
 
             // Ввод текста в поле поиска
             if (this.isMobile) {
-                await this.searchInputMobile[this.site].fill(word);
+                if (this.site === 'mdmprint') {
+                    await this.searchInputMobile[this.site].pressSequentially(word, { delay: 100 });
+                } else {
+                    await this.searchInputMobile[this.site].fill(word);
+                }
                 await expect(this.searchInputMobile[this.site]).toHaveValue(word);
             } else {
                 await this.searchInput[this.site].pressSequentially(word, { delay: 100 });
@@ -807,6 +821,18 @@ export class BasePage {
     async closeCookiePopup(): Promise<void> {
         await test.step('Закрытие поп-апа "Использование куки-файлов"', async () => {
             if (this.site !== 'litera' && this.site !== 'mdmprint') {
+                return;
+            }
+
+            if (this.site === 'mdmprint') {
+                try {
+                    await expect(this.cookiePopup[this.site]).toHaveClass(/_show/, { timeout: 3000 });
+                } catch {
+                    return;
+                }
+
+                await this.cookiePopupAcceptButton[this.site].click();
+                await expect(this.cookiePopup[this.site]).not.toHaveClass(/_show/);
                 return;
             }
 

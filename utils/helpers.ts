@@ -69,6 +69,7 @@ export const helpers = {
         ];
 
         const siteWordMap: Record<string, string[]> = {
+            mdmprint: printWords.filter((word) => word !== 'Газеты'),
             litera: designWords,
             onetm: patentWords,
         };
