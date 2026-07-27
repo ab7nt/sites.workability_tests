@@ -144,7 +144,7 @@ export class BasePage {
         // Поп-ап "Использование куки-файлов"
         this.cookiePopup = {
             mdmprint: page.locator('div.cookie-popup'),
-            // copy: page.locator('div.cookie-popup'),
+            copy: page.locator('div.cookie-popup'),
             litera: page.locator('div.cookie-popup'),
             // onetm: page.locator('div.cookie-popup'),
             // vea: page.locator('div.cookie-popup'),
@@ -152,7 +152,7 @@ export class BasePage {
         // Закрывающая кнопка поп-апа "Использование куки-файлов"
         this.cookiePopupAcceptButton = {
             mdmprint: this.cookiePopup.mdmprint.locator('button.cookie__agree'),
-            // copy: this.cookiePopup.copy.locator('button.cookie-popup__close'),
+            copy: this.cookiePopup.copy.locator('button.cookie__agree'),
             litera: this.cookiePopup.litera.locator('button.cookie__agree'),
             // onetm: this.cookiePopup.onetm.locator('button.cookie-popup__close'),
             // vea: this.cookiePopup.vea.locator('button.cookie-popup__close'),
@@ -274,7 +274,7 @@ export class BasePage {
                 .locator('span.search-results__list')
                 .or(this.page.locator('div.header-search__mobile span.search-results__list'))
                 .first(),
-            copy: this.headerMobile.copy.locator('div.search-results-items'),
+            copy: this.headerMobile.copy.locator('span.search-results-list'),
             onetm: page.locator('div.show-mobile div.search-results__list'),
             litera: this.header.litera.locator('div.search-results__list'),
         };
@@ -820,11 +820,12 @@ export class BasePage {
     // Закрытие поп-апа "Использование куки-файлов"
     async closeCookiePopup(): Promise<void> {
         await test.step('Закрытие поп-апа "Использование куки-файлов"', async () => {
-            if (this.site !== 'litera' && this.site !== 'mdmprint') {
+            if (this.site !== 'litera' && this.site !== 'mdmprint' && this.site !== 'copy') {
                 return;
             }
 
-            if (this.site === 'mdmprint') {
+            // На mdmprint и copy баннер управляется классом _show
+            if (this.site === 'mdmprint' || this.site === 'copy') {
                 try {
                     await expect(this.cookiePopup[this.site]).toHaveClass(/_show/, { timeout: 3000 });
                 } catch {
