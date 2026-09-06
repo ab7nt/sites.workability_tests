@@ -74,7 +74,7 @@ export class BasePage {
         };
         // Хедер
         this.header = {
-            mdmprint: page.locator('div.header-content_desktop'),
+            mdmprint: page.locator('header'),
             copy: page.locator('header.header--pc'),
             litera: page.locator('header'),
             onetm: page.locator('header'),
@@ -83,19 +83,20 @@ export class BasePage {
         };
         // Кнопка "Каталог" или бургер-меню
         this.catalogButton = {
-            mdmprint: this.header.mdmprint.locator('div.header-catalog__btn'),
+            // На mdmprint видна либо кнопка в навбаре (#catbtn), либо в закреплённой шапке (#hcat)
+            mdmprint: page.locator('button#catbtn, button#hcat').filter({ visible: true }),
             copy: this.header.copy.locator('button.header-catalog__btn'),
             litera: this.header.litera.locator('div.link-btn.header-menu__toggler'),
             onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
-            vea: this.header.vea.locator('div.header-dropdown'),
+            vea: this.header.vea.locator('nav button[aria-haspopup="true"]'),
         };
         // Кнопка "Быстрый заказ", "Оставить заявку" и т.д.
         this.quickOrderButton = {
-            mdmprint: this.header.mdmprint.locator('button[data-popup="quick-order"]'),
+            mdmprint: page.locator('div.topbar button.tb-cta[data-popup="quick-order"]'),
             copy: this.header.copy.locator('button[data-popup="fast-order"]'),
             litera: this.page.locator('footer button[data-popup="order"]'),
             onetm: this.header.onetm.locator('button[data-popup="consult"]'),
-            vea: this.header.vea.locator('div.header__request button.popup-open'),
+            vea: this.header.vea.locator('button', { hasText: 'Оставить заявку' }),
         };
         // Кнопка поиска в хедере
         this.headerSearchButton = {
@@ -106,35 +107,35 @@ export class BasePage {
         // Поиск
         // Форма поиска
         this.searchForm = {
-            mdmprint: this.header.mdmprint.locator('form[role="search"]'),
+            mdmprint: this.header.mdmprint.locator('form#searchForm'),
             copy: this.header.copy.locator('form.mobile-hide'),
             onetm: this.header.onetm.locator('div[data-toggle-id="search"] form'),
             litera: this.header.litera.locator('form[role="search"]'),
         };
         // Поле ввода поиска в хедере
         this.searchInput = {
-            mdmprint: this.searchForm.mdmprint.locator('input[name="s"]'),
+            mdmprint: this.searchForm.mdmprint.locator('input#searchInput'),
             copy: this.searchForm.copy.locator('input[name="s"]'),
             onetm: this.searchForm.onetm.locator('input[name="s"]'),
             litera: this.searchForm.litera.locator('input[name="s"]'),
         };
         // Кнопка поиска в поле ввода
         this.searchInputButton = {
-            mdmprint: this.searchForm.mdmprint.locator('button[type="submit"]'),
+            mdmprint: this.searchForm.mdmprint.locator('button.s-go[type="submit"]'),
             copy: this.searchForm.copy.locator('button[type="submit"]'),
             onetm: this.searchForm.onetm.locator('button:has(use[*|href="#search"])'),
             litera: this.searchForm.litera.locator('button[type="submit"]'),
         };
         // Выпадающий список результатов поиска
         this.searchResultDropdown = {
-            mdmprint: this.header.mdmprint.locator('span.search-results__list'),
+            mdmprint: this.searchForm.mdmprint.locator('div#searchDrop[data-state="results"] ul.sd-list'),
             copy: this.header.copy.locator('span.search-results-list'),
             onetm: this.searchForm.onetm.locator('div.search-results__list'),
             litera: this.header.litera.locator('div.search-results__list'),
         };
         // Элементы результатов поиска
         this.searchResultItems = {
-            mdmprint: this.searchResultDropdown.mdmprint.locator('a'),
+            mdmprint: this.searchResultDropdown.mdmprint.locator('a.sd-row'),
             copy: this.searchResultDropdown.copy.locator('a'),
             onetm: this.searchResultDropdown.onetm.locator('a'),
             litera: this.searchResultDropdown.litera.locator('a'),
@@ -164,7 +165,7 @@ export class BasePage {
             copy: page.locator('div.popup--fast-order.popup--active'),
             litera: page.locator('div.popup--order.popup--active'),
             onetm: page.locator('div.popup--consult.popup--active'),
-            vea: page.locator('div.popup--order.popup--active'),
+            vea: page.locator('div[role="dialog"][aria-labelledby="lead-title"]'),
         };
         // Закрывающая кнопка поп-апа "Быстрый заказ"
         this.quickOrderPopupCloseButton = {
@@ -172,7 +173,7 @@ export class BasePage {
             copy: this.quickOrderPopup.copy.locator('div.popup__close'),
             litera: this.quickOrderPopup.litera.locator('button.popup-close'),
             onetm: this.quickOrderPopup.onetm.locator('div.popup-close'),
-            vea: this.quickOrderPopup.vea.locator('button.popup-close'),
+            vea: this.quickOrderPopup.vea.locator('button[aria-label="Закрыть"]'),
         };
 
         // Рекламный поп-ап сбоку страницы
@@ -187,30 +188,32 @@ export class BasePage {
         // Каталог или бургер-меню
         // Сам каталог или бургер-меню
         this.catalog = {
-            mdmprint: this.header.mdmprint.locator('div.header-catalog__content, div.--js-mobile-menu'),
+            mdmprint: page.locator('div#mega.open'),
             copy: this.header.copy.locator('div.header-catalog.__active'),
             litera: this.header.litera.locator('div.header-menu.__active'),
             onetm: this.header.onetm.locator('div.__active[data-toggle-id="menu"]'),
         };
         // Левая часть (категории)
         this.catalogLeftSide = {
-            mdmprint: this.catalog.mdmprint.locator('div.header-catalog__aside, div.--js-mobile-menu-catalog'),
+            mdmprint: this.catalog.mdmprint.locator('div#rail'),
             copy: this.catalog.copy.locator('ul#menu-katalog'),
             litera: this.catalog.litera.locator('div.header-menu__level0'),
             onetm: this.catalog.onetm.locator('div.header-menu__col.header-menu__col-categories'),
-            vea: this.header.vea.locator('div.header-dropdown__list'),
+            // Дропдаун услуг всегда в DOM, открытое состояние — класс opacity-100
+            vea: this.header.vea.locator('div.absolute.top-full.opacity-100'),
         };
         // Сами категории
         this.categoriesItems = {
-            mdmprint: this.catalogLeftSide.mdmprint.locator('button.header-catalog__category'),
+            // Скрытые служебные разделы (display: none) отфильтровываем
+            mdmprint: this.catalogLeftSide.mdmprint.locator('a.ri').filter({ visible: true }),
             copy: this.catalogLeftSide.copy.locator('a.header-catalog__category'),
             litera: this.catalogLeftSide.litera.locator('a'),
             onetm: this.catalogLeftSide.onetm.locator('a.header-menu__category'),
-            vea: this.catalogLeftSide.vea.locator('a.dropdown__list-item'),
+            vea: this.catalogLeftSide.vea.locator('a[href]'),
         };
         // Правая часть (подкатегории и услуги)
         this.catalogRightSide = {
-            mdmprint: this.catalog.mdmprint.locator('div.header-catalog__page.tab-item--active'),
+            mdmprint: this.catalog.mdmprint.locator('div#pane div.panel.show'),
             copy: this.catalog.copy.locator('div.header-catalog__page.tab-item--active'),
         };
         // Сами подкатегории и услуги
@@ -222,42 +225,40 @@ export class BasePage {
         // Мобильная версия
         // Хедер (адаптив)
         this.headerMobile = {
-            mdmprint: this.page.locator('div.header-menu__mobile'),
+            mdmprint: this.page.locator('header'),
             copy: this.page.locator('header.header_mobile'),
         };
 
         // Кнопка "Быстрый заказ", "Оставить заявку и т.д." (адаптив)
         this.quickOrderButtonMobile = {
-            mdmprint: this.headerMobile.mdmprint.locator('button[data-popup="quick-order"]'),
+            // Кнопка находится внутри мега-меню, которое нужно предварительно открыть бургером
+            mdmprint: this.page.locator('div#mega button[data-popup="quick-order"]'),
             copy: this.page.locator('div.fastorder-trigger_mobile-wrapper button[data-popup="fast-order"]'),
             // copy: page.locator('button.fastorder-trigger_mobile'),
             litera: this.page.locator('footer button[data-popup="order"]'),
             onetm: page.locator('button[data-popup="consult"].footer-consult'),
-            vea: this.page.locator('div.footer-order button[data-popup="order"]'),
+            vea: this.page.locator('main button', { hasText: 'Оставить заявку' }),
         };
 
         // Кнопка бургер-меню (адаптив)
         this.burgerMenuButton = {
-            mdmprint: this.headerMobile.mdmprint.locator('div.header-toggler_mobile'),
+            mdmprint: this.headerMobile.mdmprint.locator('button#hcat'),
             copy: this.headerMobile.copy.locator('button[data-mobile-menu="menu"]'),
             litera: this.header.litera.locator('div.header-mobile-controls__icon.header-menu__toggler'),
             onetm: this.header.onetm.locator('button[data-toggle="menu"]'),
-            vea: this.header.vea.locator('div.header-menu__toggler'),
+            vea: this.header.vea.locator('button[aria-label="Открыть меню"]'),
         };
 
         // Поиск (адаптив)
         // Кнопка поиска в хедере (адаптив)
         this.searchButtonMobile = {
-            mdmprint: this.headerMobile.mdmprint.locator('div.header-search-toggler_mobile'),
+            mdmprint: this.headerMobile.mdmprint.locator('button#mSearch'),
             copy: this.headerMobile.copy.locator('button[data-mobile-menu="search"]'),
             litera: this.header.litera.locator('div.header-mobile-controls__icon.header-search__toggler'),
         };
         // Поле ввода поиска в хедере (адаптив)
         this.searchInputMobile = {
-            mdmprint: this.page
-                .locator('div.header-menu__mobile input#mobile-search')
-                .or(this.page.locator('div.header-search__mobile input#mobile-search'))
-                .first(),
+            mdmprint: this.page.locator('div#mega input#mSearchInput'),
             copy: this.headerMobile.copy.locator('input[name="s"]'),
             litera: this.header.litera.locator('input[name="s"]'),
             onetm: this.header.onetm.locator('div[data-toggle-id="menu"] input[name="s"]'),
@@ -270,17 +271,14 @@ export class BasePage {
 
         // Выпадающий список результатов поиска (адаптив)
         this.searchResultDropdownMobile = {
-            mdmprint: this.headerMobile.mdmprint
-                .locator('span.search-results__list')
-                .or(this.page.locator('div.header-search__mobile span.search-results__list'))
-                .first(),
+            mdmprint: this.page.locator('div#mega div#mSearchDrop[data-state="results"] ul.sd-list'),
             copy: this.headerMobile.copy.locator('span.search-results-list'),
             onetm: page.locator('div.show-mobile div.search-results__list'),
             litera: this.header.litera.locator('div.search-results__list'),
         };
         // Элементы результатов поиска (адаптив)
         this.searchResultItemsMobile = {
-            mdmprint: this.searchResultDropdownMobile.mdmprint.locator('a'),
+            mdmprint: this.searchResultDropdownMobile.mdmprint.locator('a.sd-row'),
             copy: this.searchResultDropdownMobile.copy.locator('a'),
             onetm: this.searchResultDropdownMobile.onetm.locator('a'),
             litera: this.searchResultDropdownMobile.litera.locator('a'),
@@ -303,22 +301,23 @@ export class BasePage {
         // Каталог (адаптив)
         // Сама кнопка каталога (адаптив)
         this.catalogButtonMobile = {
-            mdmprint: this.headerMobile.mdmprint.locator('button[data-mobile-menu="menu-catalog"]'),
+            mdmprint: this.page.locator('div#mega button#mrCat'),
         };
         // Сам каталог (адаптив)
         this.catalogMobile = {
-            mdmprint: this.headerMobile.mdmprint.locator('div.--js-mobile-menu-catalog'),
+            mdmprint: this.page.locator('div#mega.open.cat-open div#rail'),
             copy: page.locator('div.tab-bar.popup--catalog'),
             litera: this.header.litera.locator('div.header-menu__catalog'),
             onetm: this.header.onetm.locator('div.header-menu__col-categories'),
-            vea: this.header.vea.locator('div.header-menu__services'),
+            vea: this.header.vea.locator('div.fixed.inset-0 nav'),
         };
         // Категории (адаптив)
         this.categoriesItemsMobile = {
-            mdmprint: this.catalogMobile.mdmprint.locator('span[data-mobile-menu*="menu-catalog"]'),
+            mdmprint: this.catalogMobile.mdmprint.locator('a.ri').filter({ visible: true }),
             copy: this.catalogMobile.copy.locator('button.state-category__list-item'),
             litera: this.catalogMobile.litera.locator('a[data-hover-tab*="HeaderMenuMain1"]'),
             onetm: this.catalogMobile.onetm.locator('a.header-menu__category'),
+            vea: this.catalogMobile.vea.locator('a[href]'),
         };
     }
 
@@ -615,7 +614,7 @@ export class BasePage {
                 }
             } else {
                 // Наведение или клик, в зависимости от сайта (десктоп)
-                if (this.site === 'litera') {
+                if (this.site === 'litera' || this.site === 'vea') {
                     await this.catalogButton[this.site].hover();
                 } else {
                     await this.catalogButton[this.site].click();
@@ -671,7 +670,7 @@ export class BasePage {
                             await this.catalogButtonMobile[this.site].click();
                         }
                     } else {
-                        if (this.site === 'litera') {
+                        if (this.site === 'litera' || this.site === 'vea') {
                             await this.catalogButton[this.site].hover();
                         } else {
                             await this.catalogButton[this.site].click();
@@ -800,7 +799,10 @@ export class BasePage {
             await this.closeCookiePopup(); // Скрытие поп-апа с куками
 
             if (this.isMobile) {
-                // await this.closeCookiePopup();
+                // На mdmprint кнопка заявки находится внутри мега-меню — сначала открываем его
+                if (this.site === 'mdmprint') {
+                    await this.burgerMenuButton[this.site].click();
+                }
                 await this.quickOrderButtonMobile[this.site].click();
             } else {
                 await this.quickOrderButton[this.site].click();
