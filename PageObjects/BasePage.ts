@@ -55,6 +55,8 @@ export class BasePage {
     protected bottomTabMenuCatalogTab: LocatorMap;
     protected promoPopup: LocatorMap
     protected promoPopupCloseButton: LocatorMap
+    protected cityDialog: LocatorMap;
+    protected cityDialogConfirmButton: LocatorMap;
 
     constructor(page: Page) {
         this.page = page;
@@ -75,7 +77,8 @@ export class BasePage {
         // Хедер
         this.header = {
             mdmprint: page.locator('header'),
-            copy: page.locator('header.header--pc'),
+            // Десктопная и мобильная шапки имеют общий класс header, различаем по header_mobile
+            copy: page.locator('header.header:not(.header_mobile)'),
             litera: page.locator('header'),
             onetm: page.locator('header'),
             vea: page.locator('header'),
@@ -185,6 +188,15 @@ export class BasePage {
             copy: this.promoPopup.copy.locator('div.popup-close'),
         }
 
+        // Модальный диалог выбора города
+        this.cityDialog = {
+            copy: page.locator('dialog#city-dialog'),
+        }
+        // Кнопка подтверждения города (есть только в десктопной версии)
+        this.cityDialogConfirmButton = {
+            copy: this.cityDialog.copy.locator('button[data-city-confirm]'),
+        }
+
         // Каталог или бургер-меню
         // Сам каталог или бургер-меню
         this.catalog = {
@@ -214,7 +226,7 @@ export class BasePage {
         // Правая часть (подкатегории и услуги)
         this.catalogRightSide = {
             mdmprint: this.catalog.mdmprint.locator('div#pane div.panel.show'),
-            copy: this.catalog.copy.locator('div.header-catalog__page.tab-item--active'),
+            copy: this.catalog.copy.locator('div.header-catalog__main'),
         };
         // Сами подкатегории и услуги
         this.linksInCatalogRightSide = {
@@ -377,6 +389,12 @@ export class BasePage {
 
         // Периодическая проверка и закрытие баннера promo (только для copy.ru)
         if (this.site === 'copy') {
+            // Диалог выбора города открывается как модалка и перехватывает клики по всей
+            // странице, поэтому обрабатываем его раньше остальных поп-апов
+            await this.page.addLocatorHandler(this.cityDialog[this.site], async (dialog) => {
+                await this.closeCityDialog(dialog);
+            });
+
             await this.page.addLocatorHandler(this.page.locator('div.promo'), async (overlay) => {
                 // Пытаемся закрыть баннер
                 await overlay.locator('i.close').click();
@@ -817,6 +835,25 @@ export class BasePage {
         //     await this.quickOrderPopupCloseButton[this.site].click();
         //     await this.page.locator('div.popup.popup--quick-order.popup_swipable').waitFor({ state: 'hidden' });
         // });
+    }
+
+    // Закрытие модального диалога выбора города (copy.ru)
+    // Диалог появляется с задержкой, в том числе после переходов между страницами,
+    // поэтому вызывается из обработчика локатора при каждом появлении
+    async closeCityDialog(dialog: Locator): Promise<void> {
+        await test.step('Закрытие диалога выбора города', async () => {
+            const confirmButton = this.cityDialogConfirmButton[this.site];
+
+            // В десктопной версии кнопка подтверждения закрывает диалог и запоминает
+            // город в куках, после чего диалог больше не показывается
+            if (await confirmButton.isVisible()) {
+                await confirmButton.click();
+                return;
+            }
+
+            // В мобильной версии кнопки подтверждения нет — закрываем диалог напрямую
+            await dialog.evaluate((element) => (element as HTMLDialogElement).close());
+        });
     }
 
     // Закрытие поп-апа "Использование куки-файлов"
