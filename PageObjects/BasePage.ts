@@ -321,7 +321,8 @@ export class BasePage {
             copy: page.locator('div.tab-bar.popup--catalog'),
             litera: this.header.litera.locator('div.header-menu__catalog'),
             onetm: this.header.onetm.locator('div.header-menu__col-categories'),
-            vea: this.header.vea.locator('div.fixed.inset-0 nav'),
+            // Меню рендерится вне header, бургер ссылается на него через aria-controls
+            vea: page.locator('div#mobile-navigation'),
         };
         // Категории (адаптив)
         this.categoriesItemsMobile = {
@@ -357,9 +358,12 @@ export class BasePage {
             const abortJs = '**/v2.js';
             await this.page.route(abortJs, (route) => route.abort());
 
+            // Ждём готовности DOM, а не полной загрузки: событие load держат сторонние
+            // виджеты (коллтрекинг, метрики), из-за чего тест не укладывается в таймаут.
+            // Полная загрузка проверяется ниже мягко, с предупреждением в отчёт
             const response = await this.page.goto(this.pageUrl, {
                 referer: 'workability-checking',
-                waitUntil: 'load',
+                waitUntil: 'domcontentloaded',
                 timeout: 120000,
             });
 
