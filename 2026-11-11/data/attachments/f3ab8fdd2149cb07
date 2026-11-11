@@ -1,0 +1,246 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - link "Перейти к содержимому" [ref=e3] [cursor=pointer]:
+      - /url: "#main"
+    - banner [ref=e5]:
+      - generic [ref=e6]:
+        - link "VEA — на главную" [disabled] [ref=e7]:
+          - img "VEA" [ref=e8]
+        - button "Открыть меню" [ref=e13] [cursor=pointer]:
+          - img [ref=e14]
+    - main [ref=e16]:
+      - generic [ref=e17]:
+        - region "Продукты компании" [ref=e19]:
+          - generic [ref=e23]:
+            - paragraph [ref=e25]: система управления, отслеживания и отпимизации цепи поставок внутри сети предприятий
+            - generic [ref=e26]:
+              - paragraph [ref=e27]: 01 / 02
+              - generic [ref=e28]:
+                - button "Предыдущий слайд" [ref=e29] [cursor=pointer]:
+                  - img [ref=e30]
+                - button "Следующий слайд" [ref=e32] [cursor=pointer]:
+                  - img [ref=e33]
+          - generic [ref=e35]:
+            - button "Слайд 1 из 2" [ref=e36] [cursor=pointer]
+            - button "Слайд 2 из 2" [ref=e38] [cursor=pointer]
+        - heading "простые решения для сложных бизнес-задач" [level=1] [ref=e41]
+        - generic [ref=e42]:
+          - generic [ref=e44]:
+            - term [ref=e45]: 2,4k
+            - definition [ref=e46]: пользователей используют наши разработки
+          - generic [ref=e48]:
+            - term [ref=e49]: "23"
+            - definition [ref=e50]: продукта и решения разработано нами
+          - generic [ref=e52]:
+            - term [ref=e53]: 38%
+            - definition [ref=e54]: в среднем составляет прирост выручки компаний
+        - generic [ref=e55]:
+          - heading "нашими продуктами и решениями уже пользуются" [level=2] [ref=e57]
+          - generic [ref=e58]:
+            - article [ref=e60]:
+              - heading "система по управлению полиграфическим бизнесом" [level=3] [ref=e61]
+              - list [ref=e62]:
+                - listitem [ref=e63]: CRM
+                - listitem [ref=e64]: ERP
+                - listitem [ref=e65]: ОНЛАЙН-КАССЫ
+                - listitem [ref=e66]: СКЛАД
+                - listitem [ref=e67]: БУХГАЛТЕРИЯ
+                - listitem [ref=e68]: КАЛЬКУЛЯТОР
+            - article [ref=e71]:
+              - heading "платформа для миграции проектов на no-code" [level=3] [ref=e72]
+              - list [ref=e73]:
+                - listitem [ref=e74]: SP-API
+                - listitem [ref=e75]: AWS
+                - listitem [ref=e76]: ОНЛАЙН-КАССЫ
+                - listitem [ref=e77]: СКЛАД
+                - listitem [ref=e78]: БУХГАЛТЕРИЯ
+                - listitem [ref=e79]: КАЛЬКУЛЯТОР
+            - article [ref=e82]:
+              - heading "Платформа для управления складом" [level=3] [ref=e83]
+              - list [ref=e84]:
+                - listitem [ref=e85]: CRM
+                - listitem [ref=e86]: ERP
+                - listitem [ref=e87]: ОНЛАЙН-КАССЫ
+                - listitem [ref=e88]: СКЛАД
+                - listitem [ref=e89]: БУХГАЛТЕРИЯ
+                - listitem [ref=e90]: КАЛЬКУЛЯТОР
+            - article [ref=e93]:
+              - heading "Интеграция с amazon seller center Управления заказами" [level=3] [ref=e94]
+              - list [ref=e95]:
+                - listitem [ref=e96]: CRM
+                - listitem [ref=e97]: ERP
+                - listitem [ref=e98]: ОНЛАЙН-КАССЫ
+                - listitem [ref=e99]: СКЛАД
+                - listitem [ref=e100]: БУХГАЛТЕРИЯ
+                - listitem [ref=e101]: КАЛЬКУЛЯТОР
+          - generic [ref=e104]:
+            - paragraph [ref=e105]: 20+ закрытых проектов, позволяющие нам заявлять , что у нас есть достаточный опыт по созданию продуктов с нуля и полному их сопровождению от идеи до реализации
+            - list [ref=e106]:
+              - listitem [ref=e107]: ФИНТЕХ
+              - listitem [ref=e108]: АГРОТЕХ
+              - listitem [ref=e109]: МЕДТЕХ
+              - listitem [ref=e110]: ЭДТЕХ
+              - listitem [ref=e111]: ПРОПТЕХ
+              - listitem [ref=e112]: ЛЕГАЛТЕХ
+              - listitem [ref=e113]: ГРИНТЕХ
+              - listitem [ref=e114]: БИОТЕХ
+          - generic [ref=e117]:
+            - generic [ref=e118]:
+              - heading "Связаться с нами" [level=2] [ref=e119]
+              - paragraph [ref=e120]: Свяжитесь с нами и поделитесь о задачах и проблемах вашей компании. Наши менеджеры и аналитики найдут оптимальное решение.
+            - button "Оставить заявку" [ref=e121] [cursor=pointer]:
+              - text: Оставить заявку
+              - img [ref=e122]
+        - generic [ref=e124]:
+          - heading "Кейсы" [level=2] [ref=e125]
+          - generic [ref=e126]:
+            - generic [ref=e127]:
+              - generic [ref=e128]: Поиск по отраслям и проектам
+              - searchbox "Поиск по отраслям и проектам" [ref=e129]
+              - paragraph [ref=e130]: "Отраслей: 17"
+            - generic [ref=e131]:
+              - article [ref=e132]:
+                - heading "Логистика и транспорт" [level=3] [ref=e133]
+                - list [ref=e134]:
+                  - listitem [ref=e135]: Логистическая компания — Маршрутизация грузов и управление транспортными средствами
+                  - listitem [ref=e137]: Железнодорожная компания — Планирование и отслеживание движения поездов
+              - article [ref=e139]:
+                - heading "Производство" [level=3] [ref=e140]
+                - list [ref=e141]:
+                  - listitem [ref=e142]: Автомобильная компания — Управление производственным процессом и инвентаризацией запчастей
+                  - listitem [ref=e144]: Производитель пищевых продуктов — Планирование производства и учет сырья
+              - article [ref=e146]:
+                - heading "Розничная торговля" [level=3] [ref=e147]
+                - list [ref=e148]:
+                  - listitem [ref=e149]: Сеть магазинов одежды — Управление запасами и заказами
+                  - listitem [ref=e151]: Супермаркет — Мониторинг продаж и управление ценами
+            - navigation "Страницы кейсов" [ref=e153]:
+              - button "Страница кейсов 1" [ref=e154]: "1"
+              - button "Страница кейсов 2" [ref=e155]: "2"
+              - button "Страница кейсов 3" [ref=e156]: "3"
+              - button "Страница кейсов 4" [ref=e157]: "4"
+              - button "Страница кейсов 5" [ref=e158]: "5"
+              - button "Страница кейсов 6" [ref=e159]: "6"
+    - contentinfo [ref=e160]:
+      - generic [ref=e161]:
+        - generic [ref=e162]:
+          - generic [ref=e163]:
+            - link "VEA — на главную" [disabled] [ref=e164]:
+              - img "VEA" [ref=e165]
+            - paragraph [ref=e169]: Разработка программного обеспечения и приложений на заказ
+            - paragraph [ref=e170]: г. Москва, ул. Орджоникидзе, 11с1А, подъезд 29
+          - navigation "Услуги" [ref=e171]:
+            - paragraph [ref=e172]: Услуги
+            - list [ref=e173]:
+              - listitem [ref=e174]:
+                - link "Аутсорс-разработка" [ref=e175] [cursor=pointer]:
+                  - /url: /autsors-razrabotka
+              - listitem [ref=e176]:
+                - link "Удаленные рабочие места (VDI)" [ref=e177] [cursor=pointer]:
+                  - /url: /gpu
+              - listitem [ref=e178]:
+                - link "Аутстаффинг специалистов" [ref=e179] [cursor=pointer]:
+                  - /url: /staffing
+              - listitem [ref=e180]:
+                - link "Быстрая разработка MVP" [ref=e181] [cursor=pointer]:
+                  - /url: /mvp
+              - listitem [ref=e182]:
+                - link "Аппаратное программирование" [ref=e183] [cursor=pointer]:
+                  - /url: /apparatnoe-programmirovanie
+              - listitem [ref=e184]:
+                - link "Интеграция Битрикс24" [ref=e185] [cursor=pointer]:
+                  - /url: /integracziya-bitriks24
+              - listitem [ref=e186]:
+                - link "ИИ-Ассистенты" [ref=e187] [cursor=pointer]:
+                  - /url: /ai-agents
+              - listitem [ref=e188]:
+                - link "Системная интеграция" [ref=e189] [cursor=pointer]:
+                  - /url: /sistemnaya-integraciya
+              - listitem [ref=e190]:
+                - link "Кибербезопасность" [ref=e191] [cursor=pointer]:
+                  - /url: /kiberbezopasnost
+              - listitem [ref=e192]:
+                - link "Внедрение ИИ" [ref=e193] [cursor=pointer]:
+                  - /url: /vnedrenie-ii
+          - navigation "Компания" [ref=e194]:
+            - paragraph [ref=e195]: Компания
+            - list [ref=e196]:
+              - listitem [ref=e197]:
+                - link "О нас" [ref=e198] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e199]:
+                - link "Кейсы" [ref=e200] [cursor=pointer]:
+                  - /url: /#cases
+              - listitem [ref=e201]:
+                - link "Политика обработки данных" [ref=e202] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e203]:
+                - link "info@vea.ru" [ref=e204] [cursor=pointer]:
+                  - /url: mailto:info@vea.ru
+              - listitem [ref=e205]:
+                - link "+7 (495) 128-54-18" [ref=e206] [cursor=pointer]:
+                  - /url: tel:+74951285418
+        - paragraph [ref=e208]: © 2017—2026 ООО "ВЕА Интернейшел компани рус". Все права защищены.
+    - dialog "Оставьте заявку" [ref=e209]:
+      - button "Закрыть форму" [ref=e210] [cursor=pointer]
+      - generic [ref=e211]:
+        - button "Закрыть" [ref=e213] [cursor=pointer]:
+          - img [ref=e214]
+        - generic [ref=e216]:
+          - heading "Оставьте заявку" [level=2] [ref=e217]
+          - paragraph [ref=e218]: С вами свяжется менеджер и ответит на все ваши вопросы.
+          - generic [ref=e220]:
+            - generic [ref=e221]:
+              - generic [ref=e222]:
+                - generic [ref=e223]: Как вас зовут? *
+                - textbox "Как вас зовут?" [active] [ref=e224]:
+                  - /placeholder: Иван Петров
+              - generic [ref=e225]:
+                - generic [ref=e226]: Номер телефона *
+                - textbox "Номер телефона" [ref=e227]:
+                  - /placeholder: +7 999 000-00-00
+              - generic [ref=e228]:
+                - generic [ref=e229]: Электронная почта *
+                - textbox "Электронная почта" [ref=e230]:
+                  - /placeholder: you@company.ru
+              - generic [ref=e231]:
+                - generic [ref=e232]: Опишите задачу
+                - textbox "Опишите задачу" [ref=e233]:
+                  - /placeholder: Что нужно сделать, какие сроки и ограничения
+            - group "Как с вами связаться?" [ref=e234]:
+              - generic [ref=e235]: Как с вами связаться?
+              - generic [ref=e236]:
+                - generic "WhatsApp" [ref=e237] [cursor=pointer]:
+                  - radio "WhatsApp" [checked] [ref=e238]
+                  - img [ref=e239]
+                  - generic [ref=e242]: WhatsApp
+                - generic "Telegram" [ref=e243] [cursor=pointer]:
+                  - radio "Telegram" [ref=e244]
+                  - img [ref=e245]
+                  - generic [ref=e248]: Telegram
+                - generic "Электронная почта" [ref=e249] [cursor=pointer]:
+                  - radio "Электронная почта" [ref=e250]
+                  - img [ref=e251]
+                  - generic [ref=e254]: Электронная почта
+                - generic "Телефон" [ref=e255] [cursor=pointer]:
+                  - radio "Телефон" [ref=e256]
+                  - img [ref=e257]
+                  - generic [ref=e259]: Телефон
+            - button "Отправить" [ref=e260] [cursor=pointer]
+            - paragraph [ref=e261]:
+              - text: Нажимая кнопку «Отправить», вы даете согласие на обработку персональных данных.
+              - text: Все поля обязательны для заполнения.
+              - link "Политика обработки персональных данных" [ref=e262] [cursor=pointer]:
+                - /url: /privacy
+    - button "Заказать разработку" [ref=e264] [cursor=pointer]
+    - region "Уведомление об использовании файлов cookie" [ref=e265]:
+      - generic [ref=e266]:
+        - generic [ref=e267]:
+          - paragraph [ref=e268]: Файлы cookie
+          - paragraph [ref=e269]: Мы используем файлы cookie, чтобы сайт работал корректно и пользоваться им было удобно. Оставаясь на сайте, вы соглашаетесь с их использованием.
+        - button "Принять" [ref=e270] [cursor=pointer]
+  - alert [ref=e271]
+```
