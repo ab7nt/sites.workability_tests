@@ -1,0 +1,6 @@
+total=40
+passed=23
+failed=17
+broken=0
+skipped=0
+unknown=0
