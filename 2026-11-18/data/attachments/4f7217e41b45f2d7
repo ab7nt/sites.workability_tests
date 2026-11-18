@@ -1,0 +1,294 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - link "Перейти к содержимому" [ref=e3] [cursor=pointer]:
+      - /url: "#main"
+    - banner [ref=e5]:
+      - generic [ref=e6]:
+        - link "VEA — на главную" [disabled] [ref=e7]:
+          - img "VEA" [ref=e8]
+        - navigation "Основная навигация" [ref=e12]:
+          - button "Услуги" [expanded] [ref=e14] [cursor=pointer]:
+            - text: Услуги
+            - img [ref=e15]
+          - link "О нас" [ref=e17] [cursor=pointer]:
+            - /url: /about
+          - link "Кейсы" [ref=e18] [cursor=pointer]:
+            - /url: /#cases
+        - generic [ref=e19]:
+          - link "info@vea.ru" [ref=e20] [cursor=pointer]:
+            - /url: mailto:info@vea.ru
+            - img [ref=e21]
+            - text: info@vea.ru
+          - generic [ref=e24]:
+            - link "Telegram" [ref=e25] [cursor=pointer]:
+              - /url: https://t.me/printrobot
+              - img [ref=e26]
+            - link "WhatsApp" [ref=e29] [cursor=pointer]:
+              - /url: https://api.whatsapp.com/send?phone=79166706241
+              - img [ref=e30]
+          - button "Оставить заявку" [ref=e33] [cursor=pointer]
+      - generic [ref=e35]:
+        - 'link "01 Аутсорс-разработка Разработка для бизнеса: CRM, ERP и другие корпоративные системы автоматизации." [ref=e36] [cursor=pointer]':
+          - /url: /autsors-razrabotka
+          - generic [ref=e37]:
+            - img [ref=e38]
+            - generic [ref=e41]: "01"
+          - generic [ref=e42]: Аутсорс-разработка
+          - generic [ref=e43]: "Разработка для бизнеса: CRM, ERP и другие корпоративные системы автоматизации."
+          - img [ref=e44]
+        - 'link "02 Удаленные рабочие места (VDI) Удаленный доступ к компьютерам с мощными GPU и пакетом инструментов: AutoDesk, Blender." [ref=e46] [cursor=pointer]':
+          - /url: /gpu
+          - generic [ref=e47]:
+            - img [ref=e48]
+            - generic [ref=e51]: "02"
+          - generic [ref=e52]: Удаленные рабочие места (VDI)
+          - generic [ref=e53]: "Удаленный доступ к компьютерам с мощными GPU и пакетом инструментов: AutoDesk, Blender."
+          - img [ref=e54]
+        - link "03 Аутстаффинг специалистов Аренда команды профессионалов в сфере ИТ для целей вашего бизнеса." [ref=e56] [cursor=pointer]:
+          - /url: /staffing
+          - generic [ref=e57]:
+            - img [ref=e58]
+            - generic [ref=e61]: "03"
+          - generic [ref=e62]: Аутстаффинг специалистов
+          - generic [ref=e63]: Аренда команды профессионалов в сфере ИТ для целей вашего бизнеса.
+          - img [ref=e64]
+        - link "04 Быстрая разработка MVP Мобильное приложение на no-code и low-code инструментов для проверки ваших гипотез." [ref=e66] [cursor=pointer]:
+          - /url: /mvp
+          - generic [ref=e67]:
+            - img [ref=e68]
+            - generic [ref=e71]: "04"
+          - generic [ref=e72]: Быстрая разработка MVP
+          - generic [ref=e73]: Мобильное приложение на no-code и low-code инструментов для проверки ваших гипотез.
+          - img [ref=e74]
+        - link "05 Аппаратное программирование Разработка и программирование аппаратных частей под заказ." [ref=e76] [cursor=pointer]:
+          - /url: /apparatnoe-programmirovanie
+          - generic [ref=e77]:
+            - img [ref=e78]
+            - generic [ref=e81]: "05"
+          - generic [ref=e82]: Аппаратное программирование
+          - generic [ref=e83]: Разработка и программирование аппаратных частей под заказ.
+          - img [ref=e84]
+        - link "06 Интеграция Битрикс24 Услуги по настройке и интеграции Битрикс24 любого уровня сложности." [ref=e86] [cursor=pointer]:
+          - /url: /integracziya-bitriks24
+          - generic [ref=e87]:
+            - img [ref=e88]
+            - generic [ref=e90]: "06"
+          - generic [ref=e91]: Интеграция Битрикс24
+          - generic [ref=e92]: Услуги по настройке и интеграции Битрикс24 любого уровня сложности.
+          - img [ref=e93]
+        - link "07 ИИ-Ассистенты Умные помощники для сайта и Telegram — автоматизация лидов 24/7" [ref=e95] [cursor=pointer]:
+          - /url: /ai-agents
+          - generic [ref=e96]:
+            - img [ref=e97]
+            - generic [ref=e100]: "07"
+          - generic [ref=e101]: ИИ-Ассистенты
+          - generic [ref=e102]: Умные помощники для сайта и Telegram — автоматизация лидов 24/7
+          - img [ref=e103]
+        - link "08 Системная интеграция Импортозамещение, инженерные системы, мультимедиа и ИТ-инфраструктура под ключ." [ref=e105] [cursor=pointer]:
+          - /url: /sistemnaya-integraciya
+          - generic [ref=e106]:
+            - img [ref=e107]
+            - generic [ref=e111]: "08"
+          - generic [ref=e112]: Системная интеграция
+          - generic [ref=e113]: Импортозамещение, инженерные системы, мультимедиа и ИТ-инфраструктура под ключ.
+          - img [ref=e114]
+        - link "09 Кибербезопасность Стратегия защиты информации, аттестация и оценка защищённости инфраструктуры." [ref=e116] [cursor=pointer]:
+          - /url: /kiberbezopasnost
+          - generic [ref=e117]:
+            - img [ref=e118]
+            - generic [ref=e121]: "09"
+          - generic [ref=e122]: Кибербезопасность
+          - generic [ref=e123]: Стратегия защиты информации, аттестация и оценка защищённости инфраструктуры.
+          - img [ref=e124]
+        - link "10 Внедрение ИИ Инициативы по ИИ для оптимизации бизнес-процессов и цифровой трансформации." [ref=e126] [cursor=pointer]:
+          - /url: /vnedrenie-ii
+          - generic [ref=e127]:
+            - img [ref=e128]
+            - generic [ref=e132]: "10"
+          - generic [ref=e133]: Внедрение ИИ
+          - generic [ref=e134]: Инициативы по ИИ для оптимизации бизнес-процессов и цифровой трансформации.
+          - img [ref=e135]
+    - main [ref=e137]:
+      - generic [ref=e138]:
+        - region "Продукты компании" [ref=e140]:
+          - generic [ref=e144]:
+            - paragraph [ref=e146]: система управления, отслеживания и отпимизации цепи поставок внутри сети предприятий
+            - generic [ref=e147]:
+              - paragraph [ref=e148]: 01 / 02
+              - generic [ref=e149]:
+                - button "Предыдущий слайд" [ref=e150] [cursor=pointer]:
+                  - img [ref=e151]
+                - button "Следующий слайд" [ref=e153] [cursor=pointer]:
+                  - img [ref=e154]
+          - generic [ref=e156]:
+            - button "Слайд 1 из 2" [ref=e157] [cursor=pointer]
+            - button "Слайд 2 из 2" [ref=e159] [cursor=pointer]
+        - heading "простые решения для сложных бизнес-задач" [level=1] [ref=e162]
+        - generic [ref=e163]:
+          - generic [ref=e165]:
+            - term [ref=e166]: 2,4k
+            - definition [ref=e167]: пользователей используют наши разработки
+          - generic [ref=e169]:
+            - term [ref=e170]: "23"
+            - definition [ref=e171]: продукта и решения разработано нами
+          - generic [ref=e173]:
+            - term [ref=e174]: 38%
+            - definition [ref=e175]: в среднем составляет прирост выручки компаний
+        - generic [ref=e176]:
+          - heading "нашими продуктами и решениями уже пользуются" [level=2] [ref=e178]
+          - generic [ref=e179]:
+            - article [ref=e181]:
+              - heading "система по управлению полиграфическим бизнесом" [level=3] [ref=e182]
+              - list [ref=e183]:
+                - listitem [ref=e184]: CRM
+                - listitem [ref=e185]: ERP
+                - listitem [ref=e186]: ОНЛАЙН-КАССЫ
+                - listitem [ref=e187]: СКЛАД
+                - listitem [ref=e188]: БУХГАЛТЕРИЯ
+                - listitem [ref=e189]: КАЛЬКУЛЯТОР
+            - article [ref=e192]:
+              - heading "платформа для миграции проектов на no-code" [level=3] [ref=e193]
+              - list [ref=e194]:
+                - listitem [ref=e195]: SP-API
+                - listitem [ref=e196]: AWS
+                - listitem [ref=e197]: ОНЛАЙН-КАССЫ
+                - listitem [ref=e198]: СКЛАД
+                - listitem [ref=e199]: БУХГАЛТЕРИЯ
+                - listitem [ref=e200]: КАЛЬКУЛЯТОР
+            - article [ref=e203]:
+              - heading "Платформа для управления складом" [level=3] [ref=e204]
+              - list [ref=e205]:
+                - listitem [ref=e206]: CRM
+                - listitem [ref=e207]: ERP
+                - listitem [ref=e208]: ОНЛАЙН-КАССЫ
+                - listitem [ref=e209]: СКЛАД
+                - listitem [ref=e210]: БУХГАЛТЕРИЯ
+                - listitem [ref=e211]: КАЛЬКУЛЯТОР
+            - article [ref=e214]:
+              - heading "Интеграция с amazon seller center Управления заказами" [level=3] [ref=e215]
+              - list [ref=e216]:
+                - listitem [ref=e217]: CRM
+                - listitem [ref=e218]: ERP
+                - listitem [ref=e219]: ОНЛАЙН-КАССЫ
+                - listitem [ref=e220]: СКЛАД
+                - listitem [ref=e221]: БУХГАЛТЕРИЯ
+                - listitem [ref=e222]: КАЛЬКУЛЯТОР
+          - generic [ref=e225]:
+            - paragraph [ref=e226]: 20+ закрытых проектов, позволяющие нам заявлять , что у нас есть достаточный опыт по созданию продуктов с нуля и полному их сопровождению от идеи до реализации
+            - list [ref=e227]:
+              - listitem [ref=e228]: ФИНТЕХ
+              - listitem [ref=e229]: АГРОТЕХ
+              - listitem [ref=e230]: МЕДТЕХ
+              - listitem [ref=e231]: ЭДТЕХ
+              - listitem [ref=e232]: ПРОПТЕХ
+              - listitem [ref=e233]: ЛЕГАЛТЕХ
+              - listitem [ref=e234]: ГРИНТЕХ
+              - listitem [ref=e235]: БИОТЕХ
+          - generic [ref=e238]:
+            - generic [ref=e239]:
+              - heading "Связаться с нами" [level=2] [ref=e240]
+              - paragraph [ref=e241]: Свяжитесь с нами и поделитесь о задачах и проблемах вашей компании. Наши менеджеры и аналитики найдут оптимальное решение.
+            - button "Оставить заявку" [ref=e242] [cursor=pointer]:
+              - text: Оставить заявку
+              - img [ref=e243]
+        - generic [ref=e245]:
+          - heading "Кейсы" [level=2] [ref=e246]
+          - generic [ref=e247]:
+            - generic [ref=e248]:
+              - generic [ref=e249]: Поиск по отраслям и проектам
+              - searchbox "Поиск по отраслям и проектам" [ref=e250]
+              - paragraph [ref=e251]: "Отраслей: 17"
+            - generic [ref=e252]:
+              - article [ref=e253]:
+                - heading "Логистика и транспорт" [level=3] [ref=e254]
+                - list [ref=e255]:
+                  - listitem [ref=e256]: Логистическая компания — Маршрутизация грузов и управление транспортными средствами
+                  - listitem [ref=e258]: Железнодорожная компания — Планирование и отслеживание движения поездов
+              - article [ref=e260]:
+                - heading "Производство" [level=3] [ref=e261]
+                - list [ref=e262]:
+                  - listitem [ref=e263]: Автомобильная компания — Управление производственным процессом и инвентаризацией запчастей
+                  - listitem [ref=e265]: Производитель пищевых продуктов — Планирование производства и учет сырья
+              - article [ref=e267]:
+                - heading "Розничная торговля" [level=3] [ref=e268]
+                - list [ref=e269]:
+                  - listitem [ref=e270]: Сеть магазинов одежды — Управление запасами и заказами
+                  - listitem [ref=e272]: Супермаркет — Мониторинг продаж и управление ценами
+            - navigation "Страницы кейсов" [ref=e274]:
+              - button "Страница кейсов 1" [ref=e275]: "1"
+              - button "Страница кейсов 2" [ref=e276]: "2"
+              - button "Страница кейсов 3" [ref=e277]: "3"
+              - button "Страница кейсов 4" [ref=e278]: "4"
+              - button "Страница кейсов 5" [ref=e279]: "5"
+              - button "Страница кейсов 6" [ref=e280]: "6"
+    - contentinfo [ref=e281]:
+      - generic [ref=e282]:
+        - generic [ref=e283]:
+          - generic [ref=e284]:
+            - link "VEA — на главную" [disabled] [ref=e285]:
+              - img "VEA" [ref=e286]
+            - paragraph [ref=e290]: Разработка программного обеспечения и приложений на заказ
+            - paragraph [ref=e291]: г. Москва, ул. Орджоникидзе, 11с1А, подъезд 29
+          - navigation "Услуги" [ref=e292]:
+            - paragraph [ref=e293]: Услуги
+            - list [ref=e294]:
+              - listitem [ref=e295]:
+                - link "Аутсорс-разработка" [ref=e296] [cursor=pointer]:
+                  - /url: /autsors-razrabotka
+              - listitem [ref=e297]:
+                - link "Удаленные рабочие места (VDI)" [ref=e298] [cursor=pointer]:
+                  - /url: /gpu
+              - listitem [ref=e299]:
+                - link "Аутстаффинг специалистов" [ref=e300] [cursor=pointer]:
+                  - /url: /staffing
+              - listitem [ref=e301]:
+                - link "Быстрая разработка MVP" [ref=e302] [cursor=pointer]:
+                  - /url: /mvp
+              - listitem [ref=e303]:
+                - link "Аппаратное программирование" [ref=e304] [cursor=pointer]:
+                  - /url: /apparatnoe-programmirovanie
+              - listitem [ref=e305]:
+                - link "Интеграция Битрикс24" [ref=e306] [cursor=pointer]:
+                  - /url: /integracziya-bitriks24
+              - listitem [ref=e307]:
+                - link "ИИ-Ассистенты" [ref=e308] [cursor=pointer]:
+                  - /url: /ai-agents
+              - listitem [ref=e309]:
+                - link "Системная интеграция" [ref=e310] [cursor=pointer]:
+                  - /url: /sistemnaya-integraciya
+              - listitem [ref=e311]:
+                - link "Кибербезопасность" [ref=e312] [cursor=pointer]:
+                  - /url: /kiberbezopasnost
+              - listitem [ref=e313]:
+                - link "Внедрение ИИ" [ref=e314] [cursor=pointer]:
+                  - /url: /vnedrenie-ii
+          - navigation "Компания" [ref=e315]:
+            - paragraph [ref=e316]: Компания
+            - list [ref=e317]:
+              - listitem [ref=e318]:
+                - link "О нас" [ref=e319] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e320]:
+                - link "Кейсы" [ref=e321] [cursor=pointer]:
+                  - /url: /#cases
+              - listitem [ref=e322]:
+                - link "Политика обработки данных" [ref=e323] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e324]:
+                - link "info@vea.ru" [ref=e325] [cursor=pointer]:
+                  - /url: mailto:info@vea.ru
+              - listitem [ref=e326]:
+                - link "+7 (495) 128-54-18" [ref=e327] [cursor=pointer]:
+                  - /url: tel:+74951285418
+        - paragraph [ref=e329]: © 2017—2026 ООО "ВЕА Интернейшел компани рус". Все права защищены.
+    - region "Уведомление об использовании файлов cookie" [ref=e330]:
+      - generic [ref=e331]:
+        - generic [ref=e332]:
+          - paragraph [ref=e333]: Файлы cookie
+          - paragraph [ref=e334]: Мы используем файлы cookie, чтобы сайт работал корректно и пользоваться им было удобно. Оставаясь на сайте, вы соглашаетесь с их использованием.
+        - button "Принять" [ref=e335] [cursor=pointer]
+  - alert [ref=e336]
+```
